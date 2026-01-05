@@ -15,4 +15,8 @@
     <string name="gender_male">М</string>
     <string name="gender_female">Ж</string>
     <string name="gender">Пол</string>
+    <string name="submit_password">Подтвердите пароль</string>
+    <string name="have_account">"Уже есть аккаунт? "</string>
+    <string name="home">Главная</string>
+    <string name="patients">Пациенты</string>
 </resources>

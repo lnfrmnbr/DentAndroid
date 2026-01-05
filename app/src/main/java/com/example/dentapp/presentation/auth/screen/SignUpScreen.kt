@@ -72,12 +72,6 @@ fun SignUpScreen(
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
     val confirmPasswordVisible = rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let { message ->
-            // scaffoldState.snackbarHostState.showSnackbar(message)
-        }
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -99,7 +93,7 @@ fun SignUpScreen(
             ) {
                 Text(
                     text = stringResource(R.string.sign_up),
-                    style = MaterialTheme.typography.displayLarge,
+                    style = MaterialTheme.typography.displayMedium,
                     color = Color.White
                 )
 
@@ -113,88 +107,30 @@ fun SignUpScreen(
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { viewModel.updateEmail(it) },
-                        label = { Text(stringResource(R.string.email), color = DarkCyan.copy(alpha = 0.6f)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedLabelColor = DarkCyan,
-                            unfocusedLabelColor = DarkCyan.copy(alpha = 0.6f),
-                            focusedIndicatorColor = DarkCyan,
-                            unfocusedIndicatorColor = DarkCyan.copy(alpha = 0.3f),
-                            focusedTextColor = DarkCyan.copy(alpha = 0.6f),
-                            unfocusedTextColor = DarkCyan.copy(alpha = 0.6f)
-                        ),
-                        shape = RoundedCornerShape(8.dp)
-                    )
 
-                    OutlinedTextField(
-                        value = lastName,
-                        onValueChange = { viewModel.updateLastName(it) },
-                        label = { Text(stringResource(R.string.lastName), color = DarkCyan.copy(alpha = 0.6f)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedLabelColor = DarkCyan,
-                            unfocusedLabelColor = DarkCyan.copy(alpha = 0.6f),
-                            focusedIndicatorColor = DarkCyan,
-                            unfocusedIndicatorColor = DarkCyan.copy(alpha = 0.3f),
-                            focusedTextColor = DarkCyan.copy(alpha = 0.6f),
-                            unfocusedTextColor = DarkCyan.copy(alpha = 0.6f)
-                        ),
-                        shape = RoundedCornerShape(8.dp)
-                    )
+                    InputTextField(email, R.string.email) { viewModel.updateEmail(it) }
 
-                    OutlinedTextField(
-                        value = firstName,
-                        onValueChange = { viewModel.updateFirstName(it) },
-                        label = { Text(stringResource(R.string.name), color = DarkCyan.copy(alpha = 0.6f)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedLabelColor = DarkCyan,
-                            unfocusedLabelColor = DarkCyan.copy(alpha = 0.6f),
-                            focusedIndicatorColor = DarkCyan,
-                            unfocusedIndicatorColor = DarkCyan.copy(alpha = 0.3f),
-                            focusedTextColor = DarkCyan.copy(alpha = 0.6f),
-                            unfocusedTextColor = DarkCyan.copy(alpha = 0.6f)
-                        ),
-                        shape = RoundedCornerShape(8.dp)
-                    )
+                    InputTextField(lastName, R.string.lastName) { viewModel.updateLastName(it) }
 
-                    OutlinedTextField(
-                        value = patronymic,
-                        onValueChange = { viewModel.updatePatronymic(it) },
-                        label = { Text(stringResource(R.string.patronymic), color = DarkCyan.copy(alpha = 0.6f)) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedLabelColor = DarkCyan,
-                            unfocusedLabelColor = DarkCyan.copy(alpha = 0.6f),
-                            focusedIndicatorColor = DarkCyan,
-                            unfocusedIndicatorColor = DarkCyan.copy(alpha = 0.3f),
-                            focusedTextColor = DarkCyan.copy(alpha = 0.6f),
-                            unfocusedTextColor = DarkCyan.copy(alpha = 0.6f)
-                        ),
-                        shape = RoundedCornerShape(8.dp)
-                    )
+                    InputTextField(firstName, R.string.name) { viewModel.updateFirstName(it) }
+
+                    InputTextField(patronymic, R.string.patronymic) { viewModel.updatePatronymic(it) }
 
                     GenderDropdown(
                         selectedGender = sex,
                         onGenderSelected = { viewModel.updateSex(it) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
                         value = password,
                         onValueChange = { viewModel.updatePassword(it) },
-                        label = { Text(stringResource(R.string.password), color = DarkCyan.copy(alpha = 0.6f)) },
+                        label = {
+                            Text(
+                                stringResource(R.string.password),
+                                color = DarkCyan.copy(alpha = 0.6f)
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -205,7 +141,9 @@ fun SignUpScreen(
                                     imageVector = if (passwordVisible.value) ImageVector.vectorResource(
                                         id = R.drawable.visibility_on
                                     ) else ImageVector.vectorResource(id = R.drawable.visibility_off),
-                                    contentDescription = if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(R.string.show_password),
+                                    contentDescription = if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
+                                        R.string.show_password
+                                    ),
                                     tint = DarkCyan.copy(alpha = 0.6f)
                                 )
                             }
@@ -228,7 +166,7 @@ fun SignUpScreen(
                         onValueChange = { viewModel.updateConfirmPassword(it) },
                         label = {
                             Text(
-                                "Подтвердите пароль",
+                                stringResource(R.string.submit_password),
                                 color = DarkCyan.copy(alpha = 0.6f)
                             )
                         },
@@ -242,7 +180,9 @@ fun SignUpScreen(
                                     imageVector = if (confirmPasswordVisible.value) ImageVector.vectorResource(
                                         id = R.drawable.visibility_on
                                     ) else ImageVector.vectorResource(id = R.drawable.visibility_off),
-                                    contentDescription = if (confirmPasswordVisible.value) "Скрыть пароль" else "Показать пароль",
+                                    contentDescription = if (confirmPasswordVisible.value) stringResource(
+                                        R.string.hide_password
+                                    ) else stringResource(R.string.show_password),
                                     tint = DarkCyan.copy(alpha = 0.6f)
                                 )
                             }
@@ -290,7 +230,7 @@ fun SignUpScreen(
                             )
                         } else {
                             Text(
-                                text = "Зарегистрироваться",
+                                text = stringResource(R.string.do_sign_up),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
@@ -303,12 +243,12 @@ fun SignUpScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Уже есть аккаунт? ",
+                        text = stringResource(R.string.have_account),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.7f)
                     )
                     Text(
-                        text = "Войти",
+                        text = stringResource(R.string.do_sign_in),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
@@ -318,6 +258,31 @@ fun SignUpScreen(
             }
         }
     }
+}
+
+@Composable
+fun InputTextField(
+    value: String,
+    stringResource: Int,
+    onValueChanged: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChanged,
+        label = { Text(stringResource(stringResource), color = DarkCyan.copy(alpha = 0.6f)) },
+        modifier = Modifier.fillMaxWidth(),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedLabelColor = DarkCyan,
+            unfocusedLabelColor = DarkCyan.copy(alpha = 0.6f),
+            focusedIndicatorColor = DarkCyan,
+            unfocusedIndicatorColor = DarkCyan.copy(alpha = 0.3f),
+            focusedTextColor = DarkCyan.copy(alpha = 0.6f),
+            unfocusedTextColor = DarkCyan.copy(alpha = 0.6f)
+        ),
+        shape = RoundedCornerShape(8.dp)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
