@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">DentApp</string>
+    <string name="app_name" translatable="false">DentApp</string>
+    <string name="lastName">Surname</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="sign_in">Sign in</string>
+    <string name="password">Password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="do_sign_in">Sign in</string>
+    <string name="or">or</string>
+    <string name="google_sign">Sign in with Google</string>
+    <string name="google" translatable="false">Google</string>
+    <string name="do_sign_up">Sign up</string>
+    <string name="no_account">"Don't have an account yet? "</string>
+    <string name="sign_up">Sign up</string>
+    <string name="name">First name</string>
+    <string name="patronymic">Patronymic</string>
+    <string name="gender_male">M</string>
+    <string name="gender_female">F</string>
+    <string name="gender">Sex</string>
 </resources>

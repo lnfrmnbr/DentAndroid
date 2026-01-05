@@ -1,0 +1,18 @@
+<resources>
+    <string name="lastName">Фамилия</string>
+    <string name="sign_in">Вход</string>
+    <string name="password">Пароль</string>
+    <string name="hide_password">Скрыть пароль</string>
+    <string name="show_password">Показать пароль</string>
+    <string name="do_sign_in">Войти</string>
+    <string name="or">или</string>
+    <string name="google_sign">Войти через Google</string>
+    <string name="do_sign_up">Зарегистрироваться</string>
+    <string name="no_account">"Еще нет аккаунта? "</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="name">Имя</string>
+    <string name="patronymic">Отчество</string>
+    <string name="gender_male">М</string>
+    <string name="gender_female">Ж</string>
+    <string name="gender">Пол</string>
+</resources>
