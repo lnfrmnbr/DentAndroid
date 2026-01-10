@@ -11,6 +11,7 @@ import com.example.dentapp.data.remote.model.response.auth.AuthResponse
 import com.example.dentapp.domain.repository.auth.AuthRepository
 import com.example.dentapp.utils.decoders.JwtDecoder
 import kotlinx.coroutines.flow.first
+import java.util.UUID
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -39,7 +40,10 @@ class AuthRepositoryImpl @Inject constructor(
                     accessToken = authResponse.access,
                     refreshToken = authResponse.refresh,
                     userId = userId,
-                    email = email
+                    email = email,
+                    fullName = fullName,
+                    firstName = firstName,
+                    sex = sex
                 )
                 Result.success(authResponse)
             } else {
@@ -61,12 +65,17 @@ class AuthRepositoryImpl @Inject constructor(
                 val userId = JwtDecoder.decodeUserId(authResponse.access)
                     ?: return Result.failure(Exception("Не удалось расшифровать ID пользователя из токена"))
 
+                val doctor = apiService.getDoctor(UUID.fromString(userId))
+
                 authDataStore.saveAuthData(
                     isLoggedIn = true,
                     accessToken = authResponse.access,
                     refreshToken = authResponse.refresh,
                     userId = userId,
-                    email = email
+                    email = email,
+                    fullName = doctor.fullName,
+                    firstName = doctor.firstName,
+                    sex = doctor.sex
                 )
                 Result.success(authResponse)
             } else {

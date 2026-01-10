@@ -20,7 +20,9 @@ class AuthDataStore @Inject constructor(
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         private val USER_ID = stringPreferencesKey("user_id")
         private val EMAIL = stringPreferencesKey("email")
-        private val USERNAME = stringPreferencesKey("username")
+        private val FULL_NAME = stringPreferencesKey("full_name")
+        private val FIRST_NAME = stringPreferencesKey("first_name")
+        private val SEX = stringPreferencesKey("sex")
     }
 
     suspend fun saveAuthData(
@@ -28,12 +30,18 @@ class AuthDataStore @Inject constructor(
         accessToken: String? = null,
         refreshToken: String? = null,
         userId: String? = null,
-        email: String? = null
+        email: String? = null,
+        fullName: String? = null,
+        firstName: String? = null,
+        sex: String? = null
     ) {
         dataStore.edit { prefs ->
             prefs[IS_LOGGED_IN] = isLoggedIn
             userId?.let { prefs[USER_ID] = it }
             email?.let { prefs[EMAIL] = it }
+            fullName?.let { prefs[FULL_NAME] = it }
+            firstName?.let { prefs[FIRST_NAME] = it }
+            sex?.let { prefs[SEX] = it }
         }
 
         val editor = encryptedPrefs.edit()
@@ -50,6 +58,18 @@ class AuthDataStore @Inject constructor(
 
     suspend fun getEmail(): String? {
         return dataStore.data.map { it[EMAIL] }.first()
+    }
+
+    suspend fun getFirstName(): String? {
+        return dataStore.data.map { it[FIRST_NAME] }.first()
+    }
+
+    suspend fun getFullName(): String? {
+        return dataStore.data.map { it[FULL_NAME] }.first()
+    }
+
+    suspend fun getSex(): String? {
+        return dataStore.data.map { it[SEX] }.first()
     }
 
     fun getAccessTokenBlocking(): String? {

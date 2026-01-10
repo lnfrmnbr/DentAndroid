@@ -108,8 +108,3 @@ fun ToothSvgItem(
         }
     )
 }
-
-
-
-
-

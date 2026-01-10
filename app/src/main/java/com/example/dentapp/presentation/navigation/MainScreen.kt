@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dentapp.presentation.HomeScreen
+import com.example.dentapp.presentation.home.screen.HomeScreen
 import com.example.dentapp.presentation.PatientsScreen
 import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
 import com.example.dentapp.ui.theme.CadetBlue
@@ -27,7 +27,7 @@ fun MainScreen(navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
                 .background(CadetBlue)
         ) {
-            composable(Screen.Home.route) { HomeScreen(navController = navController)}
+            composable(Screen.Home.route) { HomeScreen(navController = navController) }
             composable(Screen.Patients.route) { PatientsScreen(navController = navController) }
             composable(Screen.PerioChart.route) { PerioChartScreen(navController = navController) }
         }
