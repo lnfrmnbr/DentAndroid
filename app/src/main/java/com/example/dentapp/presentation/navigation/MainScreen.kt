@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dentapp.presentation.HomeScreen
 import com.example.dentapp.presentation.PatientsScreen
-import com.example.dentapp.presentation.PerioChartScreen
+import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
 import com.example.dentapp.ui.theme.CadetBlue
 
 @Composable

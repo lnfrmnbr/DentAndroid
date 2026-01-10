@@ -23,16 +23,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+            //enableEdgeToEdge()
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.apply {
+            // Скрываем status bar и navigation bar
             hide(WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.navigationBars())
 
+            // Панель появляется временно свайпом
             systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
-        enableEdgeToEdge()
+
         setContent {
             DentAppTheme {
                 val navController = rememberNavController()

@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.dentapp.presentation.PatientsScreen
-import com.example.dentapp.presentation.PerioChartScreen
+import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
 
 fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
     navigation(

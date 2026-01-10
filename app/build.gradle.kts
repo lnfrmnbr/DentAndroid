@@ -101,6 +101,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.compose.compiler)
     implementation(libs.accompanist.swiperefresh)
+    implementation(libs.compose.calendar)
+    implementation(libs.androidsvg)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
