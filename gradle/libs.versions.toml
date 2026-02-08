@@ -1,7 +1,9 @@
 [versions]
+accompanistSystemuicontroller = "0.36.0"
 agp = "8.11.2"
 androidsvg = "1.4"
 compose = "2.9.0"
+coreSplashscreen = "1.0.1"
 datastorePreferences = "1.2.0"
 kotlin = "2.2.21"
 coreKtx = "1.17.0"
@@ -29,8 +31,10 @@ accompanistSwiperefresh = "0.36.0"
 foundationLayout = "1.9.5"
 
 [libraries]
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidsvg = { module = "com.caverock:androidsvg", version.ref = "androidsvg" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 compose-calendar = { module = "com.kizitonwose.calendar:compose", version.ref = "compose" }

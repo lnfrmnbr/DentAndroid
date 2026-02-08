@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.dentapp.R
 import com.example.dentapp.presentation.home.viewmodel.HomeViewModel
+import com.example.dentapp.ui.theme.CadetBlue
 import com.example.dentapp.ui.theme.DarkCyan
 import com.example.dentapp.ui.theme.LightCyan
 import com.example.dentapp.ui.theme.Teal
@@ -43,20 +46,27 @@ fun HomeScreen(navController: NavHostController,
                homeViewModel: HomeViewModel = hiltViewModel()) {
     val firstName by homeViewModel.firstName.collectAsState()
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .background(CadetBlue)
+            .verticalScroll(rememberScrollState())
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
 
-        HelloCard(
-            title = "Здравствуйте, $firstName!",
-            description = "Хорошего дня!",
-            date = getTodayDateString(),
-            imageResId = R.drawable.dentist
-        )
+            HelloCard(
+                title = "Здравствуйте, $firstName!",
+                description = "Хорошего дня!",
+                date = getTodayDateString(),
+                imageResId = R.drawable.dentist
+            )
+        }
     }
 }
 

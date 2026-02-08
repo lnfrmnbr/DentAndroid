@@ -103,6 +103,8 @@ dependencies {
     implementation(libs.accompanist.swiperefresh)
     implementation(libs.compose.calendar)
     implementation(libs.androidsvg)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.accompanist.systemuicontroller)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(
         checkAuthStatus()
     }
 
-    fun checkAuthStatus() {
+    private fun checkAuthStatus() {
         viewModelScope.launch {
             _isLoading.value = true
             val loggedIn = authRepository.isUserLoggedIn()

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.DentApp.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/purple_700</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/dentist</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/purple_700</item>
 
-    <style name="Theme.DentApp" parent="android:Theme.Material.Light.NoActionBar" />
+        <item name="postSplashScreenTheme">@style/Theme.DentApp</item>
+    </style>
+
+    <style name="Theme.DentApp" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
 </resources>
