@@ -39,3 +39,7 @@ val Montserrat = FontFamily(
     Font(R.font.montserrat_bold, FontWeight.Bold),
     Font(R.font.montserrat_regular, FontWeight.Normal),
 )
+
+val Cygre = FontFamily(
+    Font(R.font.cygre_black, FontWeight.Normal),
+)

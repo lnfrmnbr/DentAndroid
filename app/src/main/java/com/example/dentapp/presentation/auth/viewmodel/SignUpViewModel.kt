@@ -44,8 +44,24 @@ class SignUpViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _birthDate = MutableStateFlow("")
+    val birthDate: StateFlow<String> = _birthDate
+
+    private val _position = MutableStateFlow("")
+    val position: StateFlow<String> = _position
+
     fun updateEmail(value: String) {
         _email.value = value
+        clearError()
+    }
+
+    fun updatePosition(value: String) {
+        _position.value = value
+        clearError()
+    }
+
+    fun updateBirthDate(value: String) {
+        _birthDate.value = value
         clearError()
     }
 
