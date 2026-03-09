@@ -6,7 +6,7 @@
     <string name="show_password">Показать пароль</string>
     <string name="do_sign_in">Войти</string>
     <string name="or">или</string>
-    <string name="google_sign">Войти через Google</string>
+    <string name="google_sign">Войти с аккаунтом Google</string>
     <string name="do_sign_up">Зарегистрироваться</string>
     <string name="no_account">"Еще нет аккаунта? "</string>
     <string name="sign_up">Регистрация</string>
@@ -19,4 +19,6 @@
     <string name="have_account">"Уже есть аккаунт? "</string>
     <string name="home">Главная</string>
     <string name="patients">Пациенты</string>
+    <string name="email">Почта</string>
+    <string name="sign_in_descr">Войдите в систему для дальнейшей работы</string>
 </resources>

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">DentApp</string>
     <string name="lastName">Surname</string>
-    <string name="email" translatable="false">Email</string>
+    <string name="email">Email</string>
     <string name="sign_in">Sign in</string>
     <string name="password">Password</string>
     <string name="hide_password">Hide password</string>
@@ -20,6 +20,7 @@
     <string name="gender">Sex</string>
     <string name="submit_password">Submit password</string>
     <string name="have_account">"Already have an account? "</string>
-    <string name="home">Главная</string>
-    <string name="patients">Пациенты</string>
+    <string name="home">Main</string>
+    <string name="patients">Patients</string>
+    <string name="sign_in_descr">Log in to continue working</string>
 </resources>
