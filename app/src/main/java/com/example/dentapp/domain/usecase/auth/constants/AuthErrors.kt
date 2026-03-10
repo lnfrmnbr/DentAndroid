@@ -20,4 +20,7 @@ object AuthErrors {
     const val LOGIN_FAILED = "Ошибка входа"
     const val GOOGLE_LOGIN_FAILED = "Ошибка Google входа"
     const val NETWORK_ERROR = "Ошибка сети"
+
+    const val SHORT_DATE = "Поле дата заполнено неполностью, оно должно соответствовать формату дд.мм.гггг"
+    const val UNREAL_DATE = "Поле дата заполнено некорректно"
 }

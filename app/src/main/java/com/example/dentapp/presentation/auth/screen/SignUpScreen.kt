@@ -48,9 +48,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -86,8 +88,10 @@ fun SignUpScreen(
     val confirmPassword by viewModel.confirmPassword.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val birthDate by viewModel.birthDate.collectAsState()
     val position by viewModel.position.collectAsState()
+    var birthDate by remember {
+        mutableStateOf(TextFieldValue(""))
+    }
 
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
     val confirmPasswordVisible = rememberSaveable { mutableStateOf(false) }
@@ -192,9 +196,24 @@ fun SignUpScreen(
 
                 OutlinedTextField(
                     value = birthDate,
-                    onValueChange = { input: String ->
-                        val digits = input.filter { it.isDigit() }.take(8)
-                        viewModel.updateBirthDate(digits)
+                    onValueChange = { input ->
+
+                        val digits = input.text.filter { it.isDigit() }.take(8)
+
+                        val formatted = buildString {
+                            for (i in digits.indices) {
+                                append(digits[i])
+                                if (i == 1 && digits.length > 2) append(".")
+                                if (i == 3 && digits.length > 4) append(".")
+                            }
+                        }
+
+                        birthDate = TextFieldValue(
+                            text = formatted,
+                            selection = TextRange(formatted.length)
+                        )
+
+                        viewModel.updateBirthDate(formatted)
                     },
                     label = {
                         Text(
@@ -205,7 +224,6 @@ fun SignUpScreen(
                             fontSize = 16.sp
                         )
                     },
-                    visualTransformation = DateVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
@@ -264,7 +282,8 @@ fun SignUpScreen(
                 fontFamily = Montserrat,
                 fontWeight = FontWeight.Normal,
                 color = LightGreyBlue,
-                fontSize = 12.sp
+                fontSize = 12.sp,
+                modifier = Modifier.align(Alignment.Start)
             )
 
             PasswordField(
@@ -282,7 +301,9 @@ fun SignUpScreen(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.Start)
                 )
             }
 
@@ -358,7 +379,10 @@ fun InputTextField(
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChanged,
+        onValueChange = { input ->
+            val filtered = input.filter { !it.isWhitespace() }
+            onValueChanged(filtered)
+        },
         label = {
             Text(
                 stringResource(stringResource),

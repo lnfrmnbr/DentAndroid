@@ -3,18 +3,22 @@ package com.example.dentapp.presentation.auth.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.di.SignUpUseCase
+import com.example.dentapp.domain.usecase.auth.ValidateDateUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
 import com.example.dentapp.domain.usecase.auth.constants.AuthErrors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val validateDateUseCase: ValidateDateUseCase
 ) : ViewModel() {
 
     private val _email = MutableStateFlow("")
@@ -117,7 +121,13 @@ class SignUpViewModel @Inject constructor(
             return
         }
 
-        if (email.value.isEmpty() || lastName.value.isEmpty() || firstName.value.isEmpty() || sex.value.isEmpty()) {
+        val dateValidation = validateDateUseCase(birthDate.value)
+        if (!dateValidation.successful) {
+            _errorMessage.value = dateValidation.errorMessage
+            return
+        }
+
+        if (email.value.isEmpty() || lastName.value.isEmpty() || firstName.value.isEmpty() || sex.value.isEmpty() || birthDate.value.isEmpty() || position.value.isEmpty()) {
             _errorMessage.value = AuthErrors.FIELDS_REQUIRED
             return
         }
@@ -127,6 +137,8 @@ class SignUpViewModel @Inject constructor(
             else -> "F"
         }
 
+        val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+
         _isLoading.value = true
         viewModelScope.launch {
             val patronymicString = if (patronymic.value.isEmpty()) "" else " " + patronymic.value
@@ -135,7 +147,9 @@ class SignUpViewModel @Inject constructor(
                 password = password.value,
                 fullName = "${lastName.value} ${firstName.value}$patronymicString",
                 firstName = firstName.value,
-                sex = genderCode
+                sex = genderCode,
+                role = position.value,
+                birthDate = formatter.parse(birthDate.value)!!
             )
             _isLoading.value = false
 

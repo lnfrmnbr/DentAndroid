@@ -11,6 +11,7 @@ import com.example.dentapp.data.remote.model.response.auth.AuthResponse
 import com.example.dentapp.domain.repository.auth.AuthRepository
 import com.example.dentapp.utils.decoders.JwtDecoder
 import kotlinx.coroutines.flow.first
+import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 
@@ -24,10 +25,12 @@ class AuthRepositoryImpl @Inject constructor(
         password: String,
         fullName: String,
         firstName: String,
-        sex: String
+        sex: String,
+        role: String,
+        birthDate: Date
     ): Result<AuthResponse> {
         return try {
-            val response = apiService.register(RegisterRequest(email, password, fullName, firstName, sex))
+            val response = apiService.register(RegisterRequest(email, password, fullName, firstName, sex, role, birthDate))
             if (response.isSuccessful) {
                 val authResponse =
                     response.body() ?: return Result.failure(Exception("Пустой ответ от сервера"))
