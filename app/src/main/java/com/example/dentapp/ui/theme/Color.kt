@@ -15,6 +15,7 @@ val LightCyan = Color(0xffe0ffff)
 val Teal = Color(0xff008080)
 val CadetBlue = Color(0xff6f9ea0)
 
+val LightBlue = Color(0xFFCCE7FC)
 val NewBlue = Color(0xFF25B4F8)
 val Blue = Color(0xFF18A0FB)
 val White = Color(0xFFFFFFFF)

@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,41 +32,81 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.dentapp.R
 import com.example.dentapp.presentation.home.viewmodel.HomeViewModel
-import com.example.dentapp.ui.theme.CadetBlue
-import com.example.dentapp.ui.theme.DarkCyan
+import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.LightCyan
-import com.example.dentapp.ui.theme.Teal
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun HomeScreen(navController: NavHostController,
-               homeViewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(
+    navController: NavHostController,
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
     val firstName by homeViewModel.firstName.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CadetBlue)
-            .verticalScroll(rememberScrollState())
+            .background(LightBlue)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.fillMaxSize()
         ) {
-
-            HelloCard(
-                title = "Здравствуйте, $firstName!",
-                description = "Хорошего дня!",
-                date = getTodayDateString(),
-                imageResId = R.drawable.dentist
+            Text(
+                text = "Главная",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
             )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .background(Color.White)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Заголовок",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = LightBlue.copy(alpha = 0.3f))
+                    ) {
+                        Text(
+                            text = "Пример карточки внутри белого бокса",
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+
+                    repeat(5) { index ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = Color.LightGray.copy(alpha = 0.2f))
+                        ) {
+                            Text(
+                                text = "Элемент ${index + 1} с очень длинным текстом для демонстрации того, как работает скролл внутри белого бокса",
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -84,7 +125,7 @@ fun HelloCard(
         shape = RoundedCornerShape(24.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()
-            .background(DarkCyan)) {
+            .background(LightBlue)) {
             Image(
                 painter = painterResource(id = imageResId),
                 contentDescription = title,
@@ -110,7 +151,7 @@ fun HelloCard(
                     modifier = Modifier
                         .wrapContentWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Teal)
+                        .background(LightBlue)
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Text(

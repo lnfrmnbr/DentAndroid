@@ -5,15 +5,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -23,27 +25,26 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dentapp.presentation.PatientsScreen
 import com.example.dentapp.presentation.home.screen.HomeScreen
 import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
-import com.example.dentapp.ui.theme.CadetBlue
-
+import com.example.dentapp.ui.theme.LightBlue
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun MainScreen(navController: NavHostController) {
     val mainNavController = rememberNavController()
-    val backgroundColor = CadetBlue
+    val backgroundColor = Color.White
 
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
         systemUiController.setStatusBarColor(
-            color = backgroundColor,
-            darkIcons = backgroundColor.luminance() > 0.5f // Автоопределение цвета иконок
+            color = LightBlue,
+            darkIcons = backgroundColor.luminance() > 0.5f
         )
 
         systemUiController.setNavigationBarColor(
-            color = backgroundColor, // Цвет системной навигационной панели
+            color = Color.White,
             darkIcons = backgroundColor.luminance() > 0.5f,
-            navigationBarContrastEnforced = false // Отключаем контрастность
+            navigationBarContrastEnforced = false
         )
     }
 
@@ -73,20 +74,20 @@ fun MainScreen(navController: NavHostController) {
             }
         }
 
-        Box(
+        Card(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .windowInsetsPadding(navigationBars)
+                .windowInsetsPadding(navigationBars),
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 16.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
         ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                color = backgroundColor
-            ) {
-                NavBar(mainNavController)
-            }
+            NavBar(mainNavController)
         }
     }
 }
