@@ -27,4 +27,5 @@
     <string name="about_you">Information about you</string>
     <string name="birth_date">Birth date</string>
     <string name="position">Position</string>
+    <string name="password_req">The password must contain a capital letter and numbers</string>
 </resources>

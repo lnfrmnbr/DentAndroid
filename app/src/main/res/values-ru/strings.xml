@@ -20,9 +20,10 @@
     <string name="home">Главная</string>
     <string name="patients">Пациенты</string>
     <string name="email">Почта</string>
-    <string name="sign_in_descr">Войдите в систему для дальнейшей работы</string>
+    <string name="sign_in_descr">Войдите для дальнейшей работы</string>
     <string name="full_name">Ваше полное имя</string>
     <string name="about_you">Информация о вас</string>
     <string name="birth_date">Дата рождения</string>
     <string name="position">Должность</string>
+    <string name="password_req">Пароль должен содержать Заглавную букву и цифры</string>
 </resources>

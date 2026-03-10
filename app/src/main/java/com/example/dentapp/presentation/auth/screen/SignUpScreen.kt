@@ -27,13 +27,12 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +41,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -54,7 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,16 +61,15 @@ import com.example.dentapp.presentation.auth.viewmodel.SignUpViewModel
 import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.Cygre
 import com.example.dentapp.ui.theme.DarkBlue
-import com.example.dentapp.ui.theme.DarkCyan
-import com.example.dentapp.ui.theme.DarkGrey
+import com.example.dentapp.ui.theme.Grey
 import com.example.dentapp.ui.theme.GreyBlue
 import com.example.dentapp.ui.theme.LightDarkBlue
+import com.example.dentapp.ui.theme.LightGreyBlue
 import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.NewBlue
 import com.example.dentapp.ui.theme.Pink
 import com.example.dentapp.ui.theme.VeryDarkBlue
 import com.example.dentapp.ui.theme.White
-import kotlin.collections.listOf
 
 @Composable
 fun SignUpScreen(
@@ -95,6 +92,20 @@ fun SignUpScreen(
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
     val confirmPasswordVisible = rememberSaveable { mutableStateOf(false) }
 
+    val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.White,
+        unfocusedContainerColor = Color.White,
+        focusedLabelColor = Grey,
+        errorContainerColor = GreyBlue,
+        unfocusedLabelColor = Grey,
+        focusedIndicatorColor = Grey,
+        unfocusedIndicatorColor = Grey,
+        errorIndicatorColor = Pink,
+        errorLabelColor = Pink,
+        focusedTextColor = DarkBlue,
+        unfocusedTextColor = DarkBlue
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -109,297 +120,230 @@ fun SignUpScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Spacer(modifier = Modifier.height(48.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.auth_logo),
+                contentDescription = "logo",
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.7f)
+                    .drawWithContent { drawContent() }
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = stringResource(R.string.sign_up),
+                fontFamily = Cygre,
+                fontWeight = FontWeight.Normal,
+                fontSize = 40.sp,
+                color = LightDarkBlue
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(R.string.full_name),
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = LightDarkBlue,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            InputTextField(lastName, R.string.lastName, fieldsColors) { viewModel.updateLastName(it) }
+
+            InputTextField(firstName, R.string.name, fieldsColors) { viewModel.updateFirstName(it) }
+
+            InputTextField(patronymic, R.string.patronymic, fieldsColors) { viewModel.updatePatronymic(it) }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = stringResource(R.string.about_you),
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = LightDarkBlue,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                DropdownField(
+                    title = stringResource(R.string.gender),
+                    selected = sex,
+                    values = listOf(
+                        stringResource(R.string.gender_male),
+                        stringResource(R.string.gender_female)
+                    ),
+                    onSelect = { viewModel.updateSex(it) },
+                    modifier = Modifier.weight(0.4f),
+                    fieldsColors = fieldsColors
+                )
+
+                OutlinedTextField(
+                    value = birthDate,
+                    onValueChange = { input: String ->
+                        val digits = input.filter { it.isDigit() }.take(8)
+                        viewModel.updateBirthDate(digits)
+                    },
+                    label = {
+                        Text(
+                            stringResource(R.string.birth_date),
+                            color = DarkBlue,
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
+                        )
+                    },
+                    visualTransformation = DateVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    colors = fieldsColors,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.weight(0.6f)
+                )
+            }
+
+            DropdownField(
+                title = stringResource(R.string.position),
+                selected = position,
+                values = listOf(
+                    "Администратор",
+                    "Стоматолог"
+                ),
+                onSelect = { viewModel.updatePosition(it) },
+                modifier = Modifier.fillMaxWidth(),
+                fieldsColors = fieldsColors
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = stringResource(R.string.email),
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = LightDarkBlue,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            InputTextField(email, R.string.email, fieldsColors) { viewModel.updateEmail(it) }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = stringResource(R.string.password),
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = LightDarkBlue,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            PasswordField(
+                password = password,
+                label = stringResource(R.string.password),
+                passwordError = null,
+                passwordVisible = passwordVisible,
+                fieldsColors = fieldsColors
+            ) { viewModel.updatePassword(it) }
+
+            Text(
+                text = stringResource(R.string.password_req),
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                color = LightGreyBlue,
+                fontSize = 12.sp
+            )
+
+            PasswordField(
+                password = confirmPassword,
+                label = stringResource(R.string.submit_password),
+                passwordError = null,
+                passwordVisible = confirmPasswordVisible,
+                fieldsColors = fieldsColors
+            ) { viewModel.updateConfirmPassword(it) }
+
+            errorMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = Pink,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { viewModel.signUp(onSignUpSuccess) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .height(48.dp),
+                enabled = !isLoading && email.isNotEmpty() && firstName.isNotEmpty() && lastName.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Blue,
+                    contentColor = Color.White,
+                    disabledContainerColor = Blue.copy(alpha = 0.5f),
+                    disabledContentColor = Color.White.copy(alpha = 0.7f)
+                ),
+                shape = RoundedCornerShape(16.dp)
             ) {
-                Spacer(modifier = Modifier.height(48.dp))
-
-                Image(
-                    painter = painterResource(id = R.drawable.auth_logo),
-                    contentDescription = "logo",
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.7f)
-                        .drawWithContent { drawContent() }
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(
-                    text = stringResource(R.string.sign_up),
-                    fontFamily = Cygre,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 40.sp,
-                    color = LightDarkBlue
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = stringResource(R.string.full_name),
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = LightDarkBlue,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-
-                InputTextField(lastName, R.string.lastName) { viewModel.updateLastName(it) }
-
-                InputTextField(firstName, R.string.name) { viewModel.updateFirstName(it) }
-
-                InputTextField(patronymic, R.string.patronymic) { viewModel.updatePatronymic(it) }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(
-                    text = stringResource(R.string.about_you),
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = LightDarkBlue,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    DropdownField(
-                        title = stringResource(R.string.gender),
-                        selected = sex,
-                        values = listOf(
-                            stringResource(R.string.gender_male),
-                            stringResource(R.string.gender_female)
-                        ),
-                        onSelect = { viewModel.updateSex(it) },
-                        modifier = Modifier.weight(0.35f)
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
                     )
-
-                    OutlinedTextField(
-                        value = birthDate,
-                        onValueChange = { input: String ->
-                            val digits = input.filter { it.isDigit() }.take(8)
-                            viewModel.updateBirthDate(digits)
-                        },
-                        label = {
-                            Text(
-                                stringResource(R.string.birth_date),
-                                color = DarkGrey,
-                                fontFamily = Montserrat,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 16.sp
-                            )
-                        },
-                        visualTransformation = DateVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        ),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedLabelColor = DarkGrey,
-                            unfocusedLabelColor = DarkGrey,
-                            focusedIndicatorColor = DarkGrey,
-                            unfocusedIndicatorColor = DarkGrey,
-                            focusedTextColor = DarkGrey,
-                            unfocusedTextColor = DarkGrey
-                        ),
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.weight(0.7f)
-                    )
-                }
-
-                DropdownField(
-                    title = stringResource(R.string.position),
-                    selected = position,
-                    values = listOf(
-                        "Администратор",
-                        "Стоматолог"
-                    ),
-                    onSelect = { viewModel.updatePosition(it) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(
-                    text = stringResource(R.string.email),
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = LightDarkBlue,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-
-                InputTextField(email, R.string.email) { viewModel.updateEmail(it) }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Text(
-                    text = stringResource(R.string.password),
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = LightDarkBlue,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { viewModel.updatePassword(it) },
-                    label = {
-                        Text(
-                            stringResource(R.string.password),
-                            color = DarkGrey,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            passwordVisible.value = !passwordVisible.value
-                        }) {
-                            Icon(
-                                imageVector = if (passwordVisible.value) ImageVector.vectorResource(
-                                    id = R.drawable.visibility_on
-                                ) else ImageVector.vectorResource(id = R.drawable.visibility_off),
-                                contentDescription = if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
-                                    R.string.show_password
-                                ),
-                                tint = DarkGrey
-                            )
-                        }
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedLabelColor = DarkGrey,
-                        unfocusedLabelColor = DarkGrey,
-                        focusedIndicatorColor = DarkGrey,
-                        unfocusedIndicatorColor = DarkGrey,
-                        focusedTextColor = DarkGrey,
-                        unfocusedTextColor = DarkGrey
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
-
-                OutlinedTextField(
-                    value = confirmPassword,
-                    onValueChange = { viewModel.updateConfirmPassword(it) },
-                    label = {
-                        Text(
-                            stringResource(R.string.submit_password),
-                            color = DarkGrey,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            confirmPasswordVisible.value = !confirmPasswordVisible.value
-                        }) {
-                            Icon(
-                                imageVector = if (confirmPasswordVisible.value) ImageVector.vectorResource(
-                                    id = R.drawable.visibility_on
-                                ) else ImageVector.vectorResource(id = R.drawable.visibility_off),
-                                contentDescription = if (confirmPasswordVisible.value) stringResource(
-                                    R.string.hide_password
-                                ) else stringResource(R.string.show_password),
-                                tint = DarkGrey
-                            )
-                        }
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedLabelColor = DarkGrey,
-                        unfocusedLabelColor = DarkGrey,
-                        focusedIndicatorColor = DarkGrey,
-                        unfocusedIndicatorColor = DarkGrey,
-                        focusedTextColor = DarkGrey,
-                        unfocusedTextColor = DarkGrey
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
-
-                errorMessage?.let { message ->
+                } else {
                     Text(
-                        text = message,
-                        color = Pink,
+                        text = stringResource(R.string.do_sign_up),
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = { viewModel.signUp(onSignUpSuccess) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    enabled = !isLoading && email.isNotEmpty() && firstName.isNotEmpty() && lastName.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Blue,
-                        contentColor = Color.White,
-                        disabledContainerColor = Blue,
-                        disabledContentColor = Color.White.copy(alpha = 0.7f)
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            color = Color.White,
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        Text(
-                            text = stringResource(R.string.do_sign_up),
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                            color = White
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.have_account),
-                        fontFamily = Montserrat,
-                        fontWeight = FontWeight.Normal,
-                        color = VeryDarkBlue
-                    )
-                    Text(
-                        text = stringResource(R.string.do_sign_in),
-                        fontFamily = Montserrat,
-                        color = VeryDarkBlue,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.clickable { onNavigateToSignIn() }
+                        fontSize = 16.sp,
+                        color = White
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.have_account),
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Normal,
+                    color = VeryDarkBlue,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = stringResource(R.string.do_sign_in),
+                    fontFamily = Montserrat,
+                    color = VeryDarkBlue,
+                    fontWeight = FontWeight.Normal,
+                    textDecoration = TextDecoration.Underline,
+                    fontSize = 14.sp,
+                    modifier = Modifier.clickable { onNavigateToSignIn() }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
@@ -408,32 +352,31 @@ fun SignUpScreen(
 fun InputTextField(
     value: String,
     stringResource: Int,
+    fieldsColors: TextFieldColors,
     icon: Int? = null,
     onValueChanged: (String) -> Unit
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChanged,
-        label = { Text(stringResource(stringResource), color = DarkGrey) },
+        label = {
+            Text(
+                stringResource(stringResource),
+                color = DarkBlue,
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp
+            )
+        },
         modifier = Modifier.fillMaxWidth(),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            errorContainerColor = GreyBlue,
-            focusedLabelColor = DarkGrey,
-            unfocusedLabelColor = DarkGrey,
-            focusedIndicatorColor = DarkGrey,
-            unfocusedIndicatorColor = DarkGrey,
-            focusedTextColor = DarkGrey,
-            unfocusedTextColor = DarkGrey
-        ),
+        colors = fieldsColors,
         shape = RoundedCornerShape(16.dp),
         leadingIcon = if (icon != null) {
             {
                 Icon(
                     painter = painterResource(icon),
                     contentDescription = null,
-                    tint = DarkGrey
+                    tint = Grey
                 )
             }
         } else null
@@ -447,6 +390,7 @@ fun DropdownField(
     selected: String,
     onSelect: (String) -> Unit,
     values: List<String>,
+    fieldsColors: TextFieldColors,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -466,26 +410,13 @@ fun DropdownField(
             label = {
                 Text(
                     text = title,
-                    color = DarkGrey,
+                    color = DarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp
                 )
             },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedLabelColor = DarkGrey,
-                unfocusedLabelColor = DarkGrey,
-                focusedIndicatorColor = DarkGrey,
-                unfocusedIndicatorColor = DarkGrey,
-                focusedTextColor = DarkGrey,
-                unfocusedTextColor = DarkGrey,
-                disabledTextColor = DarkGrey,
-                disabledContainerColor = Color.White,
-                disabledIndicatorColor = DarkGrey,
-                disabledLabelColor = DarkGrey
-            ),
+            colors = fieldsColors,
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -495,7 +426,7 @@ fun DropdownField(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(DarkGrey)
+            modifier = Modifier.background(Grey)
         ) {
             values.forEach { gender ->
                 DropdownMenuItem(
@@ -517,4 +448,55 @@ fun DropdownField(
             }
         }
     }
+}
+
+@Composable
+fun PasswordField(
+    password: String,
+    label: String,
+    passwordError: String?,
+    passwordVisible: MutableState<Boolean>,
+    fieldsColors: TextFieldColors,
+    onValueChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = password,
+        onValueChange = onValueChange,
+        label = {
+            Text(
+                label,
+                color = DarkBlue,
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp
+            )
+        },
+        modifier = Modifier.fillMaxWidth(),
+        isError = passwordError != null,
+        visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            IconButton(onClick = {
+                passwordVisible.value = !passwordVisible.value
+            }) {
+                Icon(
+                    imageVector = if (passwordVisible.value) ImageVector.vectorResource(
+                        id = R.drawable.visibility_on
+                    ) else ImageVector.vectorResource(id = R.drawable.visibility_off),
+                    contentDescription = if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
+                        R.string.show_password
+                    ),
+                    tint = if (passwordError != null) Pink else Grey
+                )
+            }
+        },
+        colors = fieldsColors,
+        shape = RoundedCornerShape(16.dp),
+        leadingIcon = {
+            Icon(
+                painter = painterResource(R.drawable.pass),
+                contentDescription = null,
+                tint = Grey
+            )
+        }
+    )
 }

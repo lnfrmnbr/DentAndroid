@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,13 +47,15 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dentapp.R
 import com.example.dentapp.presentation.auth.viewmodel.SignInViewModel
 import com.example.dentapp.ui.theme.Blue
-import com.example.dentapp.ui.theme.DarkGrey
+import com.example.dentapp.ui.theme.DarkBlue
+import com.example.dentapp.ui.theme.Grey
 import com.example.dentapp.ui.theme.GreyBlue
 import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.NewBlue
@@ -75,6 +78,20 @@ fun SignInScreen(
     val passwordError by viewModel.passwordError.collectAsState()
 
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
+
+    val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.White,
+        unfocusedContainerColor = Color.White,
+        focusedLabelColor = Grey,
+        errorContainerColor = GreyBlue,
+        unfocusedLabelColor = Grey,
+        focusedIndicatorColor = Grey,
+        unfocusedIndicatorColor = Grey,
+        errorIndicatorColor = Pink,
+        errorLabelColor = Pink,
+        focusedTextColor = DarkBlue,
+        unfocusedTextColor = DarkBlue
+    )
 
     LaunchedEffect(errorMessage) {
         errorMessage?.let { message ->
@@ -160,7 +177,7 @@ fun SignInScreen(
                             text = stringResource(R.string.google_sign),
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.Normal,
-                            fontSize = 13.sp,
+                            fontSize = 14.sp,
                             color = VeryDarkBlue
                         )
                     }
@@ -182,7 +199,7 @@ fun SignInScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     color = VeryDarkBlue
                 )
                 Divider(
@@ -194,62 +211,17 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
 
-            InputTextField(email, R.string.email, R.drawable.post) { viewModel.updateEmail(it) }
+            InputTextField(email, R.string.email, fieldsColors, R.drawable.post) { viewModel.updateEmail(it) }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = password,
-                onValueChange = { viewModel.updatePassword(it) },
-                label = {
-                    Text(
-                        stringResource(R.string.password),
-                        color = DarkGrey,
-                        fontFamily = Montserrat,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                isError = passwordError != null,
-                visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        passwordVisible.value = !passwordVisible.value
-                    }) {
-                        Icon(
-                            imageVector = if (passwordVisible.value) ImageVector.vectorResource(
-                                id = R.drawable.visibility_on
-                            ) else ImageVector.vectorResource(id = R.drawable.visibility_off),
-                            contentDescription = if (passwordVisible.value) stringResource(R.string.hide_password) else stringResource(
-                                R.string.show_password
-                            ),
-                            tint = if (passwordError != null) Pink else DarkGrey
-                        )
-                    }
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedLabelColor = DarkGrey,
-                    errorContainerColor = GreyBlue,
-                    unfocusedLabelColor = DarkGrey,
-                    focusedIndicatorColor = DarkGrey,
-                    unfocusedIndicatorColor = DarkGrey,
-                    errorIndicatorColor = Pink,
-                    errorLabelColor = Pink,
-                    focusedTextColor = DarkGrey,
-                    unfocusedTextColor = DarkGrey
-                ),
-                shape = RoundedCornerShape(16.dp),
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.pass),
-                        contentDescription = null,
-                        tint = DarkGrey
-                    )
-                }
-            )
+            PasswordField(
+                password = password,
+                label = stringResource(R.string.password),
+                passwordError = passwordError,
+                passwordVisible = passwordVisible,
+                fieldsColors = fieldsColors
+            ) { viewModel.updatePassword(it) }
 
             passwordError?.let { error ->
                 Text(
@@ -284,7 +256,7 @@ fun SignInScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue,
                     contentColor = Color.White,
-                    disabledContainerColor = Blue,
+                    disabledContainerColor = Blue.copy(alpha = 0.5f),
                     disabledContentColor = Color.White.copy(alpha = 0.7f)
                 ),
                 shape = RoundedCornerShape(16.dp)
@@ -316,13 +288,16 @@ fun SignInScreen(
                     text = stringResource(R.string.no_account),
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
                     color = VeryDarkBlue
                 )
                 Text(
                     text = stringResource(R.string.do_sign_up),
                     fontFamily = Montserrat,
                     color = VeryDarkBlue,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Normal,
+                    textDecoration = TextDecoration.Underline,
+                    fontSize = 14.sp,
                     modifier = Modifier.clickable { onNavigateToSignUp() }
                 )
             }
