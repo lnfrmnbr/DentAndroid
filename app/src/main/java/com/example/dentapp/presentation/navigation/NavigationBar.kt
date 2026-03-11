@@ -18,19 +18,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.dentapp.R
 import com.example.dentapp.ui.theme.LightBlue
+import com.example.dentapp.ui.theme.LightDarkBlue
 import com.example.dentapp.ui.theme.LightGreyBlue
+import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.NewBlue
 
 @Composable
 fun NavBar(navController: NavController) {
     val items =
-        listOf(BottomNavItem.Home, BottomNavItem.PerioChart, BottomNavItem.Patients)
+        listOf(
+            BottomNavItem.Home,
+            BottomNavItem.Calendar,
+            BottomNavItem.Appointment,
+            BottomNavItem.Files,
+            BottomNavItem.Profile
+        )
 
     NavigationBar(
         modifier = Modifier
@@ -70,17 +80,53 @@ fun NavBar(navController: NavController) {
                     selectedTextColor = NewBlue,
                     indicatorColor = LightBlue
                 ),
-                label = {Text(stringResource(navItem.titleRes), color = LightGreyBlue)}
+                label = {
+                    Text(
+                        stringResource(navItem.titleRes),
+                        color = LightDarkBlue,
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.5.sp,
+                        maxLines = 1
+                    )
+                }
             )
         }
     }
 }
 
-sealed class BottomNavItem(@DrawableRes val iconRes: Int, @StringRes val titleRes: Int, val route: String) {
-    data object Home : BottomNavItem(R.drawable.home_icon, R.string.home, Screen.Home.route)
-    data object Patients :
-        BottomNavItem(R.drawable.home_icon, R.string.patients, Screen.Patients.route)
+sealed class BottomNavItem(
+    @DrawableRes val iconRes: Int,
+    @StringRes val titleRes: Int,
+    val route: String
+) {
+    data object Home : BottomNavItem(
+        R.drawable.home_icon,
+        R.string.home,
+        Screen.Home.route
+    )
 
-    data object PerioChart :
-        BottomNavItem(R.drawable.home_icon, R.string.home, Screen.PerioChart.route)
+    data object Calendar : BottomNavItem(
+        R.drawable.calendar_icon,
+        R.string.calendar,
+        Screen.Calendar.route
+    )
+
+    data object Appointment : BottomNavItem(
+        R.drawable.plus_icon,
+        R.string.start,
+        Screen.Appointment.route
+    )
+
+    data object Files : BottomNavItem(
+        R.drawable.files_icon,
+        R.string.files,
+        Screen.Files.route
+    )
+
+    data object Profile : BottomNavItem(
+        R.drawable.profile_icon,
+        R.string.profile,
+        Screen.Profile.route
+    )
 }

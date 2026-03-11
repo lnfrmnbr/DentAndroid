@@ -4,8 +4,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.dentapp.presentation.PatientsScreen
+import com.example.dentapp.presentation.patients.screen.PatientsScreen
+import com.example.dentapp.presentation.appointment.screen.AppointmentScreen
+import com.example.dentapp.presentation.calendar.screen.CalendarScreen
+import com.example.dentapp.presentation.files.screen.FilesScreen
+import com.example.dentapp.presentation.home.screen.HomeScreen
 import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
+import com.example.dentapp.presentation.profile.screen.ProfileScreen
 
 fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
     navigation(
@@ -21,11 +26,23 @@ fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
         }
 
         composable(Screen.Home.route) {
-            PatientsScreen(navHostController)
+            HomeScreen(navHostController)
         }
 
-        composable(Screen.PerioChart.route) {
-            PerioChartScreen(navHostController)
+        composable(Screen.Calendar.route) {
+            CalendarScreen(navHostController)
+        }
+
+        composable(Screen.Appointment.route) {
+            AppointmentScreen(navHostController)
+        }
+
+        composable(Screen.Files.route) {
+            FilesScreen(navHostController)
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen(navHostController)
         }
     }
 }

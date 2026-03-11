@@ -17,8 +17,12 @@
     <string name="gender">Пол</string>
     <string name="submit_password">Подтвердите пароль</string>
     <string name="have_account">"Уже есть аккаунт? "</string>
-    <string name="home">Главная</string>
+    <string name="home">главная</string>
     <string name="patients">Пациенты</string>
+    <string name="calendar">календарь</string>
+    <string name="start">начать</string>
+    <string name="files">файлы</string>
+    <string name="profile">профиль</string>
     <string name="email">Почта</string>
     <string name="sign_in_descr">Войдите для дальнейшей работы</string>
     <string name="full_name">Ваше полное имя</string>

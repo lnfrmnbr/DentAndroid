@@ -22,9 +22,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dentapp.presentation.PatientsScreen
+import com.example.dentapp.presentation.patients.screen.PatientsScreen
+import com.example.dentapp.presentation.appointment.screen.AppointmentScreen
+import com.example.dentapp.presentation.calendar.screen.CalendarScreen
+import com.example.dentapp.presentation.files.screen.FilesScreen
 import com.example.dentapp.presentation.home.screen.HomeScreen
 import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
+import com.example.dentapp.presentation.profile.screen.ProfileScreen
 import com.example.dentapp.ui.theme.LightBlue
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -66,11 +70,20 @@ fun MainScreen(navController: NavHostController) {
             composable(Screen.Home.route) {
                 HomeScreen(navController = navController)
             }
+            composable(Screen.Calendar.route) {
+                CalendarScreen(navController = navController)
+            }
+            composable(Screen.Appointment.route) {
+                AppointmentScreen(navController = navController)
+            }
+            composable(Screen.Files.route) {
+                FilesScreen(navController = navController)
+            }
             composable(Screen.Patients.route) {
                 PatientsScreen(navController = navController)
             }
-            composable(Screen.PerioChart.route) {
-                PerioChartScreen(navController = navController)
+            composable(Screen.Profile.route) {
+                ProfileScreen(navController = navController)
             }
         }
 

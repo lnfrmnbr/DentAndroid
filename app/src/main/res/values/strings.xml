@@ -20,8 +20,12 @@
     <string name="gender">Sex</string>
     <string name="submit_password">Submit password</string>
     <string name="have_account">"Already have an account? "</string>
-    <string name="home">Main</string>
+    <string name="home">main</string>
     <string name="patients">Patients</string>
+    <string name="calendar">calendar</string>
+    <string name="start">start</string>
+    <string name="files">files</string>
+    <string name="profile">profile</string>
     <string name="sign_in_descr">Log in to continue working</string>
     <string name="full_name">Your full name</string>
     <string name="about_you">Information about you</string>
