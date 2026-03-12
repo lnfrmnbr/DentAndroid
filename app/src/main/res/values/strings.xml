@@ -32,4 +32,12 @@
     <string name="birth_date">Birth date</string>
     <string name="position">Position</string>
     <string name="password_req">The password must contain a capital letter and numbers</string>
+
+    <string name="mon">mon</string>
+    <string name="tue">tue</string>
+    <string name="wed">wed</string>
+    <string name="thu">thu</string>
+    <string name="fri">fri</string>
+    <string name="sat">sat</string>
+    <string name="sun">sun</string>
 </resources>

@@ -19,13 +19,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.dentapp.R
+import com.example.dentapp.presentation.calendar.utils.CalendarEvent
+import com.example.dentapp.presentation.calendar.utils.CalendarView
 import com.example.dentapp.presentation.calendar.viewmodel.CalendarViewModel
+import com.example.dentapp.ui.theme.Cygre
 import com.example.dentapp.ui.theme.LightBlue
+import com.example.dentapp.ui.theme.NewBlue
+import com.example.dentapp.utils.StringUtils
+import java.time.LocalDate
 
 @Composable
 fun CalendarScreen(
@@ -43,13 +51,14 @@ fun CalendarScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "календарь",
+                text = StringUtils.capitalize(stringResource(R.string.calendar)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                    .padding(start = 16.dp, top = 24.dp, bottom = 24.dp),
+                color = NewBlue,
+                fontFamily = Cygre,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Normal
             )
 
             Box(
@@ -66,33 +75,19 @@ fun CalendarScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = "Заголовок",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                    val events = listOf(
+                        CalendarEvent(LocalDate.of(2026, 3, 11), "Event"),
+                        CalendarEvent(LocalDate.of(2026,3,6),"Event"),
+                        CalendarEvent(LocalDate.of(2026,3,16),"Event"),
+                        CalendarEvent(LocalDate.of(2026,4,2),"Event"),
                     )
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = LightBlue.copy(alpha = 0.3f))
-                    ) {
-                        Text(
-                            text = "Пример карточки внутри белого бокса",
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
-
-                    repeat(5) { index ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color.LightGray.copy(alpha = 0.2f))
-                        ) {
-                            Text(
-                                text = "Элемент ${index + 1} с очень длинным текстом для демонстрации того, как работает скролл внутри белого бокса",
-                                modifier = Modifier.padding(16.dp)
-                            )
+                    CalendarView(
+                        events = events,
+                        onDayClick = { date ->
+                            println("Clicked $date")
                         }
-                    }
+                    )
                 }
             }
         }

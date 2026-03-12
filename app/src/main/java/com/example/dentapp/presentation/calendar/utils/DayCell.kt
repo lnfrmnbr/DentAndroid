@@ -1,0 +1,116 @@
+package com.example.dentapp.presentation.calendar.utils
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.dentapp.R
+import com.example.dentapp.ui.theme.DarkBlue
+import com.example.dentapp.ui.theme.Grey
+import com.example.dentapp.ui.theme.Montserrat
+import com.example.dentapp.ui.theme.Pink
+import com.example.dentapp.ui.theme.White
+import java.time.DayOfWeek
+import java.time.LocalDate
+
+
+@Composable
+fun DayCell(
+    day: CalendarDay,
+    onClick: (LocalDate) -> Unit
+) {
+
+    val isWeekend =
+        day.date.dayOfWeek == DayOfWeek.SATURDAY ||
+                day.date.dayOfWeek == DayOfWeek.SUNDAY
+
+    val background =
+        when {
+            day.isToday -> DarkBlue
+            else -> Color.Transparent
+        }
+
+    Box(
+        modifier = Modifier
+            .size(42.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .border(
+                width = if (day.events.isNotEmpty()) 1.5.dp else (-1).dp,
+                color = when {
+                    !day.isCurrentMonth -> LightGray
+                    else -> DarkBlue
+                },
+                shape = RoundedCornerShape(8.dp)
+            )
+            .background(background)
+            .clickable { onClick(day.date) },
+        contentAlignment = Alignment.Center
+    ) {
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+            Text(
+                text = day.date.dayOfMonth.toString(),
+                color =
+                    when {
+                        day.isToday -> Color.White
+                        !day.isCurrentMonth -> LightGray
+                        isWeekend -> Pink
+                        else -> DarkBlue
+                    },
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                fontSize = 18.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun DayOfWeekCell(dayOfWeek: String) {
+    val isWeekend =
+        dayOfWeek == stringResource(R.string.sat) ||
+                dayOfWeek == stringResource(R.string.sun)
+
+    Box(
+        modifier = Modifier
+            .size(42.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(White),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+            Text(
+                text = dayOfWeek,
+                color =
+                    when {
+                        isWeekend -> Pink
+                        else -> Grey
+                    },
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        }
+    }
+}
