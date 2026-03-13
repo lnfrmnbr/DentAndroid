@@ -12,8 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,7 +44,7 @@ fun DayCell(
 
     val background =
         when {
-            day.isToday -> DarkBlue
+            day.isSelected -> DarkBlue
             else -> Color.Transparent
         }
 
@@ -48,14 +52,34 @@ fun DayCell(
         modifier = Modifier
             .size(36.dp)
             .clip(RoundedCornerShape(8.dp))
+
+            .drawBehind {
+                if (day.isToday) {
+
+                    val stroke = Stroke(
+                        width = 3.5.dp.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(
+                            floatArrayOf(20f,12f), 0f
+                        )
+                    )
+
+                    drawRoundRect(
+                        color = DarkBlue,
+                        style = stroke,
+                        cornerRadius = CornerRadius(8.dp.toPx())
+                    )
+                }
+            }
+
             .border(
-                width = if (day.events.isNotEmpty()) 1.5.dp else (-1).dp,
+                width = if (day.events.isNotEmpty() && !day.isToday) 1.5.dp else -1.dp,
                 color = when {
                     !day.isCurrentMonth -> LightGray
                     else -> DarkBlue
                 },
                 shape = RoundedCornerShape(8.dp)
             )
+
             .background(background)
             .clickable { onClick(day.date) },
         contentAlignment = Alignment.Center
@@ -67,7 +91,7 @@ fun DayCell(
                 text = day.date.dayOfMonth.toString(),
                 color =
                     when {
-                        day.isToday -> Color.White
+                        day.isSelected -> Color.White
                         !day.isCurrentMonth -> LightGray
                         isWeekend -> Pink
                         else -> DarkBlue

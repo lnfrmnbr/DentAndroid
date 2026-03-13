@@ -1,5 +1,6 @@
 package com.example.dentapp.presentation.calendar.utils
 
+import com.example.dentapp.domain.model.calendar.Appointment
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
@@ -8,7 +9,8 @@ import java.util.Locale
 object CalendarUtil {
     fun generateMonthDays(
         yearMonth: YearMonth,
-        events: List<CalendarEvent>
+        events: List<Appointment>,
+        selectedDay: LocalDate
     ): List<List<CalendarDay>> {
 
         val firstDayOfMonth = yearMonth.atDay(1)
@@ -27,8 +29,9 @@ object CalendarUtil {
                 CalendarDay(
                     date = date,
                     isCurrentMonth = date.month == yearMonth.month,
+                    isSelected = date == selectedDay,
                     isToday = date == today,
-                    events = events.filter { it.date == date }
+                    events = events.filter { it.date.toLocalDate() == date  }
                 )
             }
         }

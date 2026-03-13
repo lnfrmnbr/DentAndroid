@@ -18,11 +18,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dentapp.R
+import com.example.dentapp.domain.model.calendar.Appointment
 import com.example.dentapp.presentation.calendar.utils.CalendarUtil.generateMonthDays
 import com.example.dentapp.presentation.calendar.utils.CalendarUtil.weekNumber
 import com.example.dentapp.ui.theme.Grey
@@ -36,14 +41,15 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun CalendarView(
-    events: List<CalendarEvent>,
-    onDayClick: (LocalDate) -> Unit
+    events: List<Appointment>,
+    onDayClick: (LocalDate) -> Unit,
+    selectedDay: LocalDate
 ) {
 
     var month by remember { mutableStateOf(YearMonth.now()) }
 
     val weeks = remember(month, events) {
-        generateMonthDays(month, events)
+        generateMonthDays(month, events, selectedDay)
     }
 
     val daysOfWeek = listOf(
@@ -99,26 +105,42 @@ fun CalendarView(
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
 
+                val isSelectedWeek = week.any { it.isSelected }
                 val isCurrentWeek = week.any { it.isToday }
 
                 Box(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(if (isCurrentWeek) SeaBlue else LightBlue),
+                        .background(if (isSelectedWeek) SeaBlue else LightBlue)
+                        .drawBehind {
+                            if (isCurrentWeek) {
+
+                                val stroke = Stroke(
+                                    width = 3.5.dp.toPx(),
+                                    pathEffect = PathEffect.dashPathEffect(
+                                        floatArrayOf(20f,12f), 0f
+                                    )
+                                )
+
+                                drawRoundRect(
+                                    color = SeaBlue,
+                                    style = stroke,
+                                    cornerRadius = CornerRadius(8.dp.toPx())
+                                )
+                            }
+                        },
+
                     contentAlignment = Alignment.Center
                 ) {
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-                        Text(
-                            text = weekNumber(week.first().date).toString(),
-                            color = White,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 18.sp
-                        )
-                    }
+                    Text(
+                        text = weekNumber(week.first().date).toString(),
+                        color = White,
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 18.sp
+                    )
                 }
 
                 week.forEach { day ->

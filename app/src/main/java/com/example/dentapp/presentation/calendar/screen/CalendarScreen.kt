@@ -24,21 +24,23 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.dentapp.R
-import com.example.dentapp.presentation.calendar.utils.CalendarEvent
+import com.example.dentapp.domain.model.calendar.Appointment
 import com.example.dentapp.presentation.calendar.utils.CalendarView
 import com.example.dentapp.presentation.calendar.viewmodel.CalendarViewModel
 import com.example.dentapp.ui.theme.Cygre
 import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.NewBlue
 import com.example.dentapp.utils.StringUtils
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.UUID
 
 @Composable
 fun CalendarScreen(
     navController: NavHostController,
     calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
-    val firstName by calendarViewModel.firstName.collectAsState()
+    val appointments by calendarViewModel.appointments.collectAsState()
+    val daySelected by calendarViewModel.daySelected.collectAsState()
 
     Box(
         modifier = Modifier
@@ -74,18 +76,21 @@ fun CalendarScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val events = listOf(
-                        CalendarEvent(LocalDate.of(2026, 3, 11), "Event"),
-                        CalendarEvent(LocalDate.of(2026,3,6),"Event"),
-                        CalendarEvent(LocalDate.of(2026,3,12),"Event"),
-                        CalendarEvent(LocalDate.of(2026,4,2),"Event"),
-                    )
+                        Appointment(date = LocalDateTime.of(2026, 3, 11, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
+                        Appointment(date = LocalDateTime.of(2026, 3, 12, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
+                        Appointment(date = LocalDateTime.of(2026, 3, 20, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
+                        Appointment(date = LocalDateTime.of(2026, 3, 3, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
+                        )
 
                     CalendarView(
                         events = events,
                         onDayClick = { date ->
-                            println("Clicked $date")
-                        }
+                            calendarViewModel.selectDay(date)
+                        },
+                        selectedDay = daySelected
                     )
+
+                    Text(daySelected.toString())
                 }
             }
         }
