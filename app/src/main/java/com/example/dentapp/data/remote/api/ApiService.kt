@@ -5,6 +5,7 @@ import com.example.dentapp.data.remote.model.request.auth.LoginRequest
 import com.example.dentapp.data.remote.model.request.auth.LogoutRequest
 import com.example.dentapp.data.remote.model.request.auth.RegisterRequest
 import com.example.dentapp.data.remote.model.response.auth.AuthResponse
+import com.example.dentapp.data.remote.model.response.calendar.AppointmentResponse
 import com.example.dentapp.data.remote.model.response.doctor.DoctorResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -32,4 +33,7 @@ interface ApiService {
 
     @GET("/doctors/by_user/{userId}")
     suspend fun getDoctor(@Path("userId") userId: UUID): DoctorResponse
+
+    @GET("/appointments")
+    suspend fun getAppointments(): List<AppointmentResponse>
 }

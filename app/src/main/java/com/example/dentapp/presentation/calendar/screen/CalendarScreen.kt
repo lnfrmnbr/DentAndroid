@@ -4,19 +4,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,12 +32,16 @@ import com.example.dentapp.R
 import com.example.dentapp.domain.model.calendar.Appointment
 import com.example.dentapp.presentation.calendar.utils.CalendarView
 import com.example.dentapp.presentation.calendar.viewmodel.CalendarViewModel
+import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.Cygre
+import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.LightBlue
+import com.example.dentapp.ui.theme.LightDarkBlue
+import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.NewBlue
+import com.example.dentapp.ui.theme.SeaBlue
+import com.example.dentapp.utils.DateUtils
 import com.example.dentapp.utils.StringUtils
-import java.time.LocalDateTime
-import java.util.UUID
 
 @Composable
 fun CalendarScreen(
@@ -41,6 +50,7 @@ fun CalendarScreen(
 ) {
     val appointments by calendarViewModel.appointments.collectAsState()
     val daySelected by calendarViewModel.daySelected.collectAsState()
+    val appointmentsForDay by calendarViewModel.appointmentsForDay.collectAsState()
 
     Box(
         modifier = Modifier
@@ -75,23 +85,79 @@ fun CalendarScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    val events = listOf(
-                        Appointment(date = LocalDateTime.of(2026, 3, 11, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
-                        Appointment(date = LocalDateTime.of(2026, 3, 12, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
-                        Appointment(date = LocalDateTime.of(2026, 3, 20, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
-                        Appointment(date = LocalDateTime.of(2026, 3, 3, 22, 12), doctorId = UUID.randomUUID(), patientId = UUID.randomUUID()),
-                        )
 
                     CalendarView(
-                        events = events,
+                        events = appointments,
                         onDayClick = { date ->
                             calendarViewModel.selectDay(date)
                         },
                         selectedDay = daySelected
                     )
 
-                    Text(daySelected.toString())
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Text(
+                            text = "Записи на ${DateUtils.toDMMMM(daySelected)}",
+                            color = DarkBlue,
+                            fontFamily = Montserrat,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        IconButton(onClick = {}) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.plus_round),
+                                contentDescription = null,
+                                tint = Color.Unspecified
+                            )
+                        }
+                    }
+
+                    appointmentsForDay.forEach { appointment ->
+                        AppointmentCard(appointment)
+                    }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun AppointmentCard(appointment: Appointment) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = appointment.date.hour.toString(),
+            color = Blue,
+            fontFamily = Montserrat,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal
+        )
+
+        Text(
+            text = appointment.patientId.toString(),
+            color = LightDarkBlue,
+            fontFamily = Montserrat,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal
+        )
+
+        Row() {
+            appointment.tags?.forEach { tag ->
+                Text(
+                    text = tag,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .background(SeaBlue, RoundedCornerShape(16.dp))
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                )
             }
         }
     }

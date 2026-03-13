@@ -48,7 +48,7 @@ fun CalendarView(
 
     var month by remember { mutableStateOf(YearMonth.now()) }
 
-    val weeks = remember(month, events) {
+    val weeks = remember(month, events, selectedDay) {
         generateMonthDays(month, events, selectedDay)
     }
 

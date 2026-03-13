@@ -1,4 +1,4 @@
-package fairies.pixels.curlyLabAndroid.utils.serializers
+package com.example.dentapp.utils.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

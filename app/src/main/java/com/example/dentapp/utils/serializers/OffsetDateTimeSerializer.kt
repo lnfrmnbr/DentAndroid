@@ -1,7 +1,8 @@
-package fairies.pixels.curlyLabAndroid.utils.serializers
+package com.example.dentapp.utils.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializer
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -13,7 +14,7 @@ import java.time.format.DateTimeFormatter
 object OffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
     private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("OffsetDateTime", kotlinx.serialization.descriptors.PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("OffsetDateTime", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: OffsetDateTime) {
         encoder.encodeString(formatter.format(value))

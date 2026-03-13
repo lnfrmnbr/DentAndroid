@@ -23,7 +23,7 @@ class ValidateDateUseCase @Inject constructor() {
 
         val date: Date = try {
             formatter.parse(dateStr)!!
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return ValidationResult(
                 successful = false,
                 errorMessage = AuthErrors.UNREAL_DATE

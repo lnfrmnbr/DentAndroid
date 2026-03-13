@@ -1,7 +1,7 @@
 package com.example.dentapp.data.remote.model.response.doctor
 
 import com.example.dentapp.utils.serializers.DateSerializer
-import fairies.pixels.curlyLabAndroid.utils.serializers.UUIDSerializer
+import com.example.dentapp.utils.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
