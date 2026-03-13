@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -78,7 +76,7 @@ fun CalendarScreen(
                     val events = listOf(
                         CalendarEvent(LocalDate.of(2026, 3, 11), "Event"),
                         CalendarEvent(LocalDate.of(2026,3,6),"Event"),
-                        CalendarEvent(LocalDate.of(2026,3,16),"Event"),
+                        CalendarEvent(LocalDate.of(2026,3,12),"Event"),
                         CalendarEvent(LocalDate.of(2026,4,2),"Event"),
                     )
 

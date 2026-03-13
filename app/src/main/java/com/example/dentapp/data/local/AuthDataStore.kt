@@ -50,7 +50,7 @@ class AuthDataStore @Inject constructor(
         editor.apply()
     }
 
-    val isLoggedIn: Flow<Boolean> = dataStore.data.map { prefs -> prefs[IS_LOGGED_IN] ?: false }
+    val isLoggedIn: Flow<Boolean> = dataStore.data.map { prefs -> true }
 
     suspend fun getUserId(): String? {
         return dataStore.data.map { it[USER_ID] }.first()

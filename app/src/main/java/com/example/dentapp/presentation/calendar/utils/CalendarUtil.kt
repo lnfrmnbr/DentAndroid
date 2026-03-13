@@ -11,10 +11,11 @@ object CalendarUtil {
         events: List<CalendarEvent>
     ): List<List<CalendarDay>> {
 
-        val firstDay = yearMonth.atDay(1)
-        val startOffset = (firstDay.dayOfWeek.value % 7)
+        val firstDayOfMonth = yearMonth.atDay(1)
 
-        val startDate = firstDay.minusDays(startOffset.toLong())
+        val startOffset = firstDayOfMonth.dayOfWeek.value - 1
+
+        val startDate = firstDayOfMonth.minusDays(startOffset.toLong())
 
         val today = LocalDate.now()
 
@@ -34,6 +35,7 @@ object CalendarUtil {
     }
 
     fun weekNumber(date: LocalDate): Int {
-        return date.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
+        val weekFields = WeekFields.of(Locale.getDefault())
+        return date.get(weekFields.weekOfWeekBasedYear())
     }
 }
