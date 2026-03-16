@@ -26,6 +26,12 @@ class CalendarViewModel @Inject constructor(
     private val _appointmentsForDay = MutableStateFlow<List<Appointment>>(emptyList())
     val appointmentsForDay: StateFlow<List<Appointment>> = _appointmentsForDay.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+
     init {
         loadAppointments()
     }
@@ -35,16 +41,16 @@ class CalendarViewModel @Inject constructor(
         _appointmentsForDay.value = _appointments.value.filter { it.date.toLocalDate() == date }
     }
 
-    private fun loadAppointments() {
+    fun loadAppointments() {
         viewModelScope.launch {
-            //_isLoading.value = true
+            _isLoading.value = true
             try {
                 _appointments.value = getAppointmentsUseCase()
-                //_error.value = null
+                _error.value = null
             } catch (e: Exception) {
-                //_error.value = "Ошибка загрузки товаров: ${e.message}"
+                _error.value = "Ошибка загрузки приемов: ${e.message}"
             } finally {
-               // _isLoading.value = false
+                _isLoading.value = false
             }
         }
     }

@@ -22,12 +22,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dentapp.presentation.patients.screen.PatientsScreen
 import com.example.dentapp.presentation.appointment.screen.AppointmentScreen
 import com.example.dentapp.presentation.calendar.screen.CalendarScreen
 import com.example.dentapp.presentation.files.screen.FilesScreen
 import com.example.dentapp.presentation.home.screen.HomeScreen
-import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
+import com.example.dentapp.presentation.patients.screen.PatientsScreen
 import com.example.dentapp.presentation.profile.screen.ProfileScreen
 import com.example.dentapp.ui.theme.LightBlue
 import com.google.accompanist.systemuicontroller.rememberSystemUiController

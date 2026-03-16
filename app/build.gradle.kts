@@ -105,6 +105,7 @@ dependencies {
     implementation(libs.androidsvg)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.accompanist.systemuicontroller)
+    implementation("androidx.compose.material:material:1.5.4")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

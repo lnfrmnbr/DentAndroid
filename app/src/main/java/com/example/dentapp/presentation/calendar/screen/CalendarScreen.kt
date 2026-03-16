@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -32,6 +33,8 @@ import com.example.dentapp.R
 import com.example.dentapp.domain.model.calendar.Appointment
 import com.example.dentapp.presentation.calendar.utils.CalendarView
 import com.example.dentapp.presentation.calendar.viewmodel.CalendarViewModel
+import com.example.dentapp.presentation.common.ErrorBlock
+import com.example.dentapp.presentation.common.LoadingBlock
 import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.Cygre
 import com.example.dentapp.ui.theme.DarkBlue
@@ -42,7 +45,11 @@ import com.example.dentapp.ui.theme.NewBlue
 import com.example.dentapp.ui.theme.SeaBlue
 import com.example.dentapp.utils.DateUtils
 import com.example.dentapp.utils.StringUtils
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CalendarScreen(
     navController: NavHostController,
@@ -51,11 +58,19 @@ fun CalendarScreen(
     val appointments by calendarViewModel.appointments.collectAsState()
     val daySelected by calendarViewModel.daySelected.collectAsState()
     val appointmentsForDay by calendarViewModel.appointmentsForDay.collectAsState()
+    val isLoading by calendarViewModel.isLoading.collectAsState()
+    val error by calendarViewModel.error.collectAsState()
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isLoading,
+        onRefresh = { calendarViewModel.loadAppointments() }
+    )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(LightBlue)
+            .pullRefresh(refreshState)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -116,11 +131,23 @@ fun CalendarScreen(
                         }
                     }
 
-                    appointmentsForDay.forEach { appointment ->
-                        AppointmentCard(appointment)
+                    when {
+                        isLoading -> LoadingBlock()
+                        error != null -> ErrorBlock(error ?: "Неизвестная ошибка")
+                        else -> {
+
+                            appointmentsForDay.forEach { appointment ->
+                                AppointmentCard(appointment)
+                            }
+                        }
                     }
                 }
             }
+
+            PullRefreshIndicator(
+                refreshing = isLoading,
+                state = refreshState
+            )
         }
     }
 }
