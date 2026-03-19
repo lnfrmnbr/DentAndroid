@@ -74,6 +74,10 @@ class AuthDataStore @Inject constructor(
         return dataStore.data.map { it[FIRST_NAME] }.first()
     }
 
+    suspend fun getPatronymic(): String? {
+        return dataStore.data.map { it[PATRONYMIC] }.first()
+    }
+
     suspend fun getFullName(): String? {
         return dataStore.data.map {
             val patronymic = it[PATRONYMIC] ?: ""

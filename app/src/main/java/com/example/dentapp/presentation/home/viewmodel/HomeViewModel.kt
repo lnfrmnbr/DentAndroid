@@ -16,20 +16,42 @@ class HomeViewModel @Inject constructor(
     private val doctorRepository: DoctorRepository,
     private val authDataStore: AuthDataStore
 ) : ViewModel() {
-    private val _firstName = MutableStateFlow("")
+    private val _firstName = MutableStateFlow("Имя")
     val firstName: StateFlow<String> = _firstName
 
+    private val _patronymic = MutableStateFlow("Отчество")
+    val patronymic: StateFlow<String> = _patronymic
+
+    private val _selectedTab = MutableStateFlow(HomeTabs.UpcomingAppointments.title)
+    val selectedTab: StateFlow<String> = _selectedTab
 
     init {
-        updateFirstName()
+        updateProfileInfo()
     }
 
-    private fun updateFirstName() {
+    private fun updateProfileInfo() {
         viewModelScope.launch {
-           val firstName = authDataStore.getDoctorId()
+           val firstName = authDataStore.getFirstName()
+            val patronymic = authDataStore.getPatronymic()
             if (firstName != null) {
                 _firstName.value = firstName
+                if (patronymic.isNullOrBlank()) {
+                    _patronymic.value = ""
+                }
+            }
+            if (patronymic != null) {
+                _patronymic.value = patronymic
             }
         }
+    }
+
+    fun selectTab(selectedTab: String) {
+        _selectedTab.value = selectedTab
+    }
+
+    enum class HomeTabs(val title: String) {
+        UpcomingAppointments("Ближайшие\nприемы"),
+        ArchiveAppointments("Архив\nзаписей"),
+        ListOfPatients("Список\nпациентов")
     }
 }

@@ -40,4 +40,6 @@
     <string name="fri">fri</string>
     <string name="sat">sat</string>
     <string name="sun">sun</string>
+
+    <string name="go_to_profile">go to profile</string>
 </resources>

@@ -72,7 +72,7 @@ fun DayCell(
             }
 
             .border(
-                width = if (day.events.isNotEmpty() && !day.isToday) 1.5.dp else -1.dp,
+                width = if (day.events.isNotEmpty() && !day.isToday) 1.5.dp else (-1).dp,
                 color = when {
                     !day.isCurrentMonth -> LightGray
                     else -> DarkBlue
