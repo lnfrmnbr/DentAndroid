@@ -23,14 +23,15 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun register(
         email: String,
         password: String,
-        fullName: String,
+        lastName: String,
         firstName: String,
+        patronymic: String?,
         sex: String,
         role: String,
         birthDate: Date
     ): Result<AuthResponse> {
         return try {
-            val response = apiService.register(RegisterRequest(email, password, fullName, firstName, sex, role, birthDate))
+            val response = apiService.register(RegisterRequest(email, password, lastName, firstName, patronymic, sex, role, birthDate))
             if (response.isSuccessful) {
                 val authResponse =
                     response.body() ?: return Result.failure(Exception("Пустой ответ от сервера"))
@@ -45,8 +46,9 @@ class AuthRepositoryImpl @Inject constructor(
                     userId = userId,
                     doctorId = authResponse.doctorId,
                     email = email,
-                    fullName = fullName,
+                    lastName = lastName,
                     firstName = firstName,
+                    patronymic = patronymic,
                     sex = sex
                 )
                 Result.success(authResponse)
@@ -78,8 +80,9 @@ class AuthRepositoryImpl @Inject constructor(
                     userId = userId,
                     email = email,
                     doctorId = doctor.id.toString(),
-                    fullName = doctor.fullName,
+                    lastName = doctor.lastName,
                     firstName = doctor.firstName,
+                    patronymic = doctor.patronymic,
                     sex = doctor.sex
                 )
                 Result.success(authResponse)

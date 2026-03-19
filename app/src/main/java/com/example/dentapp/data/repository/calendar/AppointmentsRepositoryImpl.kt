@@ -9,8 +9,11 @@ import javax.inject.Inject
 class AppointmentsRepositoryImpl  @Inject constructor(
     private val apiService: ApiService
 ) : AppointmentsRepository {
-    override suspend fun getAppointments(userId: UUID): List<AppointmentResponse> {
-        return apiService.getAppointments(userId)
+    override suspend fun getAppointments(doctorId: UUID): List<AppointmentResponse> {
+        return apiService.getAppointments(doctorId)
     }
 
+    override suspend fun getUpcomingAppointments(doctorId: UUID): List<AppointmentResponse> {
+        return apiService.getUpcomingAppointments(doctorId)
+    }
 }

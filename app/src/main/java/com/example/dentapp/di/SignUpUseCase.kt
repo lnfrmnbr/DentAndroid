@@ -12,8 +12,9 @@ class SignUpUseCase @Inject constructor(
     suspend operator fun invoke(
         email: String,
         password: String,
-        fullName: String,
+        lastName: String,
         firstName: String,
+        patronymic: String?,
         sex: String,
         role: String,
         birthDate: Date
@@ -26,7 +27,7 @@ class SignUpUseCase @Inject constructor(
             return Result.failure(IllegalArgumentException(AuthErrors.PASSWORD_TOO_SHORT))
         }
 
-        return authRepository.register(email, password, fullName, firstName, sex, role, birthDate)
+        return authRepository.register(email, password, lastName, firstName, patronymic, sex, role, birthDate)
     }
 
     private fun isValidEmail(email: String): Boolean {

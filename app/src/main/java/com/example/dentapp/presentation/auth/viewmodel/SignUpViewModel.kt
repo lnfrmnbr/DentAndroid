@@ -141,12 +141,12 @@ class SignUpViewModel @Inject constructor(
 
         _isLoading.value = true
         viewModelScope.launch {
-            val patronymicString = if (patronymic.value.isEmpty()) "" else " " + patronymic.value
             val result = signUpUseCase(
                 email = email.value,
                 password = password.value,
-                fullName = "${lastName.value} ${firstName.value}$patronymicString",
+                lastName = lastName.value,
                 firstName = firstName.value,
+                patronymic = patronymic.value,
                 sex = genderCode,
                 role = position.value,
                 birthDate = formatter.parse(birthDate.value)!!

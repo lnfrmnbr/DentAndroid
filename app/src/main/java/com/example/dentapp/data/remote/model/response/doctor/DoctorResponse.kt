@@ -11,8 +11,9 @@ import java.util.UUID
 data class DoctorResponse(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
-    val fullName: String? = null,
+    val lastName: String? = null,
     val firstName: String? = null,
+    val patronymic: String? = null,
     val sex: String? = null,
     val role: String? = null,
     @Serializable(with = DateSerializer::class)

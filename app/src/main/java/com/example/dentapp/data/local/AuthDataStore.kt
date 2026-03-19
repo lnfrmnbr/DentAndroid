@@ -21,8 +21,9 @@ class AuthDataStore @Inject constructor(
         private val USER_ID = stringPreferencesKey("user_id")
         private val DOCTOR_ID = stringPreferencesKey("doctor_id")
         private val EMAIL = stringPreferencesKey("email")
-        private val FULL_NAME = stringPreferencesKey("full_name")
+        private val LAST_NAME = stringPreferencesKey("last_name")
         private val FIRST_NAME = stringPreferencesKey("first_name")
+        private val PATRONYMIC = stringPreferencesKey("patronymic")
         private val SEX = stringPreferencesKey("sex")
     }
 
@@ -33,8 +34,9 @@ class AuthDataStore @Inject constructor(
         userId: String? = null,
         doctorId: String? = null,
         email: String? = null,
-        fullName: String? = null,
+        lastName: String? = null,
         firstName: String? = null,
+        patronymic: String? = null,
         sex: String? = null
     ) {
         dataStore.edit { prefs ->
@@ -42,8 +44,9 @@ class AuthDataStore @Inject constructor(
             userId?.let { prefs[USER_ID] = it }
             doctorId?.let { prefs[DOCTOR_ID] = it }
             email?.let { prefs[EMAIL] = it }
-            fullName?.let { prefs[FULL_NAME] = it }
+            lastName?.let { prefs[LAST_NAME] = it }
             firstName?.let { prefs[FIRST_NAME] = it }
+            patronymic?.let { prefs[PATRONYMIC] = it }
             sex?.let { prefs[SEX] = it }
         }
 
@@ -72,7 +75,10 @@ class AuthDataStore @Inject constructor(
     }
 
     suspend fun getFullName(): String? {
-        return dataStore.data.map { it[FULL_NAME] }.first()
+        return dataStore.data.map {
+            val patronymic = it[PATRONYMIC] ?: ""
+            "${it[LAST_NAME]} ${it[FIRST_NAME]}$patronymic"
+        }.first()
     }
 
     suspend fun getSex(): String? {

@@ -19,6 +19,7 @@ class HomeViewModel @Inject constructor(
     private val _firstName = MutableStateFlow("")
     val firstName: StateFlow<String> = _firstName
 
+
     init {
         updateFirstName()
     }

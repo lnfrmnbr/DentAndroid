@@ -8,8 +8,9 @@ import java.util.Date
 data class RegisterRequest(
     val email: String,
     val password: String,
-    val fullName: String,
+    val lastName: String,
     val firstName: String,
+    val patronymic: String?,
     val sex: String,
     val role: String,
     @Serializable(with = DateSerializer::class)

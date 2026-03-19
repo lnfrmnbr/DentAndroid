@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,15 +46,11 @@ fun HomeScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = firstName,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+            }
 
             Box(
                 modifier = Modifier
@@ -75,27 +72,7 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold
                     )
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = LightBlue.copy(alpha = 0.3f))
-                    ) {
-                        Text(
-                            text = "Пример карточки внутри белого бокса",
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
 
-                    repeat(5) { index ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Color.LightGray.copy(alpha = 0.2f))
-                        ) {
-                            Text(
-                                text = "Элемент ${index + 1} с очень длинным текстом для демонстрации того, как работает скролл внутри белого бокса",
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-                    }
                 }
             }
         }
