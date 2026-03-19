@@ -7,11 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,24 +34,18 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.dentapp.R
-import com.example.dentapp.domain.model.calendar.Appointment
+import com.example.dentapp.presentation.calendar.utils.AppointmentCard
 import com.example.dentapp.presentation.calendar.utils.CalendarView
 import com.example.dentapp.presentation.calendar.viewmodel.CalendarViewModel
 import com.example.dentapp.presentation.common.ErrorBlock
 import com.example.dentapp.presentation.common.LoadingBlock
-import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.Cygre
 import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.LightBlue
-import com.example.dentapp.ui.theme.LightDarkBlue
 import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.NewBlue
-import com.example.dentapp.ui.theme.SeaBlue
 import com.example.dentapp.utils.DateUtils
 import com.example.dentapp.utils.StringUtils
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -139,6 +137,8 @@ fun CalendarScreen(
                             appointmentsForDay.forEach { appointment ->
                                 AppointmentCard(appointment)
                             }
+
+                            Box(modifier = Modifier.fillMaxWidth().height(30.dp))
                         }
                     }
                 }
@@ -148,44 +148,6 @@ fun CalendarScreen(
                 refreshing = isLoading,
                 state = refreshState
             )
-        }
-    }
-}
-
-@Composable
-fun AppointmentCard(appointment: Appointment) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(
-            text = appointment.date.hour.toString(),
-            color = Blue,
-            fontFamily = Montserrat,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal
-        )
-
-        Text(
-            text = appointment.patientId.toString(),
-            color = LightDarkBlue,
-            fontFamily = Montserrat,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal
-        )
-
-        Row() {
-            appointment.tags?.forEach { tag ->
-                Text(
-                    text = tag,
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color.White,
-                    modifier = Modifier
-                        .background(SeaBlue, RoundedCornerShape(16.dp))
-                        .padding(horizontal = 16.dp, vertical = 6.dp)
-                )
-            }
         }
     }
 }

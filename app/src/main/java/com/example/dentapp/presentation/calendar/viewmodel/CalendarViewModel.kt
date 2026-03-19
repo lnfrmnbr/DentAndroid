@@ -2,6 +2,7 @@ package com.example.dentapp.presentation.calendar.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dentapp.data.local.AuthDataStore
 import com.example.dentapp.domain.model.calendar.Appointment
 import com.example.dentapp.domain.usecase.calendar.GetAppointmentsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,12 +11,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val getAppointmentsUseCase: GetAppointmentsUseCase,
-    ) : ViewModel() {
+    private val authDataStore: AuthDataStore
+) : ViewModel() {
 
     private val _appointments = MutableStateFlow<List<Appointment>>(emptyList())
     val appointments: StateFlow<List<Appointment>> = _appointments.asStateFlow()
@@ -38,14 +41,16 @@ class CalendarViewModel @Inject constructor(
 
     fun selectDay(date: LocalDate) {
         _daySelected.value = date
-        _appointmentsForDay.value = _appointments.value.filter { it.date.toLocalDate() == date }
+        _appointmentsForDay.value = _appointments.value.filter { it.date.toLocalDate() == date }.sortedBy { it.date }
     }
 
     fun loadAppointments() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                _appointments.value = getAppointmentsUseCase()
+                val userId = authDataStore.getUserId()
+
+                _appointments.value = getAppointmentsUseCase(UUID.fromString(userId))
                 _error.value = null
             } catch (e: Exception) {
                 _error.value = "Ошибка загрузки приемов: ${e.message}"

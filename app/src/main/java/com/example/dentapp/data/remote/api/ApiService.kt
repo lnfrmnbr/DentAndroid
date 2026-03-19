@@ -34,6 +34,6 @@ interface ApiService {
     @GET("/doctors/by_user/{userId}")
     suspend fun getDoctor(@Path("userId") userId: UUID): DoctorResponse
 
-    @GET("/appointments")
-    suspend fun getAppointments(): List<AppointmentResponse>
+    @GET("/appointments/forDoc/{doctorId}")
+    suspend fun getAppointments(@Path("doctorId") userId: UUID): List<AppointmentResponse>
 }

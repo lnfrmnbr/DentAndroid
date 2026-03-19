@@ -15,6 +15,7 @@ data class AppointmentResponse(
     val doctorId: UUID,
     @Serializable(with = UUIDSerializer::class)
     val patientId: UUID,
+    val patientFullName: String?,
     @Serializable(with = LocalDateTimeSerializer::class)
     val date: LocalDateTime,
     val tags: List<String>?,
@@ -29,6 +30,7 @@ fun AppointmentResponse.toDomain(): Appointment = Appointment(
     id = id,
     doctorId = doctorId,
     patientId = patientId,
+    patientFullName = patientFullName,
     date = date,
     tags = tags,
     bop = bop,
