@@ -41,17 +41,26 @@ class CalendarViewModel @Inject constructor(
 
     fun selectDay(date: LocalDate) {
         _daySelected.value = date
-        _appointmentsForDay.value = _appointments.value.filter { it.date.toLocalDate() == date }.sortedBy { it.date }
+        updateAppointmentsForDay()
+    }
+
+    private fun updateAppointmentsForDay() {
+        _appointmentsForDay.value = _appointments.value
+            .filter { it.date.toLocalDate() == _daySelected.value }
+            .sortedBy { it.date }
     }
 
     fun loadAppointments() {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val userId = authDataStore.getUserId()
-
-                _appointments.value = getAppointmentsUseCase(UUID.fromString(userId))
+                val doctorId = authDataStore.getDoctorId()
+                val loadedAppointments = getAppointmentsUseCase(UUID.fromString(doctorId))
+                _appointments.value = loadedAppointments
                 _error.value = null
+
+                updateAppointmentsForDay()
+
             } catch (e: Exception) {
                 _error.value = "Ошибка загрузки приемов: ${e.message}"
             } finally {
@@ -59,5 +68,4 @@ class CalendarViewModel @Inject constructor(
             }
         }
     }
-
 }

@@ -19,6 +19,7 @@ class AuthDataStore @Inject constructor(
     companion object {
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         private val USER_ID = stringPreferencesKey("user_id")
+        private val DOCTOR_ID = stringPreferencesKey("doctor_id")
         private val EMAIL = stringPreferencesKey("email")
         private val FULL_NAME = stringPreferencesKey("full_name")
         private val FIRST_NAME = stringPreferencesKey("first_name")
@@ -30,6 +31,7 @@ class AuthDataStore @Inject constructor(
         accessToken: String? = null,
         refreshToken: String? = null,
         userId: String? = null,
+        doctorId: String? = null,
         email: String? = null,
         fullName: String? = null,
         firstName: String? = null,
@@ -38,6 +40,7 @@ class AuthDataStore @Inject constructor(
         dataStore.edit { prefs ->
             prefs[IS_LOGGED_IN] = isLoggedIn
             userId?.let { prefs[USER_ID] = it }
+            doctorId?.let { prefs[DOCTOR_ID] = it }
             email?.let { prefs[EMAIL] = it }
             fullName?.let { prefs[FULL_NAME] = it }
             firstName?.let { prefs[FIRST_NAME] = it }
@@ -50,10 +53,14 @@ class AuthDataStore @Inject constructor(
         editor.apply()
     }
 
-    val isLoggedIn: Flow<Boolean> = dataStore.data.map { prefs -> true }
+    val isLoggedIn: Flow<Boolean> = dataStore.data.map { prefs -> prefs[IS_LOGGED_IN] ?: false }
 
     suspend fun getUserId(): String? {
         return dataStore.data.map { it[USER_ID] }.first()
+    }
+
+    suspend fun getDoctorId(): String? {
+        return dataStore.data.map { it[DOCTOR_ID] }.first()// ?: "0c470601-cd8a-48bf-add9-4ee2b6a76b71"
     }
 
     suspend fun getEmail(): String? {

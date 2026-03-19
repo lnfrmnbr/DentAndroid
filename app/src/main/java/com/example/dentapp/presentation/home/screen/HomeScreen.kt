@@ -46,7 +46,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "Главная",
+                text = firstName,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),

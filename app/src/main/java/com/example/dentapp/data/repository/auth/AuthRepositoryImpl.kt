@@ -43,6 +43,7 @@ class AuthRepositoryImpl @Inject constructor(
                     accessToken = authResponse.access,
                     refreshToken = authResponse.refresh,
                     userId = userId,
+                    doctorId = authResponse.doctorId,
                     email = email,
                     fullName = fullName,
                     firstName = firstName,
@@ -76,6 +77,7 @@ class AuthRepositoryImpl @Inject constructor(
                     refreshToken = authResponse.refresh,
                     userId = userId,
                     email = email,
+                    doctorId = doctor.id.toString(),
                     fullName = doctor.fullName,
                     firstName = doctor.firstName,
                     sex = doctor.sex
