@@ -42,4 +42,7 @@
     <string name="sun">sun</string>
 
     <string name="go_to_profile">go to profile</string>
+    <string name="go_to_calendar">Show in calendar ></string>
+    <string name="you_have">You have</string>
+    <string name="appointments" translatable="false">appointments</string>
 </resources>

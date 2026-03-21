@@ -143,11 +143,15 @@ fun CalendarScreen(
                     }
                 }
             }
-
-            PullRefreshIndicator(
-                refreshing = isLoading,
-                state = refreshState
-            )
         }
+
+        PullRefreshIndicator(
+            refreshing = isLoading,
+            state = refreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
+            backgroundColor = Color.White,
+            contentColor = DarkBlue,
+            scale = true
+        )
     }
 }
