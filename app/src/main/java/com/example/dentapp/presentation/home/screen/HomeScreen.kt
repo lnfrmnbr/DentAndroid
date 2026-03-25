@@ -75,6 +75,8 @@ fun HomeScreen(
     val patronymic by homeViewModel.patronymic.collectAsState()
     val selectedTab by homeViewModel.selectedTab.collectAsState()
     val upcomingAppointments by homeViewModel.upcomingAppointments.collectAsState()
+    val archiveAppointments by homeViewModel.archiveAppointments.collectAsState()
+
     val isLoading by homeViewModel.isLoading.collectAsState()
     val error by homeViewModel.error.collectAsState()
 
@@ -185,6 +187,18 @@ fun HomeScreen(
                                         )
                                     }
                                     upcomingAppointments.forEach { appointment ->
+                                        AppointmentCard(appointment)
+                                    }
+
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(30.dp)
+                                    )
+                                }
+
+                                HomeTabs.ArchiveAppointments.title -> {
+                                    archiveAppointments.forEach { appointment ->
                                         AppointmentCard(appointment)
                                     }
 

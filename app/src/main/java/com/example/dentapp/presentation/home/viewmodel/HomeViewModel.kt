@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.data.local.AuthDataStore
 import com.example.dentapp.domain.model.calendar.Appointment
+import com.example.dentapp.domain.usecase.calendar.GetArchiveAppointmentsUseCase
 import com.example.dentapp.domain.usecase.calendar.GetUpcomingAppointmentsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getUpcomingAppointmentsUseCase: GetUpcomingAppointmentsUseCase
-) : ViewModel() {
+    private val getUpcomingAppointmentsUseCase: GetUpcomingAppointmentsUseCase,
+    private val getArchiveAppointmentsUseCase: GetArchiveAppointmentsUseCase
+    ) : ViewModel() {
     private val _firstName = MutableStateFlow("Имя")
     val firstName: StateFlow<String> = _firstName
 
@@ -30,6 +32,9 @@ class HomeViewModel @Inject constructor(
 
     private val _upcomingAppointments = MutableStateFlow<List<Appointment>>(emptyList())
     val upcomingAppointments: StateFlow<List<Appointment>> = _upcomingAppointments.asStateFlow()
+
+    private val _archiveAppointments = MutableStateFlow<List<Appointment>>(emptyList())
+    val archiveAppointments: StateFlow<List<Appointment>> = _archiveAppointments.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -48,6 +53,7 @@ class HomeViewModel @Inject constructor(
 
                 loadProfileInfo()
                 loadUpcomingAppointments()
+                loadArchiveAppointments()
 
             } catch (e: Exception) {
                 _error.value = "Ошибка загрузки данных: ${e.message}"
@@ -88,6 +94,22 @@ class HomeViewModel @Inject constructor(
                 val doctorId = authDataStore.getDoctorId()
                 val loadedAppointments = getUpcomingAppointmentsUseCase(UUID.fromString(doctorId))
                 _upcomingAppointments.value = loadedAppointments
+                _error.value = null
+            } catch (e: Exception) {
+                _error.value = "Ошибка загрузки ближайших приемов: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    private fun loadArchiveAppointments() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val doctorId = authDataStore.getDoctorId()
+                val loadedAppointments = getArchiveAppointmentsUseCase(UUID.fromString(doctorId))
+                _archiveAppointments.value = loadedAppointments
                 _error.value = null
             } catch (e: Exception) {
                 _error.value = "Ошибка загрузки ближайших приемов: ${e.message}"

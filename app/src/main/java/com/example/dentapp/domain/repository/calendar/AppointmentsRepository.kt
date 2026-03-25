@@ -7,4 +7,5 @@ import java.util.UUID
 interface AppointmentsRepository {
     suspend fun getAppointments(doctorId: UUID): List<AppointmentResponse>
     suspend fun getUpcomingAppointments(doctorId: UUID): List<AppointmentResponse>
+    suspend fun getArchiveAppointments(doctorId: UUID): List<AppointmentResponse>
 }

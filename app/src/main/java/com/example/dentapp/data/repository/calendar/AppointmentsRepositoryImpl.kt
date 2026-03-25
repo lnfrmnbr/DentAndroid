@@ -16,4 +16,8 @@ class AppointmentsRepositoryImpl  @Inject constructor(
     override suspend fun getUpcomingAppointments(doctorId: UUID): List<AppointmentResponse> {
         return apiService.getUpcomingAppointments(doctorId)
     }
+
+    override suspend fun getArchiveAppointments(doctorId: UUID): List<AppointmentResponse> {
+        return apiService.getArchiveAppointments(doctorId)
+    }
 }

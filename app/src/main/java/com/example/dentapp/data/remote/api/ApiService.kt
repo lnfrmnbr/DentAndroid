@@ -39,4 +39,7 @@ interface ApiService {
 
     @GET("/appointments/upcoming/{doctorId}")
     suspend fun getUpcomingAppointments(@Path("doctorId") doctorId: UUID): List<AppointmentResponse>
+
+    @GET("/appointments/archive/{doctorId}")
+    suspend fun getArchiveAppointments(@Path("doctorId") doctorId: UUID): List<AppointmentResponse>
 }
