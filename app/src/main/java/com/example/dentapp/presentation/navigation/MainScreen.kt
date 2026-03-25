@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,7 +31,7 @@ import com.example.dentapp.ui.theme.LightBlue
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen() {
     val mainNavController = rememberNavController()
     val backgroundColor = Color.White
 
@@ -67,22 +66,22 @@ fun MainScreen(navController: NavHostController) {
                 .windowInsetsPadding(systemBars)
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(navController = navController)
+                HomeScreen(navController = mainNavController)
             }
             composable(Screen.Calendar.route) {
-                CalendarScreen(navController = navController)
+                CalendarScreen(navController = mainNavController)
             }
             composable(Screen.Appointment.route) {
-                AppointmentScreen(navController = navController)
+                AppointmentScreen(navController = mainNavController)
             }
             composable(Screen.Files.route) {
-                FilesScreen(navController = navController)
+                FilesScreen(navController = mainNavController)
             }
             composable(Screen.Patients.route) {
-                PatientsScreen(navController = navController)
+                PatientsScreen(navController = mainNavController)
             }
             composable(Screen.Profile.route) {
-                ProfileScreen(navController = navController)
+                ProfileScreen(navController = mainNavController)
             }
         }
 

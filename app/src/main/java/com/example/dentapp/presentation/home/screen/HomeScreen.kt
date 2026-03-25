@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.dentapp.R
@@ -105,7 +106,15 @@ fun HomeScreen(
                     .padding(start = 16.dp, top = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                LittleProfileInfo(firstName, patronymic) { navController.navigate(Screen.Profile.route) }
+                LittleProfileInfo(firstName, patronymic) {
+                    navController.navigate(Screen.Profile.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             }
 
             Row(
@@ -182,7 +191,13 @@ fun HomeScreen(
                                             fontWeight = FontWeight.Normal,
                                             fontSize = 12.sp,
                                             modifier = Modifier.clickable {
-                                                navController.navigate(Screen.Calendar.route)
+                                                navController.navigate(Screen.Calendar.route) {
+                                                    popUpTo(navController.graph.findStartDestination().id) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
                                             }
                                         )
                                     }

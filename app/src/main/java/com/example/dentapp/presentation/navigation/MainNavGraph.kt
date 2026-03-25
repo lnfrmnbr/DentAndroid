@@ -18,7 +18,7 @@ fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
         route = Screen.MainGraph.route
     ) {
         composable(Screen.Main.route) {
-            MainScreen(navHostController)
+            MainScreen()
         }
 
         composable(Screen.Patients.route) {
