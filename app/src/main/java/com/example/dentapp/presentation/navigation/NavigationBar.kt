@@ -32,7 +32,7 @@ import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.NewBlue
 
 @Composable
-fun NavBar(navController: NavController) {
+fun NavBar(navController: NavController, rootNavController: NavController) {
     val items =
         listOf(
             BottomNavItem.Home,
@@ -55,12 +55,16 @@ fun NavBar(navController: NavController) {
             NavigationBarItem(
                 selected = currentRoute == navItem.route,
                 onClick = {
-                    navController.navigate(navItem.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    if (navItem is BottomNavItem.Appointment) {
+                        rootNavController.navigate(Screen.Appointment.route)
+                    } else {
+                        navController.navigate(navItem.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
                 },
                 icon = {

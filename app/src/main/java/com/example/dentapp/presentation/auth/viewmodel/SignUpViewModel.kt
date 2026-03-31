@@ -6,6 +6,7 @@ import com.example.dentapp.di.SignUpUseCase
 import com.example.dentapp.domain.usecase.auth.ValidateDateUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
 import com.example.dentapp.domain.usecase.auth.constants.AuthErrors
+import com.example.dentapp.utils.GenderUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -132,10 +133,7 @@ class SignUpViewModel @Inject constructor(
             return
         }
 
-        val genderCode = when (sex.value) {
-            "M", "М" -> "M"
-            else -> "F"
-        }
+        val genderCode = GenderUtils.toBdCode(sex.value)
 
         val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 

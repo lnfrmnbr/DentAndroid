@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.dentapp.presentation.appointment.screen.AppointmentScreen
 import com.example.dentapp.presentation.calendar.screen.CalendarScreen
 import com.example.dentapp.presentation.files.screen.FilesScreen
 import com.example.dentapp.presentation.home.screen.HomeScreen
@@ -31,7 +31,7 @@ import com.example.dentapp.ui.theme.LightBlue
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun MainScreen() {
+fun MainScreen(rootNavController: NavHostController) {
     val mainNavController = rememberNavController()
     val backgroundColor = Color.White
 
@@ -71,9 +71,6 @@ fun MainScreen() {
             composable(Screen.Calendar.route) {
                 CalendarScreen(navController = mainNavController)
             }
-            composable(Screen.Appointment.route) {
-                AppointmentScreen(navController = mainNavController)
-            }
             composable(Screen.Files.route) {
                 FilesScreen(navController = mainNavController)
             }
@@ -98,7 +95,7 @@ fun MainScreen() {
                 containerColor = Color.White
             )
         ) {
-            NavBar(mainNavController)
+            NavBar(mainNavController, rootNavController)
         }
     }
 }

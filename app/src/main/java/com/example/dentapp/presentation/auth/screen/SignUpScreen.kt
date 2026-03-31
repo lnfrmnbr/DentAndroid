@@ -27,6 +27,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
@@ -224,6 +225,12 @@ fun SignUpScreen(
                             fontSize = 16.sp
                         )
                     },
+                    textStyle = LocalTextStyle.current.copy(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                        color = DarkBlue
+                    ),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
@@ -375,12 +382,14 @@ fun InputTextField(
     stringResource: Int,
     fieldsColors: TextFieldColors,
     icon: Int? = null,
+    deleteSpaces: Boolean = true,
+    enabled: Boolean = true,
     onValueChanged: (String) -> Unit
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = { input ->
-            val filtered = input.filter { !it.isWhitespace() }
+            val filtered = if (deleteSpaces) input.filter { !it.isWhitespace() } else input
             onValueChanged(filtered)
         },
         label = {
@@ -392,6 +401,11 @@ fun InputTextField(
                 fontSize = 16.sp
             )
         },
+        textStyle = LocalTextStyle.current.copy(
+            fontFamily = Montserrat,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp
+        ),
         modifier = Modifier.fillMaxWidth(),
         colors = fieldsColors,
         shape = RoundedCornerShape(16.dp),
@@ -403,7 +417,8 @@ fun InputTextField(
                     tint = Grey
                 )
             }
-        } else null
+        } else null,
+        enabled = enabled
     )
 }
 
@@ -415,19 +430,25 @@ fun DropdownField(
     onSelect: (String) -> Unit,
     values: List<String>,
     fieldsColors: TextFieldColors,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
+        onExpandedChange = {
+            if (enabled) {
+                expanded = !expanded
+            }
+        },
         modifier = modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             value = selected,
             onValueChange = {},
             readOnly = true,
+            enabled = enabled,
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
@@ -464,10 +485,12 @@ fun DropdownField(
                         )
                     },
                     onClick = {
-                        onSelect(gender)
-                        expanded = false
+                        if (enabled) {
+                            onSelect(gender)
+                            expanded = false
+                        }
                     },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                 )
             }
         }
@@ -495,6 +518,12 @@ fun PasswordField(
                 fontSize = 16.sp
             )
         },
+        textStyle = LocalTextStyle.current.copy(
+            fontFamily = Montserrat,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            color = DarkBlue
+        ),
         modifier = Modifier.fillMaxWidth(),
         isError = passwordError != null,
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),

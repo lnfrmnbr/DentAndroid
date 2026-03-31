@@ -1,8 +1,10 @@
 package com.example.dentapp.utils
 
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 object DateUtils {
@@ -14,5 +16,9 @@ object DateUtils {
     fun toHHMM(date: LocalDateTime): String {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         return date.format(formatter)
+    }
+
+    fun toDDMMYYYY(date: Date): String {
+        return SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date)
     }
 }

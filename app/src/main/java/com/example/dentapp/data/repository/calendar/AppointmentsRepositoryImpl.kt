@@ -1,8 +1,10 @@
 package com.example.dentapp.data.repository.calendar
 
 import com.example.dentapp.data.remote.api.ApiService
+import com.example.dentapp.data.remote.model.request.appointment.AppointmentRequest
 import com.example.dentapp.data.remote.model.response.calendar.AppointmentResponse
 import com.example.dentapp.domain.repository.calendar.AppointmentsRepository
+import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -19,5 +21,29 @@ class AppointmentsRepositoryImpl  @Inject constructor(
 
     override suspend fun getArchiveAppointments(doctorId: UUID): List<AppointmentResponse> {
         return apiService.getArchiveAppointments(doctorId)
+    }
+
+    override suspend fun addAppointment(
+        doctorId: UUID,
+        patientId: UUID,
+        date: LocalDateTime,
+        tags: List<String>?,
+        bop: Double?,
+        russel: Double?,
+        api: Double?,
+        chart: String?,
+        fileUrl: String?
+    ): AppointmentResponse {
+        return apiService.addAppointment(AppointmentRequest(
+            doctorId = doctorId,
+            patientId = patientId,
+            date = date,
+            tags = tags,
+            bop = bop,
+            russel = russel,
+            api = api,
+            chart = chart,
+            fileUrl = fileUrl
+        ))
     }
 }

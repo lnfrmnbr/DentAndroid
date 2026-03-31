@@ -42,4 +42,14 @@
     <string name="go_to_profile">перейти в профиль</string>
     <string name="go_to_calendar">Смотреть в календаре ></string>
     <string name="you_have">У вас</string>
+
+    <string name="start_appointment">Начать прием</string>
+    <string name="patient_full_name">ФИО пациента</string>
+    <string name="fio">Фамилия Имя Отчество</string>
+    <string name="patient_info">Информация о пациенте</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="anamnesis">Анамнез</string>
+    <string name="complaints">Жалобы пациента</string>
+    <string name="comments">Комментарии</string>
+
 </resources>
