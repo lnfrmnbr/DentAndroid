@@ -222,7 +222,11 @@ fun AppointmentScreen(
             ) {
                 DropdownField(
                     title = stringResource(R.string.gender),
-                    selected = sex,
+                    selected = when (sex) {
+                        "" -> ""
+                        "M", "М" -> stringResource(R.string.gender_male)
+                        else -> stringResource(R.string.gender_female)
+                    },
                     values = listOf(
                         stringResource(R.string.gender_male),
                         stringResource(R.string.gender_female)

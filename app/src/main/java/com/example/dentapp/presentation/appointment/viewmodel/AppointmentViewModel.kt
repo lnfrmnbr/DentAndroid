@@ -170,7 +170,13 @@ class AppointmentViewModel @Inject constructor(
 
     private fun loadPatients() {
         viewModelScope.launch {
-            _patients.value = getAllPatientsUseCase()
+            try {
+                _patients.value = getAllPatientsUseCase()
+            } catch (e: Exception) {
+                _errorMessage.value = "Ошибка загрузки списка пациентов: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
