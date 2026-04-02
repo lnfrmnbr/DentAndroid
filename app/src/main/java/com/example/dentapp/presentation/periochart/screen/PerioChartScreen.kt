@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
 import com.caverock.androidsvg.SVG
 import com.example.dentapp.R
 
@@ -42,7 +41,7 @@ val upperJaw = listOf(
 )
 
 @Composable
-fun PerioChartScreen(navController: NavHostController) {
+fun PerioChartScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()

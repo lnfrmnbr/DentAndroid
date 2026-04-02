@@ -1,5 +1,6 @@
 package com.example.dentapp.presentation.appointment.screen
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -56,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.dentapp.PerioChartActivity
 import com.example.dentapp.R
 import com.example.dentapp.domain.model.patients.Patient
 import com.example.dentapp.presentation.appointment.viewmodel.AppointmentViewModel
@@ -126,6 +129,8 @@ fun AppointmentScreen(
             darkIcons = true
         )
     }
+
+    val context = LocalContext.current
 
     val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
@@ -282,7 +287,12 @@ fun AppointmentScreen(
                 )
             }
 
-            InputTextField(email, R.string.email, fieldsColors, enabled = patientId == null) { viewModel.updateEmail(it) }
+            InputTextField(
+                email,
+                R.string.email,
+                fieldsColors,
+                enabled = patientId == null
+            ) { viewModel.updateEmail(it) }
 
             OutlinedTextField(
                 value = phoneNumber,
@@ -379,7 +389,12 @@ fun AppointmentScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { viewModel.startAppointment {} },
+                onClick = {
+                    viewModel.startAppointment {
+                        val intent = Intent(context, PerioChartActivity::class.java)
+                        context.startActivity(intent)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
