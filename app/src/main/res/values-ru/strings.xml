@@ -52,4 +52,11 @@
     <string name="complaints">Жалобы пациента</string>
     <string name="comments">Комментарии</string>
 
+    <string name="select">выделение</string>
+    <string name="back">назад</string>
+    <string name="forward">вперед</string>
+
+    <string name="treatment_plan">План лечения</string>
+    <string name="complete_examination">Завершить осмотр</string>
+
 </resources>

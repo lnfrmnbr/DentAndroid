@@ -55,4 +55,11 @@
     <string name="complaints">Complaints</string>
     <string name="comments">Comments</string>
 
+    <string name="select">select</string>
+    <string name="back">back</string>
+    <string name="forward">forward</string>
+
+    <string name="treatment_plan">Treatment plan</string>
+    <string name="complete_examination">Complete examination</string>
+
 </resources>

@@ -208,7 +208,8 @@ fun AppointmentScreen(
                     viewModel.selectPatient(patient)
                 },
                 patients = patients,
-                fieldsColors = fieldsColors
+                fieldsColors = fieldsColors,
+                strRes = R.string.patient_full_name
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -398,8 +399,8 @@ fun AppointmentScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                enabled = !isLoading && fio.isNotEmpty() && sex.isNotEmpty()
-                        && birthDate.text.isNotEmpty() && (email.isNotEmpty() || phoneNumber.text.isNotEmpty()),
+                /*enabled = !isLoading && fio.isNotEmpty() && sex.isNotEmpty()
+                        && birthDate.text.isNotEmpty() && (email.isNotEmpty() || phoneNumber.text.isNotEmpty()),*/
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue,
                     contentColor = Color.White,
@@ -489,7 +490,8 @@ fun PatientSearchDropdown(
     onValueChanged: (String) -> Unit,
     onPatientSelected: (Patient) -> Unit,
     patients: List<Patient>,
-    fieldsColors: TextFieldColors
+    fieldsColors: TextFieldColors,
+    strRes: Int
 ) {
     var searchText by remember { mutableStateOf(value) }
     var isExpanded by remember { mutableStateOf(false) }
@@ -516,7 +518,7 @@ fun PatientSearchDropdown(
             },
             label = {
                 Text(
-                    stringResource(R.string.patient_full_name),
+                    stringResource(strRes),
                     color = DarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,

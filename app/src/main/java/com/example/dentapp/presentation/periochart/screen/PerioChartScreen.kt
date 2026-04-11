@@ -1,109 +1,247 @@
 package com.example.dentapp.presentation.periochart.screen
 
+import android.content.Intent
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.RawRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavHostController
 import com.caverock.androidsvg.SVG
+import com.example.dentapp.PerioChartActivity
 import com.example.dentapp.R
+import com.example.dentapp.domain.model.patients.Patient
+import com.example.dentapp.presentation.appointment.screen.PatientSearchDropdown
+import com.example.dentapp.presentation.auth.screen.InputTextField
+import com.example.dentapp.presentation.periochart.utils.ActionBar
+import com.example.dentapp.presentation.periochart.utils.DiagnosisField
+import com.example.dentapp.presentation.periochart.utils.IndexesTable
+import com.example.dentapp.presentation.periochart.utils.SlidingTeethBox
+import com.example.dentapp.ui.theme.Blue
+import com.example.dentapp.ui.theme.DarkBlue
+import com.example.dentapp.ui.theme.Grey
+import com.example.dentapp.ui.theme.GreyBlue
+import com.example.dentapp.ui.theme.LightBlue
+import com.example.dentapp.ui.theme.LightDarkBlue
+import com.example.dentapp.ui.theme.Montserrat
+import com.example.dentapp.ui.theme.Pink
+import com.example.dentapp.ui.theme.SkyBlue
+import com.example.dentapp.ui.theme.White
 
 val upperJaw = listOf(
-    ToothUiModel("11", R.raw.o18),
-    ToothUiModel("12", R.raw.o17),
-    ToothUiModel("13", R.raw.o16),
-    ToothUiModel("14", R.raw.o15),
-    ToothUiModel("15", R.raw.o14),
-    ToothUiModel("16", R.raw.o13),
-    ToothUiModel("17", R.raw.o12),
-    ToothUiModel("18", R.raw.o11),
-    ToothUiModel("11", R.raw.o21),
-    ToothUiModel("12", R.raw.o22),
-    ToothUiModel("13", R.raw.o23),
-    ToothUiModel("14", R.raw.o24),
-    ToothUiModel("15", R.raw.o25),
-    ToothUiModel("16", R.raw.o26),
-    ToothUiModel("17", R.raw.o27),
-    ToothUiModel("18", R.raw.o28)
+    ToothUiModel(18, R.raw.t18),
+    ToothUiModel(17, R.raw.t17),
+    ToothUiModel(16, R.raw.t16),
+    ToothUiModel(15, R.raw.t15),
+    ToothUiModel(14, R.raw.t14),
+    ToothUiModel(13, R.raw.t13),
+    ToothUiModel(12, R.raw.t12),
+    ToothUiModel(11, R.raw.t11),
+    ToothUiModel(21, R.raw.t21),
+    ToothUiModel(22, R.raw.t22),
+    ToothUiModel(23, R.raw.t23),
+    ToothUiModel(24, R.raw.t24),
+    ToothUiModel(25, R.raw.t25),
+    ToothUiModel(26, R.raw.t26),
+    ToothUiModel(27, R.raw.t27),
+    ToothUiModel(28, R.raw.t28)
 )
 
 @Composable
-fun PerioChartScreen() {
-    Column(
+fun PerioChartScreen(navController: NavHostController) {
+
+    val patients = listOf<Patient>()//by viewModel.patients.collectAsState()
+
+    val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.White,
+        unfocusedContainerColor = Color.White,
+        focusedLabelColor = Grey,
+        errorContainerColor = GreyBlue,
+        unfocusedLabelColor = Grey,
+        focusedIndicatorColor = Grey,
+        unfocusedIndicatorColor = Grey,
+        errorIndicatorColor = Pink,
+        errorLabelColor = Pink,
+        focusedTextColor = DarkBlue,
+        unfocusedTextColor = DarkBlue,
+        disabledTextColor = White,
+        disabledContainerColor = DarkBlue
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
+            .background(LightBlue)
     ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            ActionBar()
 
-        TeethRow(
-            teeth = upperJaw,
-            onToothClick = { tooth ->
-                println("Clicked tooth ${tooth.id}")
-            }
-        )
-    }
-}
-
-
-@Composable
-fun TeethRow(
-    teeth: List<ToothUiModel>,
-    onToothClick: (ToothUiModel) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-    ) {
-        teeth.forEach { tooth ->
-            ToothSvgItem(
-                svgRes = tooth.svgRes,
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                onClick = { onToothClick(tooth) }
-            )
-        }
-    }
-}
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                SlidingTeethBox(upperJaw, upperJaw)
 
 
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp, vertical = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
 
-@Composable
-fun ToothSvgItem(
-    @RawRes svgRes: Int,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    val context = LocalContext.current
+                    PatientSearchDropdown(
+                        value = "fio",
+                        onValueChanged = { newValue ->
+                            //viewModel.updateFio(newValue)
+                            //viewModel.clearSelectedPatient()
+                        },
+                        onPatientSelected = { patient ->
+                            //viewModel.selectPatient(patient)
+                        },
+                        patients = patients,
+                        fieldsColors = fieldsColors,
+                        strRes = R.string.fio
+                    )
 
-    AndroidView(
-        modifier = modifier.clickable { onClick() },
-        factory = {
-            ImageView(context).apply {
+                    DiagnosisField(
+                        "Диагноз", listOf("болезнь1", "болезнь2"),
+                        onDeleteDiagnose = {}, {}
+                    )
 
-                val svg = SVG.getFromResource(context, svgRes)
-                setImageDrawable(PictureDrawable(svg.renderToPicture()))
+                    IndexesTable()
 
-                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                    InputTextField(
+                        "complaints",
+                        R.string.complaints,
+                        fieldsColors,
+                        deleteSpaces = false
+                    ) {
+                        // viewModel.updateComplaints(it)
+                    }
 
-                adjustViewBounds = false
-                scaleType = ImageView.ScaleType.FIT_CENTER
+                    InputTextField(
+                        "plan",
+                        R.string.treatment_plan,
+                        fieldsColors,
+                        deleteSpaces = false
+                    ) {
+                        //viewModel.updateComments(it)
+                    }
+
+                    InputTextField(
+                        "comments",
+                        R.string.comments,
+                        fieldsColors,
+                        deleteSpaces = false
+                    ) {
+                        //viewModel.updateComments(it)
+                    }
+
+                    Button(
+                        onClick = {
+
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        /*enabled = !isLoading && fio.isNotEmpty() && sex.isNotEmpty()
+                                && birthDate.text.isNotEmpty() && (email.isNotEmpty() || phoneNumber.text.isNotEmpty()),*/
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Blue,
+                            contentColor = Color.White,
+                            disabledContainerColor = Blue.copy(alpha = 0.5f),
+                            disabledContentColor = Color.White.copy(alpha = 0.7f)
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        if (false) {//isLoading
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                modifier = Modifier.size(20.dp),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(5.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.check_mark_icon),
+                                    contentDescription = null,
+                                    tint = White
+                                )
+
+                                Text(
+                                    text = stringResource(R.string.complete_examination),
+                                    fontFamily = Montserrat,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    color = White
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
-    )
+    }
 }

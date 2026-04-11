@@ -112,8 +112,8 @@ class AppointmentViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    fun startAppointment(onSuccess: () -> Unit) {
-        if (fio.value.length > 100) {
+    fun startAppointment(onSuccess: () -> Unit) {onSuccess()
+        /*if (fio.value.length > 100) {
             _errorMessage.value = PatientsErrors.FULL_NAME_TOO_LONG
             return
         }
@@ -165,7 +165,7 @@ class AppointmentViewModel @Inject constructor(
             } finally {
                 _isLoading.value = false
             }
-        }
+        }*/
     }
 
     private fun loadPatients() {
