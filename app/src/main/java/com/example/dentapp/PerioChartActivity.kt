@@ -8,7 +8,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.rememberNavController
-import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
+import com.example.dentapp.presentation.navigation.RootPerioChartNavGraph
 
 class PerioChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +20,7 @@ class PerioChartActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
-            PerioChartScreen(navController)
+            RootPerioChartNavGraph(navController)
         }
     }
 

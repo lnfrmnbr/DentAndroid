@@ -1,4 +1,4 @@
-package com.example.dentapp.presentation.periochart.screen
+package com.example.dentapp.presentation.periochart.utils
 
 import androidx.annotation.RawRes
 

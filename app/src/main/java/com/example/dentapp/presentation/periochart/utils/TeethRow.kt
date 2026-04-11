@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,21 +24,32 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import com.caverock.androidsvg.SVG
-import com.example.dentapp.presentation.periochart.screen.ToothUiModel
+import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.SkyBlue
 
 @Composable
 fun SlidingTeethBox(
     upperJaw: List<ToothUiModel>,
-    lowerJaw: List<ToothUiModel>? = null
+    lowerJaw: List<ToothUiModel>? = null,
+    onClick: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
 
@@ -59,14 +71,14 @@ fun SlidingTeethBox(
                     0 -> TeethRow(
                         teeth = upperJaw,
                         onToothClick = { tooth ->
-                            println("Clicked upper tooth ${tooth.id}")
+                            onClick(tooth.id)
                         }
                     )
 
                     1 -> TeethRow(
                         teeth = lowerJaw ?: emptyList(),
                         onToothClick = { tooth ->
-                            println("Clicked lower tooth ${tooth.id}")
+                            onClick(tooth.id)
                         }
                     )
                 }
@@ -129,16 +141,131 @@ fun TeethRow(
     }
 }
 
+
+@Composable
+fun TeethDetailedRow(
+    teeth: List<ToothUiModel>,
+    selectedTeeth: List<Int>,
+    maxWidth: Dp
+) {
+    val density = LocalDensity.current
+
+    val selectedIndices = remember(teeth, selectedTeeth) {
+        teeth.mapIndexedNotNull { index, tooth ->
+            if (selectedTeeth.contains(tooth.id)) index else null
+        }
+    }
+
+    val visibleTeeth = remember(selectedIndices) {
+        if (selectedIndices.isEmpty()) {
+            teeth.take(7)
+        } else {
+            val centerIndex = selectedIndices[selectedIndices.size / 2]
+            val startIndex = maxOf(0, centerIndex - 3)
+            val endIndex = minOf(teeth.size, centerIndex + 4)
+            teeth.subList(startIndex, endIndex)
+        }
+    }
+
+    val positions = remember { mutableStateMapOf<Int, Pair<Float, Float>>() }
+
+    var parentWidth by remember { mutableFloatStateOf(0f) }
+    var parentX by remember { mutableFloatStateOf(0f) }
+
+    Box(
+        modifier = Modifier
+            .width(maxWidth)
+            .clip(RoundedCornerShape(24.dp))
+            .onGloballyPositioned { coords ->
+                parentWidth = coords.size.width.toFloat()
+                parentX = coords.positionInRoot().x
+            }
+    ) {
+
+        Row(
+            modifier = Modifier.wrapContentWidth(unbounded = true),
+            horizontalArrangement = Arrangement.spacedBy((-2).dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            visibleTeeth.forEach { tooth ->
+                val originalIndex = teeth.indexOf(tooth)
+
+                if (originalIndex == 8) {
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
+
+                Box(
+                    modifier = Modifier
+                        .height(300.dp)
+                        .onGloballyPositioned { coords ->
+                            val x = coords.positionInRoot().x - parentX
+                            val w = coords.size.width.toFloat()
+                            positions[tooth.id] = x to (x + w)
+                        }
+                ) {
+                    ToothSvgItem(
+                        svgRes = tooth.svgRes,
+                        modifier = Modifier.height(300.dp),
+                        isClickable = false
+                    )
+                }
+            }
+        }
+
+        val firstSelectedTooth = visibleTeeth.firstOrNull { it.id in selectedTeeth }
+        val lastSelectedTooth = visibleTeeth.lastOrNull { it.id in selectedTeeth }
+
+        val firstBounds = firstSelectedTooth?.let { positions[it.id] }
+        val lastBounds = lastSelectedTooth?.let { positions[it.id] }
+
+        if (firstBounds != null) {
+            val leftWidth = firstBounds.first.coerceAtLeast(0f)
+
+            if (leftWidth > 0f) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(with(density) { leftWidth.toDp() })
+                        .background(LightBlue.copy(alpha = 0.5f))
+                        .zIndex(1f)
+                )
+            }
+        }
+
+        if (lastBounds != null) {
+            val rightWidth = (parentWidth - lastBounds.second).coerceAtLeast(0f)
+
+            if (rightWidth > 0f) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(with(density) { rightWidth.toDp() })
+                        .align(Alignment.CenterEnd)
+                        .background(LightBlue.copy(alpha = 0.5f))
+                        .zIndex(1f)
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun ToothSvgItem(
     @RawRes svgRes: Int,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    isClickable: Boolean = true,
+    onClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
 
     AndroidView(
-        modifier = modifier.clickable { onClick() },
+        modifier = modifier.then(
+            if (isClickable) {
+                Modifier.clickable { onClick() }
+            } else {
+                Modifier
+            }
+        ),
         factory = {
             ImageView(context).apply {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null)
