@@ -52,7 +52,6 @@ fun IndexesTable() {
                 .height(IntrinsicSize.Max)
                 .padding(12.dp)
         ) {
-            // Колонка "Индекс"
             Column(
                 modifier = Modifier.weight(0.4f)
             ) {
@@ -60,14 +59,13 @@ fun IndexesTable() {
                 TableRow("КПУ")
                 TableRow("BOP")
                 TableRow("API")
-                CpitnRow("CPITN") // Специальная строка для CPITN
+                CpitnRow("CPITN")
                 TableRow("Russel")
                 TableRow("OHI_S", false)
             }
 
             VerticalDivider()
 
-            // Колонка "Результат"
             Column(
                 modifier = Modifier.weight(0.5f)
             ) {

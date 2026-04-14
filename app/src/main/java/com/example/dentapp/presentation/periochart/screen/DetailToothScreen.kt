@@ -17,8 +17,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,7 +42,9 @@ import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.LightDarkBlue
 import com.example.dentapp.ui.theme.Montserrat
+import com.example.dentapp.ui.theme.Pink
 import com.example.dentapp.ui.theme.SkyBlue
+import com.example.dentapp.ui.theme.VeryLightBlue
 import com.example.dentapp.ui.theme.White
 
 val uppedrJaw = listOf(
@@ -209,6 +214,102 @@ fun TeethParams() {
             .clip(RoundedCornerShape(24.dp))
     ) {
 
+    }
+}
+
+@Composable
+fun BooleanToothParam(
+    value: Boolean = false,
+    label: String = "Имплант",
+    onCheckedChange: (Boolean) -> Unit = {}
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = VeryLightBlue,
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(5.dp)
+        ) {
+
+            Text(
+                label,
+                color = DarkBlue,
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
+
+            Checkbox(
+                checked = value,
+                onCheckedChange = onCheckedChange,
+                colors = CheckboxDefaults.colors(
+                    checkedColor = DarkBlue,
+                    uncheckedColor = DarkBlue,
+                    checkmarkColor = White
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun ThreeColorsToothParam(
+    value: String = "101",
+    label: String = "Кровоточивость",
+    onClick: (String) -> Unit = {}
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = VeryLightBlue,
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(12.dp)
+        ) {
+
+            Text(
+                label,
+                color = DarkBlue,
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+            )
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                ColoredBox(if (value[0] == '1') Pink else LightBlue) {}
+
+                ColoredBox(if (value[1] == '1') Pink else LightBlue) {}
+
+                ColoredBox(if (value[2] == '1') Pink else LightBlue) {}
+            }
+        }
+    }
+}
+
+@Composable
+fun ColoredBox(color: Color, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(color)
+            .padding(4.dp)
+            .width(8.dp)
+            .clickable { onClick() }
+    ) {
+        Text(
+            "",
+            fontFamily = Montserrat,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp
+        )
     }
 }
 
