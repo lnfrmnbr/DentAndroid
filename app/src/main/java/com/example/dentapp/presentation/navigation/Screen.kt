@@ -16,11 +16,10 @@ sealed class Screen(val route: String) {
     data object Profile : Screen("profile")
 
     data object PerioChart : Screen("perio_chart")
-    data object DetailToothScreen : Screen("detail_tooth/{jawType}/{toothNumbers}") {
-        fun createRoute(jawType: String, toothNumbers: String): String {
-            return "detail_tooth/$jawType/$toothNumbers"
+    object DetailToothScreen : Screen("detail_tooth_screen?teethIds={teethIds}") {
+        fun createRoute(teethIds: List<Int>): String {
+            return "detail_tooth_screen?teethIds=${teethIds.joinToString(",")}"
         }
     }
-
     data object Patients : Screen("patients")
 }

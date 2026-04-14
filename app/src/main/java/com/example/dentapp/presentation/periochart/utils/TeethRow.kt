@@ -3,7 +3,6 @@ package com.example.dentapp.presentation.periochart.utils
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
-import androidx.annotation.RawRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,6 +23,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import com.caverock.androidsvg.SVG
+import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel
 import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.SkyBlue
 
@@ -49,9 +50,19 @@ import com.example.dentapp.ui.theme.SkyBlue
 fun SlidingTeethBox(
     upperJaw: List<ToothUiModel>,
     lowerJaw: List<ToothUiModel>? = null,
-    onClick: (Int) -> Unit
+    onSlide: (PerioChartViewModel.JawType) -> Unit,
+    onToothClick: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
+
+    LaunchedEffect(pagerState.currentPage) {
+        val jawType = when (pagerState.currentPage) {
+            0 -> PerioChartViewModel.JawType.UPPER
+            1 -> PerioChartViewModel.JawType.LOWER
+            else -> PerioChartViewModel.JawType.UPPER
+        }
+        onSlide(jawType)
+    }
 
     Box(
         modifier = Modifier
@@ -71,14 +82,14 @@ fun SlidingTeethBox(
                     0 -> TeethRow(
                         teeth = upperJaw,
                         onToothClick = { tooth ->
-                            onClick(tooth.id)
+                            onToothClick(tooth.id)
                         }
                     )
 
                     1 -> TeethRow(
                         teeth = lowerJaw ?: emptyList(),
                         onToothClick = { tooth ->
-                            onClick(tooth.id)
+                            onToothClick(tooth.id)
                         }
                     )
                 }
@@ -127,12 +138,12 @@ fun TeethRow(
         horizontalArrangement = Arrangement.spacedBy((-2).dp),
         verticalAlignment = Alignment.Top
     ) {
-        teeth.forEachIndexed { index, tooth ->
-            if (index == 8) {
+        teeth.forEach { tooth ->
+            if (tooth.id == 11) {
                 Spacer(modifier = Modifier.width(24.dp))
             }
             ToothSvgItem(
-                svgRes = tooth.svgRes,
+                tooth = tooth,
                 modifier = Modifier
                     .height(250.dp),
                 onClick = { onToothClick(tooth) }
@@ -204,8 +215,9 @@ fun TeethDetailedRow(
                         }
                 ) {
                     ToothSvgItem(
-                        svgRes = tooth.svgRes,
-                        modifier = Modifier.height(300.dp),
+                        tooth = tooth,
+                        modifier = Modifier
+                            .height(250.dp),
                         isClickable = false
                     )
                 }
@@ -251,7 +263,7 @@ fun TeethDetailedRow(
 
 @Composable
 fun ToothSvgItem(
-    @RawRes svgRes: Int,
+    tooth: ToothUiModel,
     modifier: Modifier = Modifier,
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
@@ -272,7 +284,7 @@ fun ToothSvgItem(
                 scaleType = ImageView.ScaleType.FIT_CENTER
                 adjustViewBounds = true
 
-                val svg = SVG.getFromResource(context, svgRes)
+                val svg = SVG.getFromResource(context, tooth.svgRes)
                 setImageDrawable(PictureDrawable(svg.renderToPicture()))
             }
         }

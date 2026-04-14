@@ -21,6 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -38,7 +41,7 @@ import com.example.dentapp.presentation.periochart.utils.ActionBar
 import com.example.dentapp.presentation.periochart.utils.DiagnosisField
 import com.example.dentapp.presentation.periochart.utils.IndexesTable
 import com.example.dentapp.presentation.periochart.utils.SlidingTeethBox
-import com.example.dentapp.presentation.periochart.utils.ToothUiModel
+import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel
 import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.Grey
@@ -48,29 +51,14 @@ import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.Pink
 import com.example.dentapp.ui.theme.White
 
-val upperJaw = listOf(
-    ToothUiModel(18, R.raw.t18),
-    ToothUiModel(17, R.raw.t17),
-    ToothUiModel(16, R.raw.t16),
-    ToothUiModel(15, R.raw.t15),
-    ToothUiModel(14, R.raw.t14),
-    ToothUiModel(13, R.raw.t13),
-    ToothUiModel(12, R.raw.t12),
-    ToothUiModel(11, R.raw.t11),
-    ToothUiModel(21, R.raw.t21),
-    ToothUiModel(22, R.raw.t22),
-    ToothUiModel(23, R.raw.t23),
-    ToothUiModel(24, R.raw.t24),
-    ToothUiModel(25, R.raw.t25),
-    ToothUiModel(26, R.raw.t26),
-    ToothUiModel(27, R.raw.t27),
-    ToothUiModel(28, R.raw.t28)
-)
-
 @Composable
-fun PerioChartScreen(navController: NavHostController) {
-
+fun PerioChartScreen(
+    navController: NavHostController,
+    viewModel: PerioChartViewModel
+) {
     val patients = listOf<Patient>()//by viewModel.patients.collectAsState()
+    val upTeeth by viewModel.upTeeth.collectAsState()
+    val lowTeeth by viewModel.lowTeeth.collectAsState()
 
     val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
@@ -87,6 +75,20 @@ fun PerioChartScreen(navController: NavHostController) {
         disabledTextColor = White,
         disabledContainerColor = DarkBlue
     )
+    val selectedTeeth by viewModel.selectedTeeth.collectAsState()
+
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+
+    LaunchedEffect(savedStateHandle) {
+        savedStateHandle
+            ?.getStateFlow("clearSelection", false)
+            ?.collect { shouldClear ->
+                if (shouldClear) {
+                    viewModel.clearSelection()
+                    savedStateHandle["clearSelection"] = false
+                }
+            }
+    }
 
     Box(
         modifier = Modifier
@@ -104,7 +106,18 @@ fun PerioChartScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
-                SlidingTeethBox(upperJaw, upperJaw) { navController.navigate(Screen.DetailToothScreen.route) }
+                SlidingTeethBox(
+                    upTeeth,
+                    lowTeeth,
+                    onSlide = { jawType ->
+                        viewModel.changeJawType(jawType)
+                    },
+                    onToothClick = { toothId ->
+                        navController.navigate(
+                            Screen.DetailToothScreen.createRoute(listOf(toothId))
+                        )
+                    }
+                )
 
                 Column(
                     modifier = Modifier

@@ -1,5 +1,6 @@
 package com.example.dentapp.presentation.periochart.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,6 +25,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.dentapp.R
 import com.example.dentapp.presentation.periochart.utils.TeethDetailedRow
-import com.example.dentapp.presentation.periochart.utils.ToothUiModel
+import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel
 import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.LightDarkBlue
@@ -47,32 +50,22 @@ import com.example.dentapp.ui.theme.SkyBlue
 import com.example.dentapp.ui.theme.VeryLightBlue
 import com.example.dentapp.ui.theme.White
 
-val uppedrJaw = listOf(
-    ToothUiModel(18, R.raw.t18),
-    ToothUiModel(17, R.raw.t17),
-    ToothUiModel(16, R.raw.t16),
-    ToothUiModel(15, R.raw.t15),
-    ToothUiModel(14, R.raw.t14),
-    ToothUiModel(13, R.raw.t13),
-    ToothUiModel(12, R.raw.t12),
-    ToothUiModel(11, R.raw.t11),
-    ToothUiModel(21, R.raw.t21),
-    ToothUiModel(22, R.raw.t22),
-    ToothUiModel(23, R.raw.t23),
-    ToothUiModel(24, R.raw.t24),
-    ToothUiModel(25, R.raw.t25),
-    ToothUiModel(26, R.raw.t26),
-    ToothUiModel(27, R.raw.t27),
-    ToothUiModel(28, R.raw.t28)
-)
-
 
 @Composable
 fun DetailToothScreen(
     navController: NavHostController,
-    toothJaw: List<ToothUiModel> = uppedrJaw,
-    tooth: List<Int> = listOf(28)
+    viewModel: PerioChartViewModel,
+    teethIds: List<Int>
 ) {
+    val upTeeth by viewModel.upTeeth.collectAsState()
+    val lowTeeth by viewModel.lowTeeth.collectAsState()
+
+    val currentJawType by viewModel.currentJawType.collectAsState()
+
+    BackHandler {
+        navController.navigateUp()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -93,7 +86,9 @@ fun DetailToothScreen(
             {
 
                 IconButton(
-                    onClick = { },//navController.navigateUp() },
+                    onClick = {
+                        navController.navigateUp()
+                    },
                     modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
@@ -146,7 +141,11 @@ fun DetailToothScreen(
                         .background(Color.White, shape = RoundedCornerShape(24.dp))
                         .clip(RoundedCornerShape(24.dp))
                 ) {
-                    TeethDetailedRow(toothJaw, tooth, 200.dp)
+                    TeethDetailedRow(
+                        if (currentJawType == PerioChartViewModel.JawType.UPPER) upTeeth else lowTeeth,
+                        teethIds,
+                        200.dp
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(10.dp))
