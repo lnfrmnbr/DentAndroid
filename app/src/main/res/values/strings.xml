@@ -61,5 +61,6 @@
 
     <string name="treatment_plan">Treatment plan</string>
     <string name="complete_examination">Complete examination</string>
+    <string name="no_tooth">No tooth</string>
 
 </resources>

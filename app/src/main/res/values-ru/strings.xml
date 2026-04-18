@@ -58,5 +58,6 @@
 
     <string name="treatment_plan">План лечения</string>
     <string name="complete_examination">Завершить осмотр</string>
+    <string name="no_tooth">Нет зуба</string>
 
 </resources>

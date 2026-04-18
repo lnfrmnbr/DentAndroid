@@ -79,17 +79,6 @@ fun PerioChartScreen(
 
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
 
-    LaunchedEffect(savedStateHandle) {
-        savedStateHandle
-            ?.getStateFlow("clearSelection", false)
-            ?.collect { shouldClear ->
-                if (shouldClear) {
-                    viewModel.clearSelection()
-                    savedStateHandle["clearSelection"] = false
-                }
-            }
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()

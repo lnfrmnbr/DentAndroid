@@ -1,6 +1,5 @@
 package com.example.dentapp.presentation.periochart.screen
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,9 +62,6 @@ fun DetailToothScreen(
 
     val currentJawType by viewModel.currentJawType.collectAsState()
 
-    BackHandler {
-        navController.navigateUp()
-    }
 
     Box(
         modifier = Modifier
@@ -194,33 +191,41 @@ fun DetailToothScreen(
                             )
                         }
                     }
+
+                    Box(
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                color = SkyBlue,
+                                shape = RoundedCornerShape(24.dp)
+                            )
+                            .background(LightBlue, shape = RoundedCornerShape(24.dp))
+                            .clip(RoundedCornerShape(24.dp))
+                    ) {
+                        BooleanToothParam(
+                            value = (if (currentJawType == PerioChartViewModel.JawType.UPPER) upTeeth else lowTeeth).first { it.id == teethIds.first() }.removed,
+                            label = stringResource(R.string.no_tooth)
+                        ) {
+                            teethIds.forEach { id ->
+                                viewModel.changeRemoved(
+                                    id,
+                                    !(if (currentJawType == PerioChartViewModel.JawType.UPPER) upTeeth else lowTeeth).first { it.id == id }.removed
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun TeethParams() {
-    Box(
-        modifier = Modifier
-            .border(
-                width = 2.dp,
-                color = SkyBlue,
-                shape = RoundedCornerShape(24.dp)
-            )
-            .background(LightBlue, shape = RoundedCornerShape(24.dp))
-            .clip(RoundedCornerShape(24.dp))
-    ) {
-
-    }
-}
 
 @Composable
 fun BooleanToothParam(
-    value: Boolean = false,
-    label: String = "Имплант",
-    onCheckedChange: (Boolean) -> Unit = {}
+    value: Boolean,
+    label: String,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(16.dp),

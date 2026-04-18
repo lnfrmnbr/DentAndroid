@@ -1,5 +1,6 @@
 package com.example.dentapp.presentation.periochart.utils
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
@@ -25,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
@@ -139,15 +141,16 @@ fun TeethRow(
         verticalAlignment = Alignment.Top
     ) {
         teeth.forEach { tooth ->
-            if (tooth.id == 11) {
-                Spacer(modifier = Modifier.width(24.dp))
-            }
             ToothSvgItem(
                 tooth = tooth,
                 modifier = Modifier
                     .height(250.dp),
                 onClick = { onToothClick(tooth) }
             )
+
+            if (tooth.id == 11) {
+                Spacer(modifier = Modifier.width(24.dp))
+            }
         }
     }
 }
@@ -167,7 +170,7 @@ fun TeethDetailedRow(
         }
     }
 
-    val visibleTeeth = remember(selectedIndices) {
+    val visibleTeeth = remember(teeth, selectedIndices) {
         if (selectedIndices.isEmpty()) {
             teeth.take(7)
         } else {
@@ -199,11 +202,6 @@ fun TeethDetailedRow(
             verticalAlignment = Alignment.Top
         ) {
             visibleTeeth.forEach { tooth ->
-                val originalIndex = teeth.indexOf(tooth)
-
-                if (originalIndex == 8) {
-                    Spacer(modifier = Modifier.width(24.dp))
-                }
 
                 Box(
                     modifier = Modifier
@@ -214,12 +212,17 @@ fun TeethDetailedRow(
                             positions[tooth.id] = x to (x + w)
                         }
                 ) {
+
                     ToothSvgItem(
                         tooth = tooth,
                         modifier = Modifier
                             .height(250.dp),
                         isClickable = false
                     )
+                }
+
+                if (tooth.id == 11) {
+                    Spacer(modifier = Modifier.width(24.dp))
                 }
             }
         }
@@ -261,6 +264,7 @@ fun TeethDetailedRow(
     }
 }
 
+@SuppressLint("LocalContextResourcesRead")
 @Composable
 fun ToothSvgItem(
     tooth: ToothUiModel,
@@ -270,23 +274,53 @@ fun ToothSvgItem(
 ) {
     val context = LocalContext.current
 
-    AndroidView(
-        modifier = modifier.then(
-            if (isClickable) {
-                Modifier.clickable { onClick() }
-            } else {
-                Modifier
-            }
-        ),
-        factory = {
-            ImageView(context).apply {
-                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-                scaleType = ImageView.ScaleType.FIT_CENTER
-                adjustViewBounds = true
+    val svgPicture = remember(tooth.id, tooth.removed) {
+        val inputStream = context.resources.openRawResource(tooth.svgRes)
+        var svgText = inputStream.bufferedReader().use { it.readText() }
 
-                val svg = SVG.getFromResource(context, tooth.svgRes)
-                setImageDrawable(PictureDrawable(svg.renderToPicture()))
-            }
+        if (tooth.removed) {
+            val id = tooth.id
+            svgText = svgText
+                .hideSvgGroup("O$id")
+                .hideSvgGroup("V$id")
         }
+
+        val svg = SVG.getFromString(svgText)
+        svg.renderToPicture()
+    }
+    key(tooth.id, tooth.removed) {
+
+        AndroidView(
+            modifier = modifier.then(
+                if (isClickable) Modifier.clickable { onClick() } else Modifier
+            ),
+            factory = {
+                ImageView(context).apply {
+                    setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    adjustViewBounds = true
+                }
+            },
+            update = { imageView ->
+                imageView.setImageDrawable(PictureDrawable(svgPicture))
+            }
+        )
+    }
+}
+
+private fun String.hideSvgGroup(groupId: String): String {
+    val regex = Regex(
+        "<g([^>]*id=\"$groupId\"[^>]*)>",
+        RegexOption.IGNORE_CASE
     )
+
+    return this.replace(regex) { match ->
+        val tag = match.value
+
+        if (tag.contains("display=")) {
+            tag.replace(Regex("display=\"[^\"]*\""), "display=\"none\"")
+        } else {
+            tag.replace("<g", "<g display=\"none\"")
+        }
+    }
 }

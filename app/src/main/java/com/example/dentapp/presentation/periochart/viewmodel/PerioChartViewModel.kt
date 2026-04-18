@@ -31,10 +31,10 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
         ToothUiModel(28, R.raw.t28)
     )
 
-    private val _upTeeth = MutableStateFlow(upTeethUnit)
+    private val _upTeeth = MutableStateFlow(upTeethUnit.map { it.copy() })
     val upTeeth: StateFlow<List<ToothUiModel>> = _upTeeth.asStateFlow()
 
-    private val _lowTeeth = MutableStateFlow(upTeethUnit)
+    private val _lowTeeth = MutableStateFlow(upTeethUnit.map { it.copy() })
     val lowTeeth: StateFlow<List<ToothUiModel>> = _lowTeeth.asStateFlow()
 
     private val _selectedTeeth = MutableStateFlow<List<Int>>(emptyList())
@@ -58,6 +58,16 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
         _currentJawType.value = jawType
     }
 
-
+    fun changeRemoved(toothId: Int, isRemoved: Boolean) {
+        if (_currentJawType.value == JawType.UPPER) {
+            _upTeeth.value = _upTeeth.value.map {
+                if (it.id == toothId) it.copy(removed = isRemoved) else it
+            }
+        } else {
+            _lowTeeth.value = _lowTeeth.value.map {
+                if (it.id == toothId) it.copy(removed = isRemoved) else it
+            }
+        }
+    }
 
 }
