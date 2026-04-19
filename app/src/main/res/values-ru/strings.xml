@@ -72,7 +72,7 @@
     <string name="plaque">Налет</string>
     <string name="stones">Камни</string>
     <string name="caries">Кариес</string>
-    <string name="probing_depth">Десневой край</string>
-    <string name="gingival_margin">Глубина зондирования</string>
+    <string name="probing_depth">Глубина зондирования</string>
+    <string name="gingival_margin">Десневой край</string>
 
 </resources>

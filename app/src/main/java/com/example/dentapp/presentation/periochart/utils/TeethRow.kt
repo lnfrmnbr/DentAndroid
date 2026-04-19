@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,6 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalContext
@@ -44,8 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import com.caverock.androidsvg.SVG
+import com.example.dentapp.R
 import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel
+import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.LightBlue
+import com.example.dentapp.ui.theme.Pink
 import com.example.dentapp.ui.theme.SkyBlue
 
 @Composable
@@ -76,24 +83,29 @@ fun SlidingTeethBox(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth()
-            ) { page ->
-                when (page) {
-                    0 -> TeethRow(
-                        teeth = upperJaw,
-                        onToothClick = { tooth ->
-                            onToothClick(tooth.id)
-                        }
-                    )
 
-                    1 -> TeethRow(
-                        teeth = lowerJaw ?: emptyList(),
-                        onToothClick = { tooth ->
-                            onToothClick(tooth.id)
-                        }
-                    )
+            Row {
+                SurfacesText()
+
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxWidth()
+                ) { page ->
+                    when (page) {
+                        0 -> TeethRow(
+                            teeth = upperJaw,
+                            onToothClick = { tooth ->
+                                onToothClick(tooth.id)
+                            }
+                        )
+
+                        1 -> TeethRow(
+                            teeth = lowerJaw ?: emptyList(),
+                            onToothClick = { tooth ->
+                                onToothClick(tooth.id)
+                            }
+                        )
+                    }
                 }
             }
 
@@ -196,6 +208,32 @@ fun TeethDetailedRow(
             }
     ) {
 
+        Canvas(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(bottom=63.dp)
+                .zIndex(1f)
+        ) {
+            drawPerioLines(
+                teeth = teeth,
+                positions = positions,
+                surfaceType = PerioChartViewModel.SurfaceType.VESTIBULAR
+            )
+        }
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(top=130.dp)
+                .zIndex(1f)
+        ) {
+            drawPerioLines(
+                teeth = teeth,
+                positions = positions,
+                surfaceType = PerioChartViewModel.SurfaceType.ORAL
+            )
+        }
+
         Row(
             modifier = Modifier.wrapContentWidth(unbounded = true),
             horizontalArrangement = Arrangement.spacedBy((-2).dp),
@@ -260,6 +298,35 @@ fun TeethDetailedRow(
                         .zIndex(1f)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun TeethWithPerioChart(
+    teeth: List<ToothUiModel>,
+    surfaceType: PerioChartViewModel.SurfaceType,
+    modifier: Modifier = Modifier,
+    toothContent: @Composable (
+        positions: MutableMap<Int, Pair<Float, Float>>
+    ) -> Unit
+) {
+    val positions = remember { mutableStateMapOf<Int, Pair<Float, Float>>() }
+
+    Box(modifier = modifier) {
+
+        toothContent(positions)
+
+        Canvas(
+            modifier = Modifier
+                .matchParentSize()
+                .zIndex(2f)
+        ) {
+            drawPerioLines(
+                teeth = teeth,
+                positions = positions,
+                surfaceType = surfaceType
+            )
         }
     }
 }
@@ -406,6 +473,32 @@ fun ToothSvgItem(
     }
 }
 
+@SuppressLint("LocalContextResourcesRead")
+@Composable
+fun SurfacesText() {
+    val context = LocalContext.current
+
+    val inputStream = context.resources.openRawResource(R.raw.surfaces_text)
+    val svgText = inputStream.bufferedReader().use { it.readText() }
+    val svg = SVG.getFromString(svgText)
+
+    AndroidView(
+        factory = {
+            ImageView(context).apply {
+                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                adjustViewBounds = true
+            }
+        },
+        update = { imageView ->
+            imageView.setImageDrawable(PictureDrawable(svg.renderToPicture()))
+        },
+        modifier = Modifier
+            .height(250.dp)
+            .padding(bottom = 12.dp)
+    )
+}
+
 private fun String.hideSvgGroup(groupId: String): String {
     val regex = Regex(
         "<g([^>]*id=\"$groupId\"[^>]*)>",
@@ -436,12 +529,67 @@ private fun String.showSvgGroup(groupId: String): String {
             tag.contains("display=\"none\"") -> {
                 tag.replace("display=\"none\"", "display=\"inline\"")
             }
+
             tag.contains(Regex("display=\"[^\"]*\"")) -> {
                 tag.replace(Regex("display=\"[^\"]*\""), "display=\"inline\"")
             }
+
             else -> {
                 tag.replace("<g", "<g display=\"inline\"")
             }
         }
     }
+}
+
+fun DrawScope.drawPerioLines(
+    teeth: List<ToothUiModel>,
+    positions: Map<Int, Pair<Float, Float>>, surfaceType: PerioChartViewModel.SurfaceType
+) {
+    val gingivalPath = Path()
+    val pocketPath = Path()
+    val baseY = size.height / 2f
+    val scale =
+        size.height / 100f
+    var isFirstPoint = true
+    teeth.forEach { tooth ->
+        val bounds = positions[tooth.id] ?: return@forEach
+        val (startX, endX) = bounds
+        val width = endX - startX
+        val xPoints = listOf(startX + width * 0.2f, startX + width * 0.5f, startX + width * 0.8f)
+        val gm =
+            if (surfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) tooth.vestibular.gingivalMargin else tooth.oral.gingivalMargin
+        val pd =
+            if (surfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) tooth.vestibular.probingDepth else tooth.oral.probingDepth
+        val gmVals = listOf(gm.p1, gm.p2, gm.p3)
+        val pdVals = listOf(pd.p1, pd.p2, pd.p3)
+        for (i in 0..2) {
+            val gmY = when (surfaceType) {
+                PerioChartViewModel.SurfaceType.ORAL -> -1 * (gmVals[i] ?: 0).toFloat()
+                PerioChartViewModel.SurfaceType.VESTIBULAR -> (gmVals[i] ?: 0).toFloat()
+            }
+            val pocketY =
+                when (surfaceType) {
+                    PerioChartViewModel.SurfaceType.ORAL -> (-1 * (gmVals[i] ?: 0)) + (pdVals[i]
+                        ?: 0)
+
+                    PerioChartViewModel.SurfaceType.VESTIBULAR -> (gmVals[i] ?: 0) - (pdVals[i]
+                        ?: 0)
+                }
+            val x = xPoints[i]
+            val y1 = baseY + gmY * scale
+            val y2 = baseY + pocketY * scale
+            if (isFirstPoint) {
+                gingivalPath.moveTo(x, y1)
+                pocketPath.moveTo(x, y2)
+                isFirstPoint = false
+            } else {
+                gingivalPath.lineTo(x, y1)
+                pocketPath.lineTo(x, y2)
+            }
+        }
+    }
+
+    drawPath(path = pocketPath, color = Blue, style = Stroke(width = 2.dp.toPx()))
+    drawPath(path = gingivalPath, color = Pink, style = Stroke(width = 2.dp.toPx()))
+
 }

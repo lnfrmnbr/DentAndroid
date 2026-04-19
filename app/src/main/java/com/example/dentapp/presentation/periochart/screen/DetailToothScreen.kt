@@ -390,15 +390,6 @@ fun DetailToothScreen(
                             ) {
                                 GraphicsToothParam(
                                     if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
-                                        currentTeeth.first { it.id == teethIds.first() }.vestibular.probingDepth
-                                    } else {
-                                        currentTeeth.first { it.id == teethIds.first() }.oral.probingDepth
-
-                                    },
-                                    stringResource(R.string.probing_depth)
-                                ) { probingDepth, pointNum -> viewModel.changeProbingDepth(teethIds, probingDepth, pointNum) }
-                                GraphicsToothParam(
-                                    if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
                                         currentTeeth.first { it.id == teethIds.first() }.vestibular.gingivalMargin
                                     } else {
                                         currentTeeth.first { it.id == teethIds.first() }.oral.gingivalMargin
@@ -406,6 +397,16 @@ fun DetailToothScreen(
                                     },
                                     stringResource(R.string.gingival_margin)
                                 ) { gingivalMargin, pointNum -> viewModel.changeGingivalMargin(teethIds, gingivalMargin, pointNum) }
+
+                                GraphicsToothParam(
+                                    if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
+                                        currentTeeth.first { it.id == teethIds.first() }.vestibular.probingDepth
+                                    } else {
+                                        currentTeeth.first { it.id == teethIds.first() }.oral.probingDepth
+
+                                    },
+                                    stringResource(R.string.probing_depth)
+                                ) { probingDepth, pointNum -> viewModel.changeProbingDepth(teethIds, probingDepth, pointNum) }
                             }
                         }
 
