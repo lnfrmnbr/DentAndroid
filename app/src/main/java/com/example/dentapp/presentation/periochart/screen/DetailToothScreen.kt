@@ -51,6 +51,7 @@ import com.example.dentapp.presentation.periochart.utils.Caries
 import com.example.dentapp.presentation.periochart.utils.IntPoints
 import com.example.dentapp.presentation.periochart.utils.TeethDetailedRow
 import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel
+import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel.CariesType
 import com.example.dentapp.ui.theme.Brown
 import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.Grey
@@ -188,10 +189,12 @@ fun DetailToothScreen(
                         BooleanToothParam(
                             currentTeeth.first { it.id == teethIds.first() }.removed,
                             stringResource(R.string.no_tooth), Grey, White, 24.dp
-                        ) { viewModel.changeRemoved(
-                            teethIds,
-                            !(currentTeeth.first { it.id == teethIds.first() }.removed)
-                        ) }
+                        ) {
+                            viewModel.changeRemoved(
+                                teethIds,
+                                !(currentTeeth.first { it.id == teethIds.first() }.removed)
+                            )
+                        }
 
                         Spacer(modifier = Modifier.width(30.dp))
 
@@ -322,8 +325,18 @@ fun DetailToothScreen(
                                     viewModel.changePulpPerio(teethIds, newValue)
                                 }
 
-                                CariesToothParam(Caries(), "Кариес") {}
+                                CariesToothParam(
+                                    if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
+                                        currentTeeth.first { it.id == teethIds.first() }.vestibular.caries
+                                    } else {
+                                        currentTeeth.first { it.id == teethIds.first() }.oral.caries
 
+                                    },
+                                    stringResource(R.string.caries),
+                                    currentTeeth.first { it.id == teethIds.first() }.id
+                                ) { newValue, cariesType ->
+                                    viewModel.changeCaries(teethIds, newValue, cariesType)
+                                }
                             }
 
                             Row(
@@ -344,7 +357,12 @@ fun DetailToothScreen(
                                     viewModel.changePus(teethIds, value, ind)
                                 }
 
-                                MobilityToothParam(currentTeeth.first { it.id == teethIds.first() }.mobility) { mobility -> viewModel.changeMobility(teethIds, mobility) }
+                                MobilityToothParam(currentTeeth.first { it.id == teethIds.first() }.mobility) { mobility ->
+                                    viewModel.changeMobility(
+                                        teethIds,
+                                        mobility
+                                    )
+                                }
 
                                 MultiVariantsToothParam(
                                     3,
@@ -543,7 +561,8 @@ fun BooleanToothParam(
 fun CariesToothParam(
     value: Caries,
     label: String,
-    onValueChange: (Caries) -> Unit
+    toothId: Int,
+    onValueChange: (Boolean, PerioChartViewModel.CariesType) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
@@ -569,112 +588,79 @@ fun CariesToothParam(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(LightBlue)
-                            .padding(4.dp)
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "2",
-                            color = LightDarkBlue,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
+                    val label1112 = if (toothId % 10 >= 4) "2" else "3"
+
+                    CariesBox(value.c11, label1112, Modifier.weight(1f)) { newVal ->
+                        onValueChange(
+                            newVal,
+                            CariesType.C11
                         )
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(LightBlue)
-                            .padding(4.dp)
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "2",
-                            color = LightDarkBlue,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
+                    CariesBox(value.c12, label1112, Modifier.weight(1f)) { newVal ->
+                        onValueChange(
+                            newVal,
+                            CariesType.C12
                         )
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(LightBlue)
-                            .padding(4.dp)
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "1",
-                            color = LightDarkBlue,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
-                    }
+                    CariesBox(
+                        value.c13,
+                        if (toothId % 10 >= 4) "1" else "6", Modifier.weight(1f)
+                    ) { newVal -> onValueChange(newVal, CariesType.C13) }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(LightBlue)
-                            .padding(4.dp)
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "6",
-                            color = LightDarkBlue,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
+                    val label2122 = if (toothId % 10 >= 4) "6" else "4"
+
+                    CariesBox(value.c21, label2122, Modifier.weight(1f)) { newVal ->
+                        onValueChange(
+                            newVal,
+                            CariesType.C21
                         )
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(LightBlue)
-                            .padding(4.dp)
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "6",
-                            color = LightDarkBlue,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
+                    CariesBox(value.c22, label2122, Modifier.weight(1f)) { newVal ->
+                        onValueChange(
+                            newVal,
+                            CariesType.C22
                         )
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(LightBlue)
-                            .padding(4.dp)
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "5",
-                            color = LightDarkBlue,
-                            fontFamily = Montserrat,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
+                    CariesBox(value.c23, "5", Modifier.weight(1f)) { newVal ->
+                        onValueChange(
+                            newVal,
+                            CariesType.C23
                         )
                     }
                 }
 
             }
         }
+    }
+}
+
+@Composable
+fun CariesBox(
+    value: Boolean,
+    label: String,
+    modifier: Modifier,
+    onClick: (Boolean) -> Unit
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(if (value) Red else LightBlue)
+            .padding(4.dp)
+            .clickable { onClick(!value) },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            label,
+            color = if (value) White else LightDarkBlue,
+            fontFamily = Montserrat,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp
+        )
     }
 }
 

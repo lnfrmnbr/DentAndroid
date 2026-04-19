@@ -28,10 +28,10 @@ data class ToothParams(
 data class Caries(
     val c11: Boolean = false,
     val c12: Boolean = false,
+    val c13: Boolean = false,
     val c21: Boolean = false,
     val c22: Boolean = false,
-    val c31: Boolean = false,
-    val c32: Boolean = false
+    val c23: Boolean = false
     )
 
 data class BoolPoints(

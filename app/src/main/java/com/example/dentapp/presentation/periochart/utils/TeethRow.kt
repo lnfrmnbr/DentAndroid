@@ -298,6 +298,55 @@ fun ToothSvgItem(
             svgText = svgText.showSvgGroup("periodontit")
         }
 
+        if (tooth.vestibular.caries.c11) {
+            svgText = svgText.showSvgGroup("car_v11")
+        }
+
+        if (tooth.vestibular.caries.c12) {
+            svgText = svgText.showSvgGroup("car_v12")
+        }
+
+        if (tooth.vestibular.caries.c13) {
+            svgText = svgText.showSvgGroup("car_v13")
+        }
+
+        if (tooth.vestibular.caries.c21) {
+            svgText = svgText.showSvgGroup("car_v21")
+        }
+
+        if (tooth.vestibular.caries.c22) {
+            svgText = svgText.showSvgGroup("car_v22")
+        }
+
+        if (tooth.vestibular.caries.c23) {
+            svgText = svgText.showSvgGroup("car_v23")
+        }
+
+        if (tooth.oral.caries.c11) {
+            svgText = svgText.showSvgGroup("car_o11")
+        }
+
+        if (tooth.oral.caries.c12) {
+            svgText = svgText.showSvgGroup("car_o12")
+        }
+
+        if (tooth.oral.caries.c13) {
+            svgText = svgText.showSvgGroup("car_o13")
+        }
+
+        if (tooth.oral.caries.c21) {
+            svgText = svgText.showSvgGroup("car_o21")
+        }
+
+        if (tooth.oral.caries.c22) {
+            svgText = svgText.showSvgGroup("car_o22")
+        }
+
+        if (tooth.oral.caries.c23) {
+            svgText = svgText.showSvgGroup("car_o23")
+        }
+
+
         val svg = SVG.getFromString(svgText)
         svg.renderToPicture()
     }

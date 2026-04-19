@@ -3,6 +3,7 @@ package com.example.dentapp.presentation.periochart.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.dentapp.R
 import com.example.dentapp.presentation.periochart.utils.BoolPoints
+import com.example.dentapp.presentation.periochart.utils.Caries
 import com.example.dentapp.presentation.periochart.utils.ToothUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +50,7 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
 
     enum class JawType { UPPER, LOWER }
     enum class SurfaceType { VESTIBULAR, ORAL }
+    enum class CariesType { C11, C12, C13, C21, C22, C23 }
 
     fun selectTooth(toothId: Int) {
         _selectedTeeth.value = _selectedTeeth.value + toothId
@@ -158,6 +160,24 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun changeCaries(toothIds: List<Int>, hasCaries: Boolean, cariesType: CariesType) {
+        updateToothParam(toothIds) { tooth, isVestibular ->
+            if (isVestibular) {
+                tooth.copy(
+                    vestibular = tooth.vestibular.copy(
+                        caries = updateCaries(tooth.vestibular.caries, cariesType, hasCaries)
+                    )
+                )
+            } else {
+                tooth.copy(
+                    oral = tooth.oral.copy(
+                        caries = updateCaries(tooth.oral.caries, cariesType, hasCaries)
+                    )
+                )
+            }
+        }
+    }
+
     private inline fun updateToothParam(
         toothIds: List<Int>,
         crossinline updateBlock: (ToothUiModel, Boolean) -> ToothUiModel
@@ -201,6 +221,17 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
             2 -> points.copy(p2 = value)
             3 -> points.copy(p3 = value)
             else -> points
+        }
+    }
+
+    private fun updateCaries(caries: Caries, cariesType: CariesType, value: Boolean): Caries {
+        return when (cariesType) {
+            CariesType.C11 -> caries.copy(c11 = value)
+            CariesType.C12 -> caries.copy(c12 = value)
+            CariesType.C13 -> caries.copy(c13 = value)
+            CariesType.C21 -> caries.copy(c21 = value)
+            CariesType.C22 -> caries.copy(c22 = value)
+            CariesType.C23 -> caries.copy(c23 = value)
         }
     }
 
