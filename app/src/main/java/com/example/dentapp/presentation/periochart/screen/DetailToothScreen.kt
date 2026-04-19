@@ -185,7 +185,13 @@ fun DetailToothScreen(
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        BooleanToothParam(false, "Нет зуба", Grey, White, 24.dp) { }
+                        BooleanToothParam(
+                            currentTeeth.first { it.id == teethIds.first() }.removed,
+                            stringResource(R.string.no_tooth), Grey, White, 24.dp
+                        ) { viewModel.changeRemoved(
+                            teethIds,
+                            !(currentTeeth.first { it.id == teethIds.first() }.removed)
+                        ) }
 
                         Spacer(modifier = Modifier.width(30.dp))
 

@@ -279,10 +279,7 @@ fun ToothSvgItem(
         var svgText = inputStream.bufferedReader().use { it.readText() }
 
         if (tooth.removed) {
-            val id = tooth.id
-            svgText = svgText
-                .hideSvgGroup("O$id")
-                .hideSvgGroup("V$id")
+            svgText = svgText.showSvgGroup("removed")
         }
 
         if (tooth.isImplant) {
