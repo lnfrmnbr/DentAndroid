@@ -293,6 +293,14 @@ fun ToothSvgItem(
             svgText = svgText.showSvgGroup("plomba")
         }
 
+        if (tooth.pulpPerio == 1) {
+            svgText = svgText.showSvgGroup("pulpit")
+        }
+
+        if (tooth.pulpPerio == 2) {
+            svgText = svgText.showSvgGroup("periodontit")
+        }
+
         val svg = SVG.getFromString(svgText)
         svg.renderToPicture()
     }

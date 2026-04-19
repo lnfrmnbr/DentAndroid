@@ -227,8 +227,10 @@ fun DetailToothScreen(
                     ) {
 
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Row(modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 BooleanToothParam(
                                     value = currentTeeth.first { it.id == teethIds.first() }.isImplant,
                                     label = stringResource(R.string.implant)
@@ -262,7 +264,7 @@ fun DetailToothScreen(
 
 
                                 MultiVariantsToothParam(
-                                    1,
+                                    currentTeeth.first { it.id == teethIds.first() }.pulpPerio,
                                     label = stringResource(R.string.pulp_perio),
                                     states = listOf(
                                         CheckBoxState(null, null),
@@ -270,13 +272,18 @@ fun DetailToothScreen(
                                         CheckBoxState(null, Grey)
                                     ),
                                     height = 82.dp
-                                ) {}
+                                ) { newValue ->
+                                    viewModel.changePulpPerio(teethIds, newValue)
+                                }
 
                                 CariesToothParam(Caries(), "Кариес") {}
 
                             }
 
-                            Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 ThreeColorsToothParam(label = "Гноетечение", color = Brown)
 
                                 MovabilityToothParam(3) {}
@@ -293,9 +300,18 @@ fun DetailToothScreen(
                                 ) {}
                             }
 
-                            Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
-                                GraphicsToothParam(IntPoints(), "Десневой край") { a, b -> print(a.toString()) }
-                                GraphicsToothParam(IntPoints(), "Глубина зондирования") { a, b -> print(a.toString()) }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                GraphicsToothParam(
+                                    IntPoints(),
+                                    "Десневой край"
+                                ) { a, b -> print(a.toString()) }
+                                GraphicsToothParam(
+                                    IntPoints(),
+                                    "Глубина зондирования"
+                                ) { a, b -> print(a.toString()) }
                             }
                         }
 

@@ -94,4 +94,16 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun changePulpPerio(toothIds: List<Int>, pulpPerio: Int) {
+        if (_currentJawType.value == JawType.UPPER) {
+            _upTeeth.value = _upTeeth.value.map {
+                if (it.id in toothIds) it.copy(pulpPerio = pulpPerio) else it
+            }
+        } else {
+            _lowTeeth.value = _lowTeeth.value.map {
+                if (it.id in toothIds) it.copy(pulpPerio = pulpPerio) else it
+            }
+        }
+    }
+
 }
