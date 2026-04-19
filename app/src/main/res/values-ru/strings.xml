@@ -65,5 +65,11 @@
     <string name="pulp_perio">Пульпит /\nПериодонтит</string>
     <string name="movability">Подвижность</string>
     <string name="seal">Пломба</string>
+    <string name="vestibular">Вестибулярно</string>
+    <string name="oral">Орально</string>
+    <string name="bleeding">Кровоточивость</string>
+    <string name="pus">Гноетечение</string>
+    <string name="plaque">Налет</string>
+    <string name="stones">Камни</string>
 
 </resources>

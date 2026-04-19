@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.dentapp.R
+import com.example.dentapp.presentation.periochart.utils.BoolPoints
 import com.example.dentapp.presentation.periochart.utils.Caries
 import com.example.dentapp.presentation.periochart.utils.IntPoints
 import com.example.dentapp.presentation.periochart.utils.TeethDetailedRow
@@ -56,7 +57,6 @@ import com.example.dentapp.ui.theme.Grey
 import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.LightDarkBlue
 import com.example.dentapp.ui.theme.Montserrat
-import com.example.dentapp.ui.theme.Pink
 import com.example.dentapp.ui.theme.Red
 import com.example.dentapp.ui.theme.SkyBlue
 import com.example.dentapp.ui.theme.VeryLightBlue
@@ -74,6 +74,7 @@ fun DetailToothScreen(
     val lowTeeth by viewModel.lowTeeth.collectAsState()
 
     val currentJawType by viewModel.currentJawType.collectAsState()
+    val currentSurfaceType by viewModel.currentSurfaceType.collectAsState()
 
     val currentTeeth = when (currentJawType) {
         PerioChartViewModel.JawType.UPPER -> upTeeth
@@ -169,12 +170,15 @@ fun DetailToothScreen(
                     Row {
                         SegmentedControl(
                             modifier = Modifier.weight(1f),
-                            items = listOf("Вестибулярно", "Орально"),
-                            defaultSelectedItemIndex = 0,//if (selectedTab == Tab.SUBSCRIPTIONS) 0 else 1,
+                            items = listOf(
+                                stringResource(R.string.vestibular),
+                                stringResource(R.string.oral)
+                            ),
+                            defaultSelectedItemIndex = if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) 0 else 1,
                             onItemSelection = { selectedIndex ->
                                 when (selectedIndex) {
-                                    0 -> {}//viewModel.selectTab(Tab.SUBSCRIPTIONS)
-                                    1 -> {}//viewModel.selectTab(Tab.RECOMMENDATIONS)
+                                    0 -> viewModel.changeSurfaceType(PerioChartViewModel.SurfaceType.VESTIBULAR)
+                                    1 -> viewModel.changeSurfaceType(PerioChartViewModel.SurfaceType.ORAL)
                                 }
                             }
                         )
@@ -241,7 +245,19 @@ fun DetailToothScreen(
                                     )
                                 }
 
-                                ThreeColorsToothParam(label = "Кровоточивость", color = Red)
+                                ThreeColorsToothParam(
+                                    value =
+                                        if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
+                                            currentTeeth.first { it.id == teethIds.first() }.vestibular.bleeding
+                                        } else {
+                                            currentTeeth.first { it.id == teethIds.first() }.oral.bleeding
+
+                                        },
+                                    label = stringResource(R.string.bleeding),
+                                    color = Red
+                                ) { value, ind ->
+                                    viewModel.changeBleeding(teethIds, value, ind)
+                                }
 
                                 BooleanToothParam(
                                     value = currentTeeth.first { it.id == teethIds.first() }.hasSeal,
@@ -257,9 +273,33 @@ fun DetailToothScreen(
                             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
 
                                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    ThreeColorsToothParam(label = "Камни", color = Grey)
+                                    ThreeColorsToothParam(
+                                        value =
+                                            if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
+                                                currentTeeth.first { it.id == teethIds.first() }.vestibular.stones
+                                            } else {
+                                                currentTeeth.first { it.id == teethIds.first() }.oral.stones
 
-                                    ThreeColorsToothParam(label = "Налёт", color = Yellow)
+                                            },
+                                        label = stringResource(R.string.stones),
+                                        color = Grey
+                                    ) { value, ind ->
+                                        viewModel.changeStones(teethIds, value, ind)
+                                    }
+
+                                    ThreeColorsToothParam(
+                                        value =
+                                            if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
+                                                currentTeeth.first { it.id == teethIds.first() }.vestibular.plaque
+                                            } else {
+                                                currentTeeth.first { it.id == teethIds.first() }.oral.plaque
+
+                                            },
+                                        label = stringResource(R.string.plaque),
+                                        color = Yellow
+                                    ) { value, ind ->
+                                        viewModel.changePlaque(teethIds, value, ind)
+                                    }
                                 }
 
 
@@ -284,7 +324,19 @@ fun DetailToothScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                ThreeColorsToothParam(label = "Гноетечение", color = Brown)
+                                ThreeColorsToothParam(
+                                    value =
+                                        if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
+                                            currentTeeth.first { it.id == teethIds.first() }.vestibular.pus
+                                        } else {
+                                            currentTeeth.first { it.id == teethIds.first() }.oral.pus
+
+                                        },
+                                    label = stringResource(R.string.pus),
+                                    color = Brown
+                                ) { value, ind ->
+                                    viewModel.changePus(teethIds, value, ind)
+                                }
 
                                 MovabilityToothParam(3) {}
 
@@ -702,10 +754,10 @@ fun CustomMultiCheckbox(
 
 @Composable
 fun ThreeColorsToothParam(
-    value: String = "101",
+    value: BoolPoints,
     label: String,
     color: Color,
-    onClick: (String) -> Unit = {}
+    onClick: (Boolean, Int) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
@@ -728,11 +780,11 @@ fun ThreeColorsToothParam(
             Spacer(modifier = Modifier.width(10.dp))
 
             Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                ColoredBox(if (value[0] == '1') color else LightBlue) {}
+                ColoredBox(if (value.p1) color else LightBlue) { onClick(!value.p1, 1) }
 
-                ColoredBox(if (value[1] == '1') color else LightBlue) {}
+                ColoredBox(if (value.p2) color else LightBlue) { onClick(!value.p2, 2) }
 
-                ColoredBox(if (value[2] == '1') color else LightBlue) {}
+                ColoredBox(if (value.p3) color else LightBlue) { onClick(!value.p3, 3) }
             }
         }
     }

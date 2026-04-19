@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">DentApp</string>
+    <string name="app_name" translatable="false">OriScope</string>
     <string name="lastName">Surname</string>
     <string name="email">Email</string>
     <string name="sign_in">Sign in</string>
@@ -68,5 +68,11 @@
     <string name="pulp_perio">Pulpitis /\nPeriodontitis</string>
     <string name="movability">Movability</string>
     <string name="seal">Seal</string>
+    <string name="vestibular">Vestibular</string>
+    <string name="oral">Oral</string>
+    <string name="bleeding">Bleeding</string>
+    <string name="pus">Pus</string>
+    <string name="plaque">Plaque</string>
+    <string name="stones">Stones</string>
 
 </resources>
