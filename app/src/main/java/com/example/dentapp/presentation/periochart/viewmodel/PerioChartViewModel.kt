@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.dentapp.R
 import com.example.dentapp.presentation.periochart.utils.BoolPoints
 import com.example.dentapp.presentation.periochart.utils.Caries
+import com.example.dentapp.presentation.periochart.utils.Furcation
 import com.example.dentapp.presentation.periochart.utils.IntPoints
 import com.example.dentapp.presentation.periochart.utils.ToothUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -119,6 +120,24 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
                 tooth.copy(
                     oral = tooth.oral.copy(
                         gingivalMargin = updateIntPoint(tooth.oral.gingivalMargin, pointNum, gingivalMargin)
+                    )
+                )
+            }
+        }
+    }
+
+    fun changeFurcation(toothIds: List<Int>, furcationValue: Int, rootNum: Int) {
+        updateToothParam(toothIds) { tooth, isVestibular ->
+            if (isVestibular) {
+                tooth.copy(
+                    vestibular = tooth.vestibular.copy(
+                        furcation = updateFurcation(tooth.vestibular.furcation, furcationValue, rootNum)
+                    )
+                )
+            } else {
+                tooth.copy(
+                    oral = tooth.oral.copy(
+                        furcation = updateFurcation(tooth.oral.furcation, furcationValue, rootNum)
                     )
                 )
             }
@@ -267,6 +286,14 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
             2 -> points.copy(p2 = value)
             3 -> points.copy(p3 = value)
             else -> points
+        }
+    }
+
+    private fun updateFurcation(furcation: Furcation, value: Int, pointNum: Int): Furcation {
+        return when (pointNum) {
+            1 -> furcation.copy(root1 = value)
+            2 -> furcation.copy(root2 = value)
+            else -> furcation
         }
     }
 

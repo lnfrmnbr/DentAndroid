@@ -48,6 +48,7 @@ import androidx.navigation.NavHostController
 import com.example.dentapp.R
 import com.example.dentapp.presentation.periochart.utils.BoolPoints
 import com.example.dentapp.presentation.periochart.utils.Caries
+import com.example.dentapp.presentation.periochart.utils.Furcation
 import com.example.dentapp.presentation.periochart.utils.IntPoints
 import com.example.dentapp.presentation.periochart.utils.TeethDetailedRow
 import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel
@@ -200,7 +201,7 @@ fun DetailToothScreen(
 
 
                         IconButton(
-                            onClick = { },//navController.navigateUp() },
+                            onClick = { navController.navigateUp() },
                             modifier = Modifier.size(38.dp)
                         ) {
                             Icon(
@@ -242,18 +243,8 @@ fun DetailToothScreen(
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                BooleanToothParam(
-                                    value = currentTeeth.first { it.id == teethIds.first() }.isImplant,
-                                    label = stringResource(R.string.implant)
-                                ) {
-                                    viewModel.changeIsImplant(
-                                        teethIds,
-                                        !(currentTeeth.first { it.id == teethIds.first() }.isImplant)
-                                    )
-                                }
-
                                 ThreeColorsToothParam(
                                     value =
                                         if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
@@ -269,13 +260,31 @@ fun DetailToothScreen(
                                 }
 
                                 BooleanToothParam(
-                                    value = currentTeeth.first { it.id == teethIds.first() }.hasSeal,
-                                    label = stringResource(R.string.seal)
+                                    value = currentTeeth.first { it.id == teethIds.first() }.isImplant,
+                                    label = stringResource(R.string.implant)
                                 ) {
-                                    viewModel.changeHasSeal(
+                                    viewModel.changeIsImplant(
                                         teethIds,
-                                        !(currentTeeth.first { it.id == teethIds.first() }.hasSeal)
+                                        !(currentTeeth.first { it.id == teethIds.first() }.isImplant)
                                     )
+                                }
+
+                                if (teethIds.size == 1 && ((teethIds.first() % 10 >= 6) ||
+                                            (currentSurfaceType == PerioChartViewModel.SurfaceType.ORAL && teethIds.first() in listOf(14, 24)))) {
+                                    FurcationToothParam(
+                                        if (currentSurfaceType == PerioChartViewModel.SurfaceType.VESTIBULAR) {
+                                            currentTeeth.first { it.id == teethIds.first() }.vestibular.furcation
+                                        } else {
+                                            currentTeeth.first { it.id == teethIds.first() }.oral.furcation
+                                        },
+                                        label = stringResource(R.string.furcation),
+                                        twoPoints = currentSurfaceType == PerioChartViewModel.SurfaceType.ORAL &&
+                                                currentTeeth.any {
+                                                    it.id in teethIds && it.id in listOf(18,17,16,14,28,27,26,24)
+                                                }
+                                    ) { value, rootNum ->
+                                        viewModel.changeFurcation(teethIds, value, rootNum)
+                                    }
                                 }
                             }
 
@@ -364,16 +373,15 @@ fun DetailToothScreen(
                                     )
                                 }
 
-                                MultiVariantsToothParam(
-                                    3,
-                                    label = stringResource(R.string.furcation),
-                                    states = listOf(
-                                        CheckBoxState(null, null),
-                                        CheckBoxState(R.drawable.furk1, null),
-                                        CheckBoxState(R.drawable.furk2, null),
-                                        CheckBoxState(R.drawable.furk3, null)
+                                BooleanToothParam(
+                                    value = currentTeeth.first { it.id == teethIds.first() }.hasSeal,
+                                    label = stringResource(R.string.seal)
+                                ) {
+                                    viewModel.changeHasSeal(
+                                        teethIds,
+                                        !(currentTeeth.first { it.id == teethIds.first() }.hasSeal)
                                     )
-                                ) {}
+                                }
                             }
 
                             Row(
@@ -542,7 +550,7 @@ fun BooleanToothParam(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 12.dp)
+            modifier = Modifier.padding(start = 8.dp)
         ) {
 
             Text(
@@ -572,7 +580,7 @@ fun CariesToothParam(
     value: Caries,
     label: String,
     toothId: Int,
-    onValueChange: (Boolean, PerioChartViewModel.CariesType) -> Unit
+    onValueChange: (Boolean, CariesType) -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
@@ -675,6 +683,60 @@ fun CariesBox(
 }
 
 @Composable
+fun FurcationToothParam(
+    value: Furcation,
+    label: String,
+    height: Dp = 36.dp,
+    twoPoints: Boolean,
+    onValueChange: (Int, Int) -> Unit
+) {
+    val states = listOf(
+        CheckBoxState(null, null),
+        CheckBoxState(R.drawable.furk1, null),
+        CheckBoxState(R.drawable.furk2, null),
+        CheckBoxState(R.drawable.furk3, null)
+    )
+
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = VeryLightBlue,
+        modifier = Modifier.height(height)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(horizontal = 12.dp)
+        ) {
+
+            Text(
+                label,
+                color = DarkBlue,
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+
+                CustomMultiCheckbox(
+                    currentState = value.root1,
+                    states = states,
+                    onStateChange = { newValue -> onValueChange(newValue, 1) }
+                )
+
+                if (twoPoints) {
+                    CustomMultiCheckbox(
+                        currentState = value.root2,
+                        states = states,
+                        onStateChange = { newValue -> onValueChange(newValue, 2) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun MultiVariantsToothParam(
     value: Int,
     label: String,
@@ -724,7 +786,7 @@ fun CustomMultiCheckbox(
 ) {
     Box(
         modifier = modifier
-            .size(24.dp)
+            .size(20.dp)
             .clickable {
                 val nextState = (currentState + 1) % states.size
                 onStateChange(nextState)

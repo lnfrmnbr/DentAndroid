@@ -346,6 +346,42 @@ fun ToothSvgItem(
             svgText = svgText.showSvgGroup("car_o23")
         }
 
+        if (tooth.vestibular.furcation.root1 == 1) {
+            svgText = svgText.showSvgGroup("furk_v_1")
+        }
+
+        if (tooth.vestibular.furcation.root1 == 2) {
+            svgText = svgText.showSvgGroup("furk_v_2")
+        }
+
+        if (tooth.vestibular.furcation.root1 == 3) {
+            svgText = svgText.showSvgGroup("furk_v_3")
+        }
+
+        if (tooth.oral.furcation.root1 == 1) {
+            svgText = svgText.showSvgGroup("furk_o1_1")
+        }
+
+        if (tooth.oral.furcation.root1 == 2) {
+            svgText = svgText.showSvgGroup("furk_o1_2")
+        }
+
+        if (tooth.oral.furcation.root1 == 3) {
+            svgText = svgText.showSvgGroup("furk_o1_3")
+        }
+
+        if (tooth.oral.furcation.root2 == 1) {
+            svgText = svgText.showSvgGroup("furk_o2_1")
+        }
+
+        if (tooth.oral.furcation.root2 == 2) {
+            svgText = svgText.showSvgGroup("furk_o2_2")
+        }
+
+        if (tooth.oral.furcation.root2 == 3) {
+            svgText = svgText.showSvgGroup("furk_o2_3")
+        }
+
 
         val svg = SVG.getFromString(svgText)
         svg.renderToPicture()

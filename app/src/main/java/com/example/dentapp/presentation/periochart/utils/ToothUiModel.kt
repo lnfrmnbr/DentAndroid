@@ -19,7 +19,7 @@ data class ToothParams(
     val stones: BoolPoints = BoolPoints(),
     val plaque: BoolPoints = BoolPoints(),
     val pus: BoolPoints = BoolPoints(),
-    val furcation: Furcation? = null,
+    val furcation: Furcation = Furcation(),
     val caries: Caries = Caries(),
     val probingDepth: IntPoints = IntPoints(),
     val gingivalMargin: IntPoints = IntPoints()
@@ -47,6 +47,6 @@ data class IntPoints(
 )
 
 data class Furcation(
-    val root1: Int? = null,
-    val root2: Int? = null
+    val root1: Int = 0,
+    val root2: Int = 0
 )
