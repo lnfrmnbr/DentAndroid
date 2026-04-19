@@ -338,7 +338,7 @@ fun DetailToothScreen(
                                     viewModel.changePus(teethIds, value, ind)
                                 }
 
-                                MovabilityToothParam(3) {}
+                                MobilityToothParam(currentTeeth.first { it.id == teethIds.first() }.mobility) { mobility -> viewModel.changeMobility(teethIds, mobility) }
 
                                 MultiVariantsToothParam(
                                     3,
@@ -412,8 +412,8 @@ fun GraphicsToothParam(value: IntPoints, label: String, onValueChange: (Int, Int
 }
 
 @Composable
-fun MovabilityToothParam(
-    value: Int,
+fun MobilityToothParam(
+    value: Int?,
     onValueChange: (Int) -> Unit
 ) {
     val options = (0..30).toList()
@@ -430,7 +430,7 @@ fun MovabilityToothParam(
             modifier = Modifier.padding(horizontal = 12.dp)
         ) {
             Text(
-                stringResource(R.string.movability),
+                stringResource(R.string.mobility),
                 color = DarkBlue,
                 fontFamily = Montserrat,
                 fontWeight = FontWeight.Bold,
@@ -456,7 +456,7 @@ fun ChooseIntValueBox(value: Int?, options: List<Int>, onValueChange: (Int) -> U
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = (value ?: 0).toString(),
+            text = (value ?: "  ").toString(),
             color = DarkBlue,
             fontFamily = Montserrat,
             fontWeight = FontWeight.Bold,

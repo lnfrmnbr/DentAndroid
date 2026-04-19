@@ -70,6 +70,10 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
         updateTeeth(toothIds) { it.copy(removed = isRemoved) }
     }
 
+    fun changeMobility(toothIds: List<Int>, mobility: Int) {
+        updateTeeth(toothIds) { it.copy(mobility = mobility) }
+    }
+
     fun changeIsImplant(toothIds: List<Int>, isImplant: Boolean) {
         updateTeeth(toothIds) { it.copy(isImplant = isImplant) }
     }

@@ -63,7 +63,7 @@
     <string name="implant">Имплант</string>
     <string name="furcation">Фуркация</string>
     <string name="pulp_perio">Пульпит /\nПериодонтит</string>
-    <string name="movability">Подвижность</string>
+    <string name="mobility">Подвижность</string>
     <string name="seal">Пломба</string>
     <string name="vestibular">Вестибулярно</string>
     <string name="oral">Орально</string>
