@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.dentapp.R
 import com.example.dentapp.presentation.periochart.utils.BoolPoints
 import com.example.dentapp.presentation.periochart.utils.Caries
+import com.example.dentapp.presentation.periochart.utils.IntPoints
 import com.example.dentapp.presentation.periochart.utils.ToothUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,6 +87,42 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
 
     fun changePulpPerio(toothIds: List<Int>, pulpPerio: Int) {
         updateTeeth(toothIds) { it.copy(pulpPerio = pulpPerio) }
+    }
+
+    fun changeProbingDepth(toothIds: List<Int>, probingDepth: Int, pointNum: Int) {
+        updateToothParam(toothIds) { tooth, isVestibular ->
+            if (isVestibular) {
+                tooth.copy(
+                    vestibular = tooth.vestibular.copy(
+                        probingDepth = updateIntPoint(tooth.vestibular.probingDepth, pointNum, probingDepth)
+                    )
+                )
+            } else {
+                tooth.copy(
+                    oral = tooth.oral.copy(
+                        probingDepth = updateIntPoint(tooth.oral.probingDepth, pointNum, probingDepth)
+                    )
+                )
+            }
+        }
+    }
+
+    fun changeGingivalMargin(toothIds: List<Int>, gingivalMargin: Int, pointNum: Int) {
+        updateToothParam(toothIds) { tooth, isVestibular ->
+            if (isVestibular) {
+                tooth.copy(
+                    vestibular = tooth.vestibular.copy(
+                        gingivalMargin = updateIntPoint(tooth.vestibular.gingivalMargin, pointNum, gingivalMargin)
+                    )
+                )
+            } else {
+                tooth.copy(
+                    oral = tooth.oral.copy(
+                        gingivalMargin = updateIntPoint(tooth.oral.gingivalMargin, pointNum, gingivalMargin)
+                    )
+                )
+            }
+        }
     }
 
     fun changeBleeding(toothIds: List<Int>, isBleeding: Boolean, pointNum: Int) {
@@ -216,6 +253,15 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun updateBoolPoint(points: BoolPoints, pointNum: Int, value: Boolean): BoolPoints {
+        return when (pointNum) {
+            1 -> points.copy(p1 = value)
+            2 -> points.copy(p2 = value)
+            3 -> points.copy(p3 = value)
+            else -> points
+        }
+    }
+
+    private fun updateIntPoint(points: IntPoints, pointNum: Int, value: Int): IntPoints {
         return when (pointNum) {
             1 -> points.copy(p1 = value)
             2 -> points.copy(p2 = value)

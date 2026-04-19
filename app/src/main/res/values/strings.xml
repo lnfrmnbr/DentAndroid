@@ -74,6 +74,8 @@
     <string name="pus">Pus</string>
     <string name="plaque">Plaque</string>
     <string name="stones">Stones</string>
-    <string name="caries">Кариес</string>
+    <string name="caries">Caries</string>
+    <string name="probing_depth">Probing depth</string>
+    <string name="gingival_margin">Gingival margin</string>
 
 </resources>
