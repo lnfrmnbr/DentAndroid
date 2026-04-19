@@ -10,7 +10,8 @@ data class ToothUiModel(
     val oral: ToothParams = ToothParams(),
     val vestibular: ToothParams = ToothParams(),
     val removed: Boolean = false,
-    val hasSeal: Boolean = false
+    val hasSeal: Boolean = false,
+    val pulpPerio: Boolean = false
 )
 
 data class ToothParams(

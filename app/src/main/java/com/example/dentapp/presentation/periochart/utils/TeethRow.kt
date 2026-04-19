@@ -216,7 +216,7 @@ fun TeethDetailedRow(
                     ToothSvgItem(
                         tooth = tooth,
                         modifier = Modifier
-                            .height(250.dp),
+                            .height(300.dp),
                         isClickable = false
                     )
                 }
@@ -274,7 +274,7 @@ fun ToothSvgItem(
 ) {
     val context = LocalContext.current
 
-    val svgPicture = remember(tooth.id, tooth.removed) {
+    val svgPicture = remember(tooth.hashCode()) {
         val inputStream = context.resources.openRawResource(tooth.svgRes)
         var svgText = inputStream.bufferedReader().use { it.readText() }
 
@@ -285,10 +285,14 @@ fun ToothSvgItem(
                 .hideSvgGroup("V$id")
         }
 
+        if (tooth.isImplant) {
+            svgText = svgText.showSvgGroup("implant")
+        }
+
         val svg = SVG.getFromString(svgText)
         svg.renderToPicture()
     }
-    key(tooth.id, tooth.removed) {
+    key(tooth.hashCode()) {
 
         AndroidView(
             modifier = modifier.then(
@@ -321,6 +325,29 @@ private fun String.hideSvgGroup(groupId: String): String {
             tag.replace(Regex("display=\"[^\"]*\""), "display=\"none\"")
         } else {
             tag.replace("<g", "<g display=\"none\"")
+        }
+    }
+}
+
+private fun String.showSvgGroup(groupId: String): String {
+    val regex = Regex(
+        "<g([^>]*id=\"$groupId\"[^>]*)>",
+        RegexOption.IGNORE_CASE
+    )
+
+    return this.replace(regex) { match ->
+        val tag = match.value
+
+        when {
+            tag.contains("display=\"none\"") -> {
+                tag.replace("display=\"none\"", "display=\"inline\"")
+            }
+            tag.contains(Regex("display=\"[^\"]*\"")) -> {
+                tag.replace(Regex("display=\"[^\"]*\""), "display=\"inline\"")
+            }
+            else -> {
+                tag.replace("<g", "<g display=\"inline\"")
+            }
         }
     }
 }

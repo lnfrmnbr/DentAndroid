@@ -58,14 +58,26 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
         _currentJawType.value = jawType
     }
 
-    fun changeRemoved(toothId: Int, isRemoved: Boolean) {
+    fun changeRemoved(toothIds: List<Int>, isRemoved: Boolean) {
         if (_currentJawType.value == JawType.UPPER) {
             _upTeeth.value = _upTeeth.value.map {
-                if (it.id == toothId) it.copy(removed = isRemoved) else it
+                if (it.id in toothIds) it.copy(removed = isRemoved) else it
             }
         } else {
             _lowTeeth.value = _lowTeeth.value.map {
-                if (it.id == toothId) it.copy(removed = isRemoved) else it
+                if (it.id in toothIds) it.copy(removed = isRemoved) else it
+            }
+        }
+    }
+
+    fun changeIsImplant(toothIds: List<Int>, isImplant: Boolean) {
+        if (_currentJawType.value == JawType.UPPER) {
+            _upTeeth.value = _upTeeth.value.map {
+                if (it.id in toothIds) it.copy(isImplant = isImplant) else it
+            }
+        } else {
+            _lowTeeth.value = _lowTeeth.value.map {
+                if (it.id in toothIds) it.copy(isImplant = isImplant) else it
             }
         }
     }

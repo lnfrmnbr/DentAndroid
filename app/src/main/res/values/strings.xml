@@ -61,6 +61,11 @@
 
     <string name="treatment_plan">Treatment plan</string>
     <string name="complete_examination">Complete examination</string>
+
     <string name="no_tooth">No tooth</string>
+    <string name="implant">Implant</string>
+    <string name="furcation">Furcation</string>
+    <string name="pulp_perio">Pulpitis /\nPeriodontitis</string>
+    <string name="movability">Movability</string>
 
 </resources>

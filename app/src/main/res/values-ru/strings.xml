@@ -58,6 +58,11 @@
 
     <string name="treatment_plan">План лечения</string>
     <string name="complete_examination">Завершить осмотр</string>
+
     <string name="no_tooth">Нет зуба</string>
+    <string name="implant">Имплант</string>
+    <string name="furcation">Фуркация</string>
+    <string name="pulp_perio">Пульпит /\nПериодонтит</string>
+    <string name="movability">Подвижность</string>
 
 </resources>
