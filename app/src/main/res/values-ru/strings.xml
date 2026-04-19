@@ -64,5 +64,6 @@
     <string name="furcation">Фуркация</string>
     <string name="pulp_perio">Пульпит /\nПериодонтит</string>
     <string name="movability">Подвижность</string>
+    <string name="seal">Пломба</string>
 
 </resources>

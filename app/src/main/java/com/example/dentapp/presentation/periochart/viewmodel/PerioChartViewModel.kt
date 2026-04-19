@@ -82,4 +82,16 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun changeHasSeal(toothIds: List<Int>, hasSeal: Boolean) {
+        if (_currentJawType.value == JawType.UPPER) {
+            _upTeeth.value = _upTeeth.value.map {
+                if (it.id in toothIds) it.copy(hasSeal = hasSeal) else it
+            }
+        } else {
+            _lowTeeth.value = _lowTeeth.value.map {
+                if (it.id in toothIds) it.copy(hasSeal = hasSeal) else it
+            }
+        }
+    }
+
 }

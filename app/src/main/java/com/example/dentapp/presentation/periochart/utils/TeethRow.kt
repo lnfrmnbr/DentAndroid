@@ -289,6 +289,10 @@ fun ToothSvgItem(
             svgText = svgText.showSvgGroup("implant")
         }
 
+        if (tooth.hasSeal) {
+            svgText = svgText.showSvgGroup("plomba")
+        }
+
         val svg = SVG.getFromString(svgText)
         svg.renderToPicture()
     }

@@ -239,15 +239,15 @@ fun DetailToothScreen(
                                     )
                                 }
 
-                                ThreeColorsToothParam(label = "Кровоточивость", color = Pink)///кр
+                                ThreeColorsToothParam(label = "Кровоточивость", color = Red)
 
-                                BooleanToothParam(//пломба
-                                    value = currentTeeth.first { it.id == teethIds.first() }.isImplant,
-                                    label = "Пломба"
+                                BooleanToothParam(
+                                    value = currentTeeth.first { it.id == teethIds.first() }.hasSeal,
+                                    label = stringResource(R.string.seal)
                                 ) {
-                                    viewModel.changeIsImplant(
+                                    viewModel.changeHasSeal(
                                         teethIds,
-                                        !(currentTeeth.first { it.id == teethIds.first() }.isImplant)
+                                        !(currentTeeth.first { it.id == teethIds.first() }.hasSeal)
                                     )
                                 }
                             }
