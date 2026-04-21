@@ -10,4 +10,4 @@ data class Patient(
     val sex: String,
     val email: String? = null,
     val phoneNumber: String? = null
-)
+) : java.io.Serializable

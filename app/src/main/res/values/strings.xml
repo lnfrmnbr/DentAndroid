@@ -77,5 +77,6 @@
     <string name="caries">Caries</string>
     <string name="probing_depth">Probing depth</string>
     <string name="gingival_margin">Gingival margin</string>
+    <string name="diagnose">Diagnose</string>
 
 </resources>

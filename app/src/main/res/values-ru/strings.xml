@@ -74,5 +74,6 @@
     <string name="caries">Кариес</string>
     <string name="probing_depth">Глубина зондирования</string>
     <string name="gingival_margin">Десневой край</string>
+    <string name="diagnose">Диагноз</string>
 
 </resources>

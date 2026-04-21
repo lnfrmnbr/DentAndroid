@@ -48,13 +48,14 @@ import com.example.dentapp.ui.theme.White
 @Composable
 fun DiagnosisField(
     text: String,
+    defaultDiagnosis: List<String>,
     diagnosis: List<String>,
     onDeleteDiagnose: (String) -> Unit,
     onAddDiagnosis: (String) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
-    val allDiseases = remember { getAllDiseases() }
+    val allDiseases = remember { defaultDiagnosis }
 
     val filteredDiseases = remember(searchQuery) {
         if (searchQuery.isEmpty()) {
@@ -364,21 +365,4 @@ fun DropdownItem(
             }
         }
     }
-}
-
-fun getAllDiseases(): List<String> {
-    return listOf(
-        "Кариес",
-        "Пульпит",
-        "Периодонтит",
-        "Гингивит",
-        "Стоматит",
-        "Пародонтоз",
-        "Пародонтит",
-        "Флюороз",
-        "Эрозия эмали",
-        "Киста зуба",
-        "Абсцесс",
-        "Альвеолит"
-    )
 }

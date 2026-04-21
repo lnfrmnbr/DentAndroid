@@ -2,6 +2,7 @@ package com.example.dentapp.presentation.periochart.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.dentapp.R
+import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.presentation.periochart.utils.BoolPoints
 import com.example.dentapp.presentation.periochart.utils.Caries
 import com.example.dentapp.presentation.periochart.utils.Furcation
@@ -11,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
@@ -50,6 +52,21 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
     private val _currentSurfaceType = MutableStateFlow<SurfaceType>(SurfaceType.VESTIBULAR)
     val currentSurfaceType: StateFlow<SurfaceType> = _currentSurfaceType.asStateFlow()
 
+    private val _appointment = MutableStateFlow<Appointment?>(null)
+    val appointment: StateFlow<Appointment?> = _appointment.asStateFlow()
+
+    private val _complaints = MutableStateFlow("")
+    val complaints: StateFlow<String> = _complaints.asStateFlow()
+
+    private val _comments = MutableStateFlow("")
+    val comments: StateFlow<String> = _comments.asStateFlow()
+
+    private val _treatmentPlan = MutableStateFlow("")
+    val treatmentPlan: StateFlow<String> = _treatmentPlan.asStateFlow()
+
+    private val _diagnosis = MutableStateFlow<List<String>>(emptyList())
+    val diagnosis: StateFlow<List<String>> = _diagnosis.asStateFlow()
+
     enum class JawType { UPPER, LOWER }
     enum class SurfaceType { VESTIBULAR, ORAL }
     enum class CariesType { C11, C12, C13, C21, C22, C23 }
@@ -60,6 +77,63 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
 
     fun clearSelection() {
         _selectedTeeth.value = emptyList()
+    }
+
+    fun setAppointment(appointment: Appointment?) {
+        _appointment.value = appointment
+        appointment?.comments?.let {
+            _comments.value = it
+        }
+        appointment?.complaints?.let {
+            _complaints.value = it
+        }
+    }
+
+    fun deleteDiagnose(diagnose: String) {
+        _diagnosis.update { currentList ->
+            currentList.filter { it != diagnose }
+        }
+    }
+
+    fun addDiagnose(diagnose: String) {
+        if (diagnose.isBlank()) return
+
+        val trimmedDiagnose = diagnose.trim()
+
+        if (!_diagnosis.value.contains(trimmedDiagnose)) {
+            _diagnosis.update { currentList ->
+                currentList + trimmedDiagnose
+            }
+        }
+    }
+
+    fun updateTreatmentPlan(value: String) {
+        _treatmentPlan.value = value
+    }
+
+    fun updateComments(value: String) {
+        _comments.value = value
+    }
+
+    fun updateComplaints(value: String) {
+        _complaints.value = value
+    }
+
+    fun getAllDiseases(): List<String> {
+        return listOf(
+            "Кариес",
+            "Пульпит",
+            "Периодонтит",
+            "Гингивит",
+            "Стоматит",
+            "Пародонтоз",
+            "Пародонтит",
+            "Флюороз",
+            "Эрозия эмали",
+            "Киста зуба",
+            "Абсцесс",
+            "Альвеолит"
+        )
     }
 
     fun changeJawType(jawType: JawType) {

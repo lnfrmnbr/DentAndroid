@@ -3,6 +3,7 @@ package com.example.dentapp.presentation.appointment.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.data.local.AuthDataStore
+import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.domain.model.patients.Patient
 import com.example.dentapp.domain.usecase.appointment.AddAppointmentUseCase
 import com.example.dentapp.domain.usecase.patients.AddPatientUseCase
@@ -112,8 +113,8 @@ class AppointmentViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    fun startAppointment(onSuccess: () -> Unit) {onSuccess()
-        /*if (fio.value.length > 100) {
+    fun startAppointment(onSuccess: (Appointment) -> Unit) {
+        if (fio.value.length > 100) {
             _errorMessage.value = PatientsErrors.FULL_NAME_TOO_LONG
             return
         }
@@ -133,8 +134,28 @@ class AppointmentViewModel @Inject constructor(
 
         _isLoading.value = true
 
-        viewModelScope.launch {
+        val appointment = Appointment(
+            complaints = complaints.value,
+            comments = comments.value,
+            patient = Patient(
+                id = patientId.value,
+                fullName = fio.value,
+                birthDate = formatter.parse(birthDate.value)!!,
+                sex = genderCode,
+                email = email.value,
+                phoneNumber = phoneNumber.value
+            ),
+            date = LocalDateTime.now(),
+        )
+
+        onSuccess(appointment)
+
+        _isLoading.value = false
+
+        /*viewModelScope.launch {
             try {
+                val doctorId = UUID.fromString(authDataStore.getDoctorId())
+
                 val patientId = if (patientId.value == null) {
                     addPatientUseCase(
                         fullName = fio.value,
@@ -144,8 +165,6 @@ class AppointmentViewModel @Inject constructor(
                         phoneNumber = phoneNumber.value
                     ).id
                 } else patientId.value
-
-                val doctorId = UUID.fromString(authDataStore.getDoctorId())
 
                 if (patientId != null) {
                     addAppointmentUseCase(

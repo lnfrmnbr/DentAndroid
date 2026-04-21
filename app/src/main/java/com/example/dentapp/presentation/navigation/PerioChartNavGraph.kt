@@ -1,5 +1,6 @@
 package com.example.dentapp.presentation.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -8,11 +9,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.presentation.periochart.screen.DetailToothScreen
 import com.example.dentapp.presentation.periochart.screen.PerioChartScreen
 import com.example.dentapp.presentation.periochart.viewmodel.PerioChartViewModel
 
-fun NavGraphBuilder.perioChartNavGraph(navHostController: NavHostController) {
+fun NavGraphBuilder.perioChartNavGraph(navHostController: NavHostController, appointment: Appointment?) {
     navigation(
         startDestination = Screen.PerioChart.route,
         route = Screen.PerioChartGraph.route
@@ -24,6 +26,12 @@ fun NavGraphBuilder.perioChartNavGraph(navHostController: NavHostController) {
             }
 
             val viewModel: PerioChartViewModel = hiltViewModel(parentEntry)
+
+            LaunchedEffect(Unit) {
+                appointment?.let {
+                    viewModel.setAppointment(it)
+                }
+            }
 
             PerioChartScreen(
                 navController = navHostController,

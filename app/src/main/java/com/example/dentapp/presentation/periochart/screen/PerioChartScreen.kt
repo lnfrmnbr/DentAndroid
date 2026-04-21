@@ -56,9 +56,13 @@ fun PerioChartScreen(
     navController: NavHostController,
     viewModel: PerioChartViewModel
 ) {
-    val patients = listOf<Patient>()//by viewModel.patients.collectAsState()
     val upTeeth by viewModel.upTeeth.collectAsState()
     val lowTeeth by viewModel.lowTeeth.collectAsState()
+
+    val complaints by viewModel.complaints.collectAsState()
+    val comments by viewModel.comments.collectAsState()
+    val treatmentPlan by viewModel.treatmentPlan.collectAsState()
+    val diagnosis by viewModel.diagnosis.collectAsState()
 
     val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
@@ -76,8 +80,6 @@ fun PerioChartScreen(
         disabledContainerColor = DarkBlue
     )
     val selectedTeeth by viewModel.selectedTeeth.collectAsState()
-
-    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
 
     Box(
         modifier = Modifier
@@ -115,52 +117,41 @@ fun PerioChartScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
-                    PatientSearchDropdown(
-                        value = "fio",
-                        onValueChanged = { newValue ->
-                            //viewModel.updateFio(newValue)
-                            //viewModel.clearSelectedPatient()
-                        },
-                        onPatientSelected = { patient ->
-                            //viewModel.selectPatient(patient)
-                        },
-                        patients = patients,
-                        fieldsColors = fieldsColors,
-                        strRes = R.string.fio
-                    )
-
-                    DiagnosisField(
-                        "Диагноз", listOf("болезнь1", "болезнь2"),
-                        onDeleteDiagnose = {}, {}
-                    )
-
                     IndexesTable()
 
-                    InputTextField(
-                        "complaints",
-                        R.string.complaints,
-                        fieldsColors,
-                        deleteSpaces = false
-                    ) {
-                        // viewModel.updateComplaints(it)
-                    }
+                    DiagnosisField(
+                        stringResource(R.string.diagnose),
+                        defaultDiagnosis = viewModel.getAllDiseases(),
+                        diagnosis = diagnosis,
+                        onDeleteDiagnose = { diagnose -> viewModel.deleteDiagnose(diagnose) },
+                        onAddDiagnosis = { diagnose -> viewModel.addDiagnose(diagnose) }
+                    )
 
                     InputTextField(
-                        "plan",
+                        treatmentPlan,
                         R.string.treatment_plan,
                         fieldsColors,
                         deleteSpaces = false
                     ) {
-                        //viewModel.updateComments(it)
+                        viewModel.updateTreatmentPlan(it)
                     }
 
                     InputTextField(
-                        "comments",
+                        complaints,
+                        R.string.complaints,
+                        fieldsColors,
+                        deleteSpaces = false
+                    ) {
+                        viewModel.updateComplaints(it)
+                    }
+
+                    InputTextField(
+                        comments,
                         R.string.comments,
                         fieldsColors,
                         deleteSpaces = false
                     ) {
-                        //viewModel.updateComments(it)
+                        viewModel.updateComments(it)
                     }
 
                     Button(

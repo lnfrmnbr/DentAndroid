@@ -391,16 +391,18 @@ fun AppointmentScreen(
 
             Button(
                 onClick = {
-                    viewModel.startAppointment {
-                        val intent = Intent(context, PerioChartActivity::class.java)
+                    viewModel.startAppointment { appointment ->
+                        val intent = Intent(context, PerioChartActivity::class.java).apply {
+                            putExtra("appointment", appointment)
+                        }
                         context.startActivity(intent)
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                /*enabled = !isLoading && fio.isNotEmpty() && sex.isNotEmpty()
-                        && birthDate.text.isNotEmpty() && (email.isNotEmpty() || phoneNumber.text.isNotEmpty()),*/
+                enabled = !isLoading && fio.isNotEmpty() && sex.isNotEmpty()
+                        && birthDate.text.isNotEmpty() && (email.isNotEmpty() || phoneNumber.text.isNotEmpty()),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue,
                     contentColor = Color.White,
