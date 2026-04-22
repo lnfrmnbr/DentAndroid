@@ -93,7 +93,7 @@ fun ActionBar() {
             )
         }
 
-        ActionButton(R.drawable.pen_icon, R.string.select, true) {}
+        ActionButton(R.drawable.pen_icon, R.string.select, false) {}
         ActionButton(R.drawable.back_icon, R.string.back, false) {}
         ActionButton(R.drawable.forward_icon, R.string.forward, false) {}
 

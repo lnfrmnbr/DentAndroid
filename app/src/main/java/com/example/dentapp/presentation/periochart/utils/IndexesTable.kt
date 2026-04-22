@@ -70,12 +70,12 @@ fun IndexesTable() {
                 modifier = Modifier.weight(0.5f)
             ) {
                 TableHeader("Результат")
-                TableRow("0")
-                TableRow("0%")
-                TableRow("0%")
+                TableRow("3")
+                TableRow("5,376%")
+                TableRow("4,032%")
                 CpitnValueRow()
-                TableRow("0")
-                TableRow("0", false)
+                TableRow("0,129")
+                TableRow("0,548", false)
             }
 
             VerticalDivider()
@@ -87,8 +87,8 @@ fun IndexesTable() {
                 TableRow("Низкая степень тяжести кариозного процесса")
                 TableRow("Норма")
                 TableRow("Оптимальный уровень гигиены")
-                CpitnRow("Лечение не требуется")
-                TableRow("Норма")
+                CpitnRow("Необходимость профессиональной гигиены")
+                TableRow("Гингивит")
                 TableRow("Хорошая гигиена", false)
             }
         }
@@ -157,7 +157,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "0",
+                    "2",
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
@@ -172,7 +172,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "0",
+                    "2",
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
@@ -187,7 +187,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "0",
+                    "2",
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,

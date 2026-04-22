@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -145,23 +146,72 @@ fun TeethRow(
     teeth: List<ToothUiModel>,
     onToothClick: (ToothUiModel) -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(unbounded = true),
-        horizontalArrangement = Arrangement.spacedBy((-2).dp),
-        verticalAlignment = Alignment.Top
+    val positions = mapOf<Int, Pair<Float, Float>>(
+        18 to Pair(600.0f, 0.0f),
+        17 to Pair(600.0f, 0.0f),
+        16 to Pair(600.0f, 0.0f),
+        15 to Pair(600.0f, 0.0f),
+        14 to Pair(600.0f, 0.0f),
+        13 to Pair(600.0f, 0.0f),
+        12 to Pair(600.0f, 0.0f),
+        11 to Pair(600.0f, 0.0f),
+        21 to Pair(600.0f, 0.0f),
+        22 to Pair(600.0f, 0.0f),
+        23 to Pair(600.0f, 0.0f),
+        24 to Pair(610.0f, 0.0f),
+        25 to Pair(620.0f, 0.0f),
+        26 to Pair(630.0f, 0.0f),
+        27 to Pair(640.0f, 0.0f),
+        28 to Pair(2020.0f, 0.0f)
+    )
+    Box(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        teeth.forEach { tooth ->
-            ToothSvgItem(
-                tooth = tooth,
-                modifier = Modifier
-                    .height(250.dp),
-                onClick = { onToothClick(tooth) }
-            )
 
-            if (tooth.id == 11) {
-                Spacer(modifier = Modifier.width(24.dp))
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 100.dp)
+                .zIndex(1f)
+        ) {
+            drawPerioLines(
+                teeth = teeth,
+                positions = positions,
+                surfaceType = PerioChartViewModel.SurfaceType.VESTIBULAR
+            )
+        }
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(top = 185.dp)
+                .zIndex(1f)
+        ) {
+            drawPerioLines(
+                teeth = teeth,
+                positions = positions,
+                surfaceType = PerioChartViewModel.SurfaceType.ORAL
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(unbounded = true),
+            horizontalArrangement = Arrangement.spacedBy((-2).dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            teeth.forEach { tooth ->
+                ToothSvgItem(
+                    tooth = tooth,
+                    modifier = Modifier
+                        .height(250.dp),
+                    onClick = { onToothClick(tooth) }
+                )
+
+                if (tooth.id == 11) {
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
             }
         }
     }
@@ -211,7 +261,7 @@ fun TeethDetailedRow(
         Canvas(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(bottom=63.dp)
+                .padding(bottom = 63.dp)
                 .zIndex(1f)
         ) {
             drawPerioLines(
@@ -224,7 +274,7 @@ fun TeethDetailedRow(
         Canvas(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(top=130.dp)
+                .padding(top = 130.dp)
                 .zIndex(1f)
         ) {
             drawPerioLines(
@@ -298,35 +348,6 @@ fun TeethDetailedRow(
                         .zIndex(1f)
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun TeethWithPerioChart(
-    teeth: List<ToothUiModel>,
-    surfaceType: PerioChartViewModel.SurfaceType,
-    modifier: Modifier = Modifier,
-    toothContent: @Composable (
-        positions: MutableMap<Int, Pair<Float, Float>>
-    ) -> Unit
-) {
-    val positions = remember { mutableStateMapOf<Int, Pair<Float, Float>>() }
-
-    Box(modifier = modifier) {
-
-        toothContent(positions)
-
-        Canvas(
-            modifier = Modifier
-                .matchParentSize()
-                .zIndex(2f)
-        ) {
-            drawPerioLines(
-                teeth = teeth,
-                positions = positions,
-                surfaceType = surfaceType
-            )
         }
     }
 }
@@ -591,5 +612,4 @@ fun DrawScope.drawPerioLines(
 
     drawPath(path = pocketPath, color = Blue, style = Stroke(width = 2.dp.toPx()))
     drawPath(path = gingivalPath, color = Pink, style = Stroke(width = 2.dp.toPx()))
-
 }
