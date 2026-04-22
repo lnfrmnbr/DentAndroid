@@ -26,10 +26,9 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.dentapp.R
 import com.example.dentapp.ui.theme.LightBlue
-import com.example.dentapp.ui.theme.LightDarkBlue
-import com.example.dentapp.ui.theme.LightGreyBlue
 import com.example.dentapp.ui.theme.Montserrat
 import com.example.dentapp.ui.theme.NewBlue
+import com.example.dentapp.ui.theme.VeryDarkBlue
 
 @Composable
 fun NavBar(navController: NavController, rootNavController: NavController) {
@@ -72,11 +71,7 @@ fun NavBar(navController: NavController, rootNavController: NavController) {
                         painter = painterResource(id = navItem.iconRes),
                         contentDescription = stringResource(navItem.titleRes),
                         modifier = Modifier.size(20.dp),
-                        colorFilter = if (currentRoute == navItem.route) {
-                            ColorFilter.tint(NewBlue)
-                        } else {
-                            ColorFilter.tint(LightGreyBlue)
-                        }
+                        colorFilter = ColorFilter.tint(NewBlue)
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
@@ -87,9 +82,13 @@ fun NavBar(navController: NavController, rootNavController: NavController) {
                 label = {
                     Text(
                         stringResource(navItem.titleRes),
-                        color = LightDarkBlue,
+                        color = if (currentRoute == navItem.route) {
+                            VeryDarkBlue
+                        } else {
+                            NewBlue
+                        },
                         fontFamily = Montserrat,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Normal,
                         fontSize = 10.5.sp,
                         maxLines = 1
                     )

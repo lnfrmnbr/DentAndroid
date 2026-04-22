@@ -35,7 +35,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -50,8 +49,8 @@ import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.Grey
 import com.example.dentapp.ui.theme.GreyBlue
+import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.Montserrat
-import com.example.dentapp.ui.theme.NewBlue
 import com.example.dentapp.ui.theme.Pink
 import com.example.dentapp.ui.theme.VeryDarkBlue
 import com.example.dentapp.ui.theme.White
@@ -95,14 +94,7 @@ fun SignInScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colorStops = arrayOf(
-                        0.0f to NewBlue,
-                        0.7f to Color.White
-                    )
-                )
-            )
+            .background(LightBlue)
             .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.Center
     ) {
@@ -121,7 +113,7 @@ fun SignInScreen(
                     .drawWithContent { drawContent() }
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = stringResource(R.string.sign_in_descr),
@@ -161,13 +153,13 @@ fun SignInScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.google_icon),
+                            painter = painterResource(id = R.drawable.no_signal),
                             contentDescription = stringResource(R.string.google),
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = stringResource(R.string.google_sign),
+                            text = "Работать автономно",
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp,

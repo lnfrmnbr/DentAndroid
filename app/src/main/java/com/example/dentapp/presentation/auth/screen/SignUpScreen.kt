@@ -43,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -66,10 +65,10 @@ import com.example.dentapp.ui.theme.Cygre
 import com.example.dentapp.ui.theme.DarkBlue
 import com.example.dentapp.ui.theme.Grey
 import com.example.dentapp.ui.theme.GreyBlue
+import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.LightDarkBlue
 import com.example.dentapp.ui.theme.LightGreyBlue
 import com.example.dentapp.ui.theme.Montserrat
-import com.example.dentapp.ui.theme.NewBlue
 import com.example.dentapp.ui.theme.Pink
 import com.example.dentapp.ui.theme.VeryDarkBlue
 import com.example.dentapp.ui.theme.White
@@ -114,14 +113,7 @@ fun SignUpScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colorStops = arrayOf(
-                        0.0f to NewBlue,
-                        0.7f to Color.White
-                    )
-                )
-            )
+            .background(LightBlue)
             .verticalScroll(rememberScrollState())
     ) {
         Column(
@@ -141,7 +133,7 @@ fun SignUpScreen(
                     .drawWithContent { drawContent() }
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(R.string.sign_up),
