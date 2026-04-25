@@ -55,7 +55,7 @@ fun NavBar(navController: NavController, rootNavController: NavController) {
                 selected = currentRoute == navItem.route,
                 onClick = {
                     if (navItem is BottomNavItem.Appointment) {
-                        rootNavController.navigate(Screen.Appointment.route)
+                        rootNavController.navigate(Screen.StartAppointment.route)
                     } else {
                         navController.navigate(navItem.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
@@ -118,7 +118,7 @@ sealed class BottomNavItem(
     data object Appointment : BottomNavItem(
         R.drawable.plus_icon,
         R.string.start,
-        Screen.Appointment.route
+        Screen.StartAppointment.route
     )
 
     data object Files : BottomNavItem(

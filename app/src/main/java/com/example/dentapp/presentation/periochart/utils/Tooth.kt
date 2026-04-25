@@ -2,7 +2,7 @@ package com.example.dentapp.presentation.periochart.utils
 
 import androidx.annotation.RawRes
 
-data class ToothUiModel(
+data class Tooth(
     val id: Int,
     @RawRes val svgRes: Int,
     val isImplant: Boolean = false,
@@ -12,7 +12,7 @@ data class ToothUiModel(
     val removed: Boolean = false,
     val hasSeal: Boolean = false,
     val pulpPerio: Int = 0
-)
+) : java.io.Serializable
 
 data class ToothParams(
     val bleeding: BoolPoints = BoolPoints(),
@@ -23,7 +23,7 @@ data class ToothParams(
     val caries: Caries = Caries(),
     val probingDepth: IntPoints = IntPoints(),
     val gingivalMargin: IntPoints = IntPoints()
-)
+) : java.io.Serializable
 
 data class Caries(
     val c11: Boolean = false,
@@ -32,21 +32,21 @@ data class Caries(
     val c21: Boolean = false,
     val c22: Boolean = false,
     val c23: Boolean = false
-    )
+) : java.io.Serializable
 
 data class BoolPoints(
     val p1: Boolean = false,
     val p2: Boolean = false,
     val p3: Boolean = false
-)
+) : java.io.Serializable
 
 data class IntPoints(
     val p1: Int? = null,
     val p2: Int? = null,
     val p3: Int? = null
-)
+) : java.io.Serializable
 
 data class Furcation(
     val root1: Int = 0,
     val root2: Int = 0
-)
+) : java.io.Serializable

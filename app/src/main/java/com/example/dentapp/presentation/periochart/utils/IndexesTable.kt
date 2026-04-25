@@ -21,10 +21,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dentapp.R
+import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.ui.theme.Grey
 import com.example.dentapp.ui.theme.LightBlue
 import com.example.dentapp.ui.theme.LightDarkBlue
@@ -33,7 +36,7 @@ import com.example.dentapp.ui.theme.SkyBlue
 import com.example.dentapp.ui.theme.White
 
 @Composable
-fun IndexesTable() {
+fun IndexesTable(indexes: Indexes) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = White,
@@ -55,13 +58,13 @@ fun IndexesTable() {
             Column(
                 modifier = Modifier.weight(0.4f)
             ) {
-                TableHeader("Индекс")
-                TableRow("КПУ")
-                TableRow("BOP")
-                TableRow("API")
-                CpitnRow("CPITN")
-                TableRow("Russel")
-                TableRow("OHI_S", false)
+                TableHeader(stringResource(R.string.index))
+                TableRow(stringResource(R.string.kpu))
+                TableRow(stringResource(R.string.bop))
+                TableRow(stringResource(R.string.api))
+                CpitnRow(stringResource(R.string.cpitn))
+                TableRow(stringResource(R.string.russel))
+                TableRow(stringResource(R.string.ohis), false)
             }
 
             VerticalDivider()
@@ -69,13 +72,13 @@ fun IndexesTable() {
             Column(
                 modifier = Modifier.weight(0.5f)
             ) {
-                TableHeader("Результат")
-                TableRow("3")
-                TableRow("5,376%")
-                TableRow("4,032%")
-                CpitnValueRow()
-                TableRow("0,129")
-                TableRow("0,548", false)
+                TableHeader(stringResource(R.string.result))
+                TableRow(indexes.kpu.toString())
+                TableRow(indexes.bop.toString())
+                TableRow(indexes.api.toString())
+                CpitnValueRow(indexes.cpitn)
+                TableRow(indexes.russel.toString())
+                TableRow(indexes.ohis.toString(), false)
             }
 
             VerticalDivider()
@@ -141,7 +144,7 @@ fun TableRow(text: String, needDivider: Boolean = true) {
 }
 
 @Composable
-fun CpitnValueRow() {
+fun CpitnValueRow(cpitn: List<Int>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,7 +160,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "2",
+                    cpitn[0].toString(),
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
@@ -172,7 +175,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "2",
+                    cpitn[1].toString(),
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
@@ -187,7 +190,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "2",
+                    cpitn[2].toString(),
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
@@ -203,7 +206,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "0",
+                    cpitn[3].toString(),
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
@@ -218,7 +221,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "0",
+                    cpitn[4].toString(),
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
@@ -233,7 +236,7 @@ fun CpitnValueRow() {
                     .padding(4.dp)
             ) {
                 Text(
-                    "0",
+                    cpitn[4].toString(),
                     color = LightDarkBlue,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,

@@ -45,6 +45,10 @@
     <string name="you_have">У вас</string>
 
     <string name="start_appointment">Начать прием</string>
+    <string name="finish_appointment">Завершить прием</string>
+    <string name="finish_and_create_report">Сформировать отчет</string>
+    <string name="save_draft">Сохранить черновик</string>
+
     <string name="patient_full_name">ФИО пациента</string>
     <string name="fio">Фамилия Имя Отчество</string>
     <string name="patient_info">Информация о пациенте</string>
@@ -76,5 +80,13 @@
     <string name="probing_depth">Глубина зондирования</string>
     <string name="gingival_margin">Десневой край</string>
     <string name="diagnose">Диагноз</string>
+    <string name="result">Результат</string>
+    <string name="index">Индекс</string>
+    <string name="cpitn">CPITN</string>
+    <string name="kpu">КПУ</string>
+    <string name="bop">BOP</string>
+    <string name="api">API</string>
+    <string name="russel">Russel</string>
+    <string name="ohis">OHI-S</string>
 
 </resources>

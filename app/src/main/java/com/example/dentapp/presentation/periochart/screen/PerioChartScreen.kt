@@ -1,5 +1,7 @@
 package com.example.dentapp.presentation.periochart.screen
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,11 +23,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,8 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.dentapp.R
-import com.example.dentapp.domain.model.patients.Patient
-import com.example.dentapp.presentation.appointment.screen.PatientSearchDropdown
+import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.presentation.auth.screen.InputTextField
 import com.example.dentapp.presentation.navigation.Screen
 import com.example.dentapp.presentation.periochart.utils.ActionBar
@@ -56,8 +57,12 @@ fun PerioChartScreen(
     navController: NavHostController,
     viewModel: PerioChartViewModel
 ) {
+    val context = LocalContext.current
+    val activity = context as Activity
+
     val upTeeth by viewModel.upTeeth.collectAsState()
     val lowTeeth by viewModel.lowTeeth.collectAsState()
+    val selectedTeeth by viewModel.selectedTeeth.collectAsState()
 
     val complaints by viewModel.complaints.collectAsState()
     val comments by viewModel.comments.collectAsState()
@@ -79,7 +84,14 @@ fun PerioChartScreen(
         disabledTextColor = White,
         disabledContainerColor = DarkBlue
     )
-    val selectedTeeth by viewModel.selectedTeeth.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    val bop by viewModel.bop.collectAsState()
+    val api by viewModel.api.collectAsState()
+    val russel by viewModel.russel.collectAsState()
+    val ohis by viewModel.ohis.collectAsState()
+    val kpu by viewModel.kpu.collectAsState()
+    val cpitn by viewModel.cpitn.collectAsState()
 
     Box(
         modifier = Modifier
@@ -117,7 +129,7 @@ fun PerioChartScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
-                    IndexesTable()
+                    IndexesTable(Indexes(bop = bop, api = api, ohis = ohis, russel = russel, cpitn = cpitn, kpu = kpu))
 
                     DiagnosisField(
                         stringResource(R.string.diagnose),
@@ -156,13 +168,17 @@ fun PerioChartScreen(
 
                     Button(
                         onClick = {
-
+                            viewModel.finishAppointment { appointment ->
+                                val intent = Intent().apply {
+                                    putExtra("appointment", appointment)
+                                }
+                                activity.setResult(Activity.RESULT_OK, intent)
+                                activity.finish()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),
-                        /*enabled = !isLoading && fio.isNotEmpty() && sex.isNotEmpty()
-                                && birthDate.text.isNotEmpty() && (email.isNotEmpty() || phoneNumber.text.isNotEmpty()),*/
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Blue,
                             contentColor = Color.White,
@@ -171,7 +187,7 @@ fun PerioChartScreen(
                         ),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        if (false) {//isLoading
+                        if (isLoading) {
                             CircularProgressIndicator(
                                 color = Color.White,
                                 modifier = Modifier.size(20.dp),

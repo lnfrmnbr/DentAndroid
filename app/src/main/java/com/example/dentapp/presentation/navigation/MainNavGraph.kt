@@ -1,10 +1,14 @@
 package com.example.dentapp.presentation.navigation
 
+import androidx.compose.runtime.remember
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.dentapp.presentation.appointment.screen.AppointmentScreen
+import com.example.dentapp.presentation.appointment.screen.FinishAppointmentScreen
+import com.example.dentapp.presentation.appointment.screen.StartAppointmentScreen
+import com.example.dentapp.presentation.appointment.viewmodel.AppointmentViewModel
 import com.example.dentapp.presentation.calendar.screen.CalendarScreen
 import com.example.dentapp.presentation.files.screen.FilesScreen
 import com.example.dentapp.presentation.home.screen.HomeScreen
@@ -32,8 +36,22 @@ fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
             CalendarScreen(navHostController)
         }
 
-        composable(Screen.Appointment.route) {
-            AppointmentScreen(navHostController)
+        composable(Screen.StartAppointment.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navHostController.getBackStackEntry(Screen.MainGraph.route)
+            }
+            val viewModel: AppointmentViewModel = hiltViewModel(parentEntry)
+
+            StartAppointmentScreen(navHostController, viewModel)
+        }
+
+        composable(Screen.FinishAppointment.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navHostController.getBackStackEntry(Screen.MainGraph.route)
+            }
+            val viewModel: AppointmentViewModel = hiltViewModel(parentEntry)
+
+            FinishAppointmentScreen(navHostController, viewModel)
         }
 
         composable(Screen.Files.route) {

@@ -58,8 +58,8 @@ import com.example.dentapp.ui.theme.SkyBlue
 
 @Composable
 fun SlidingTeethBox(
-    upperJaw: List<ToothUiModel>,
-    lowerJaw: List<ToothUiModel>? = null,
+    upperJaw: List<Tooth>,
+    lowerJaw: List<Tooth>? = null,
     onSlide: (PerioChartViewModel.JawType) -> Unit,
     onToothClick: (Int) -> Unit
 ) {
@@ -143,8 +143,10 @@ fun SlidingTeethBox(
 
 @Composable
 fun TeethRow(
-    teeth: List<ToothUiModel>,
-    onToothClick: (ToothUiModel) -> Unit,
+    teeth: List<Tooth>,
+    isClickable: Boolean = true,
+    toothHeight: Dp = 250.dp,
+    onToothClick: (Tooth) -> Unit,
 ) {
     val positions = mapOf<Int, Pair<Float, Float>>(
         18 to Pair(600.0f, 0.0f),
@@ -184,10 +186,15 @@ fun TeethRow(
         modifier = Modifier.fillMaxWidth()
     ) {
 
+        val paddingTopChart = (toothHeight.value / 2.5f).dp
+        val paddingLowChart = (toothHeight.value / 1.35f).dp
+        val centerSpace = (toothHeight.value / 10.4f).dp
+        val toothSpace = toothHeight.value / 125f
+
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 100.dp)
+                .padding(top = paddingTopChart)
                 .zIndex(1f)
         ) {
             drawPerioLines(
@@ -200,7 +207,7 @@ fun TeethRow(
         Canvas(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(top = 185.dp)
+                .padding(top = paddingLowChart)
                 .zIndex(1f)
         ) {
             drawPerioLines(
@@ -214,19 +221,20 @@ fun TeethRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(unbounded = true),
-            horizontalArrangement = Arrangement.spacedBy((-2).dp),
+            horizontalArrangement = Arrangement.spacedBy((-toothSpace).dp),
             verticalAlignment = Alignment.Top
         ) {
             teeth.forEach { tooth ->
                 ToothSvgItem(
                     tooth = tooth,
                     modifier = Modifier
-                        .height(250.dp),
+                        .height(toothHeight),
+                    isClickable = isClickable,
                     onClick = { onToothClick(tooth) }
                 )
 
                 if (tooth.id == 11 || tooth.id == 41) {
-                    Spacer(modifier = Modifier.width(24.dp))
+                    Spacer(modifier = Modifier.width(centerSpace))
                 }
             }
         }
@@ -236,7 +244,7 @@ fun TeethRow(
 
 @Composable
 fun TeethDetailedRow(
-    teeth: List<ToothUiModel>,
+    teeth: List<Tooth>,
     selectedTeeth: List<Int>,
     maxWidth: Dp
 ) {
@@ -371,7 +379,7 @@ fun TeethDetailedRow(
 @SuppressLint("LocalContextResourcesRead")
 @Composable
 fun ToothSvgItem(
-    tooth: ToothUiModel,
+    tooth: Tooth,
     modifier: Modifier = Modifier,
     isClickable: Boolean = true,
     onClick: () -> Unit = {}
@@ -579,7 +587,7 @@ private fun String.showSvgGroup(groupId: String): String {
 }
 
 fun DrawScope.drawPerioLines(
-    teeth: List<ToothUiModel>,
+    teeth: List<Tooth>,
     positions: Map<Int, Pair<Float, Float>>, surfaceType: PerioChartViewModel.SurfaceType
 ) {
     val gingivalPath = Path()

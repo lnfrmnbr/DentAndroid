@@ -1,18 +1,20 @@
 package com.example.dentapp.domain.model.appointment
 
 import com.example.dentapp.domain.model.patients.Patient
+import com.example.dentapp.presentation.periochart.utils.Tooth
 import java.time.LocalDateTime
 
 data class Appointment(
-    val patient: Patient,
+    val patient: Patient?,
     val date: LocalDateTime = LocalDateTime.now(),
     val tags: List<String>? = emptyList(),
     val indexes: Indexes = Indexes(),
-    val complaints: String?= null,
-    val comments: String?= null,
+    val complaints: String? = null,
+    val comments: String? = null,
     val plan: String? = null,
+    val isFirst: Boolean,
     val diagnosis: List<String>? = null,
-    val chart: String? = null,
+    val chart: List<Tooth>? = null,
     val fileUrl: String? = null
 ) : java.io.Serializable
 

@@ -3,64 +3,65 @@ package com.example.dentapp.presentation.periochart.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.dentapp.R
 import com.example.dentapp.domain.model.appointment.Appointment
+import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.presentation.periochart.utils.BoolPoints
 import com.example.dentapp.presentation.periochart.utils.Caries
 import com.example.dentapp.presentation.periochart.utils.Furcation
 import com.example.dentapp.presentation.periochart.utils.IntPoints
-import com.example.dentapp.presentation.periochart.utils.ToothUiModel
+import com.example.dentapp.presentation.periochart.utils.Tooth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 
 @HiltViewModel
 class PerioChartViewModel @Inject constructor() : ViewModel() {
     val upTeethUnit = listOf(
-        ToothUiModel(18, R.raw.t18),
-        ToothUiModel(17, R.raw.t17),
-        ToothUiModel(16, R.raw.t16),
-        ToothUiModel(15, R.raw.t15),
-        ToothUiModel(14, R.raw.t14),
-        ToothUiModel(13, R.raw.t13),
-        ToothUiModel(12, R.raw.t12),
-        ToothUiModel(11, R.raw.t11),
-        ToothUiModel(21, R.raw.t21),
-        ToothUiModel(22, R.raw.t22),
-        ToothUiModel(23, R.raw.t23),
-        ToothUiModel(24, R.raw.t24),
-        ToothUiModel(25, R.raw.t25),
-        ToothUiModel(26, R.raw.t26),
-        ToothUiModel(27, R.raw.t27),
-        ToothUiModel(28, R.raw.t28)
+        Tooth(18, R.raw.t18),
+        Tooth(17, R.raw.t17),
+        Tooth(16, R.raw.t16),
+        Tooth(15, R.raw.t15),
+        Tooth(14, R.raw.t14),
+        Tooth(13, R.raw.t13),
+        Tooth(12, R.raw.t12),
+        Tooth(11, R.raw.t11),
+        Tooth(21, R.raw.t21),
+        Tooth(22, R.raw.t22),
+        Tooth(23, R.raw.t23),
+        Tooth(24, R.raw.t24),
+        Tooth(25, R.raw.t25),
+        Tooth(26, R.raw.t26),
+        Tooth(27, R.raw.t27),
+        Tooth(28, R.raw.t28)
     )
-
     val lowTeethUnit = listOf(
-        ToothUiModel(48, R.raw.t48),
-        ToothUiModel(47, R.raw.t47),
-        ToothUiModel(46, R.raw.t46),
-        ToothUiModel(45, R.raw.t45),
-        ToothUiModel(44, R.raw.t44),
-        ToothUiModel(43, R.raw.t43),
-        ToothUiModel(42, R.raw.t42),
-        ToothUiModel(41, R.raw.t41),
-        ToothUiModel(31, R.raw.t31),
-        ToothUiModel(32, R.raw.t32),
-        ToothUiModel(33, R.raw.t33),
-        ToothUiModel(34, R.raw.t34),
-        ToothUiModel(35, R.raw.t35),
-        ToothUiModel(36, R.raw.t36),
-        ToothUiModel(37, R.raw.t37),
-        ToothUiModel(38, R.raw.t38)
+        Tooth(48, R.raw.t48),
+        Tooth(47, R.raw.t47),
+        Tooth(46, R.raw.t46),
+        Tooth(45, R.raw.t45),
+        Tooth(44, R.raw.t44),
+        Tooth(43, R.raw.t43),
+        Tooth(42, R.raw.t42),
+        Tooth(41, R.raw.t41),
+        Tooth(31, R.raw.t31),
+        Tooth(32, R.raw.t32),
+        Tooth(33, R.raw.t33),
+        Tooth(34, R.raw.t34),
+        Tooth(35, R.raw.t35),
+        Tooth(36, R.raw.t36),
+        Tooth(37, R.raw.t37),
+        Tooth(38, R.raw.t38)
     )
 
     private val _upTeeth = MutableStateFlow(upTeethUnit.map { it.copy() })
-    val upTeeth: StateFlow<List<ToothUiModel>> = _upTeeth.asStateFlow()
+    val upTeeth: StateFlow<List<Tooth>> = _upTeeth.asStateFlow()
 
     private val _lowTeeth = MutableStateFlow(lowTeethUnit.map { it.copy() })
-    val lowTeeth: StateFlow<List<ToothUiModel>> = _lowTeeth.asStateFlow()
+    val lowTeeth: StateFlow<List<Tooth>> = _lowTeeth.asStateFlow()
 
     private val _selectedTeeth = MutableStateFlow<List<Int>>(emptyList())
     val selectedTeeth: StateFlow<List<Int>> = _selectedTeeth.asStateFlow()
@@ -85,6 +86,27 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
 
     private val _diagnosis = MutableStateFlow<List<String>>(emptyList())
     val diagnosis: StateFlow<List<String>> = _diagnosis.asStateFlow()
+
+    private val _bop = MutableStateFlow(0.0)
+    val bop: StateFlow<Double> = _bop
+
+    private val _api = MutableStateFlow(0.0)
+    val api: StateFlow<Double> = _api
+
+    private val _russel = MutableStateFlow(0.0)
+    val russel: StateFlow<Double> = _russel
+
+    private val _ohis = MutableStateFlow(0.0)
+    val ohis: StateFlow<Double> = _ohis
+
+    private val _kpu = MutableStateFlow(0)
+    val kpu: StateFlow<Int> = _kpu
+
+    private val _cpitn = MutableStateFlow(listOf(0, 0, 0, 0, 0, 0))
+    val cpitn: StateFlow<List<Int>> = _cpitn
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     enum class JawType { UPPER, LOWER }
     enum class SurfaceType { VESTIBULAR, ORAL }
@@ -329,7 +351,7 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
 
     private inline fun updateToothParam(
         toothIds: List<Int>,
-        crossinline updateBlock: (ToothUiModel, Boolean) -> ToothUiModel
+        crossinline updateBlock: (Tooth, Boolean) -> Tooth
     ) {
         val isVestibular = _currentSurfaceType.value == SurfaceType.VESTIBULAR
         val currentTeeth = if (_currentJawType.value == JawType.UPPER) _upTeeth else _lowTeeth
@@ -351,7 +373,7 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
 
     private inline fun updateTeeth(
         toothIds: List<Int>,
-        crossinline update: (ToothUiModel) -> ToothUiModel
+        crossinline update: (Tooth) -> Tooth
     ) {
         if (_currentJawType.value == JawType.UPPER) {
             _upTeeth.value = _upTeeth.value.map { tooth ->
@@ -399,6 +421,26 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
             CariesType.C22 -> caries.copy(c22 = value)
             CariesType.C23 -> caries.copy(c23 = value)
         }
+    }
+
+    fun finishAppointment(onSuccess: (Appointment) -> Unit) {
+        _isLoading.value = true
+
+        val appointment = Appointment(
+            complaints = complaints.value,
+            comments = comments.value,
+            patient = appointment.value?.patient,
+            date = appointment.value?.date ?: LocalDateTime.now(),
+            diagnosis = diagnosis.value,
+            plan = treatmentPlan.value,
+            chart = upTeeth.value + lowTeeth.value,
+            indexes = Indexes(bop = bop.value, api = api.value, ohis = ohis.value, russel = russel.value, cpitn = cpitn.value, kpu = kpu.value),
+            isFirst = appointment.value?.isFirst ?: true
+        )
+
+        onSuccess(appointment)
+
+        _isLoading.value = false
     }
 
 }

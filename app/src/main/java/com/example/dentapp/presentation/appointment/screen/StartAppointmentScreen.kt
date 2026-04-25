@@ -1,6 +1,10 @@
 package com.example.dentapp.presentation.appointment.screen
 
+import android.app.Activity
 import android.content.Intent
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -60,10 +64,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.dentapp.PerioChartActivity
 import com.example.dentapp.R
+import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.domain.model.patients.Patient
 import com.example.dentapp.presentation.appointment.viewmodel.AppointmentViewModel
 import com.example.dentapp.presentation.auth.screen.DropdownField
 import com.example.dentapp.presentation.auth.screen.InputTextField
+import com.example.dentapp.presentation.navigation.Screen
 import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.Cygre
 import com.example.dentapp.ui.theme.DarkBlue
@@ -78,7 +84,7 @@ import com.example.dentapp.utils.DateUtils
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun AppointmentScreen(
+fun StartAppointmentScreen(
     navController: NavHostController,
     viewModel: AppointmentViewModel = hiltViewModel()
 ) {
@@ -131,6 +137,26 @@ fun AppointmentScreen(
     }
 
     val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+
+            val appointment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                result.data?.getParcelableExtra("appointment", Appointment::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                result.data?.getParcelableExtra("appointment")
+            }
+
+            appointment?.let {
+                viewModel.setAppointment(appointment)
+
+                navController.navigate(Screen.FinishAppointment.route)
+            }
+        }
+    }
+
 
     val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
@@ -395,7 +421,7 @@ fun AppointmentScreen(
                         val intent = Intent(context, PerioChartActivity::class.java).apply {
                             putExtra("appointment", appointment)
                         }
-                        context.startActivity(intent)
+                        launcher.launch(intent)
                     }
                 },
                 modifier = Modifier
@@ -599,7 +625,7 @@ fun PatientSearchDropdown(
     }
 }
 
-private fun formatPhoneNumber(phoneDigits: String): String {
+fun formatPhoneNumber(phoneDigits: String): String {
     if (phoneDigits.isEmpty()) return ""
 
     val formatted = buildString {
