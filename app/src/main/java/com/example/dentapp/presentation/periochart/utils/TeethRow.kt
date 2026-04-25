@@ -162,7 +162,23 @@ fun TeethRow(
         25 to Pair(620.0f, 0.0f),
         26 to Pair(630.0f, 0.0f),
         27 to Pair(640.0f, 0.0f),
-        28 to Pair(2020.0f, 0.0f)
+        28 to Pair(2020.0f, 0.0f),
+        48 to Pair(600.0f, 0.0f),
+        47 to Pair(600.0f, 0.0f),
+        46 to Pair(600.0f, 0.0f),
+        45 to Pair(600.0f, 0.0f),
+        44 to Pair(600.0f, 0.0f),
+        43 to Pair(600.0f, 0.0f),
+        42 to Pair(600.0f, 0.0f),
+        41 to Pair(600.0f, 0.0f),
+        31 to Pair(600.0f, 0.0f),
+        32 to Pair(600.0f, 0.0f),
+        33 to Pair(600.0f, 0.0f),
+        34 to Pair(610.0f, 0.0f),
+        35 to Pair(620.0f, 0.0f),
+        36 to Pair(630.0f, 0.0f),
+        37 to Pair(640.0f, 0.0f),
+        38 to Pair(2020.0f, 0.0f)
     )
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -209,7 +225,7 @@ fun TeethRow(
                     onClick = { onToothClick(tooth) }
                 )
 
-                if (tooth.id == 11) {
+                if (tooth.id == 11 || tooth.id == 41) {
                     Spacer(modifier = Modifier.width(24.dp))
                 }
             }
