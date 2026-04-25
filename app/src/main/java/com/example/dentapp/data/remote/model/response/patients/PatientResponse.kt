@@ -11,6 +11,8 @@ import java.util.UUID
 data class PatientResponse (
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
+    @Serializable(with = UUIDSerializer::class)
+    val clinicId: UUID?,
     val fullName: String,
     @Serializable(with = DateSerializer::class)
     val birthDate: Date,
@@ -25,5 +27,6 @@ fun PatientResponse.toDomain(): Patient = Patient(
     birthDate = birthDate,
     sex = sex,
     email = email,
-    phoneNumber = phoneNumber
+    phoneNumber = phoneNumber,
+    clinicId = clinicId
 )

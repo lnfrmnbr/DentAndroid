@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dentapp.R
+import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.presentation.auth.viewmodel.SignUpViewModel
 import com.example.dentapp.ui.theme.Blue
 import com.example.dentapp.ui.theme.Cygre
@@ -89,12 +91,18 @@ fun SignUpScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val position by viewModel.position.collectAsState()
+    val clinic by viewModel.clinic.collectAsState()
     var birthDate by remember {
         mutableStateOf(TextFieldValue(""))
     }
+    val clinics by viewModel.clinics.collectAsState()
 
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
     val confirmPasswordVisible = rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadClinics()
+    }
 
     val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
@@ -240,6 +248,15 @@ fun SignUpScreen(
                     "Стоматолог"
                 ),
                 onSelect = { viewModel.updatePosition(it) },
+                modifier = Modifier.fillMaxWidth(),
+                fieldsColors = fieldsColors
+            )
+
+            ClinicsField(
+                title = stringResource(R.string.clinic),
+                selected = clinic,
+                values = clinics,
+                onSelect = { viewModel.updateClinic(it) },
                 modifier = Modifier.fillMaxWidth(),
                 fieldsColors = fieldsColors
             )
@@ -479,6 +496,81 @@ fun DropdownField(
                     onClick = {
                         if (enabled) {
                             onSelect(gender)
+                            expanded = false
+                        }
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ClinicsField(
+    title: String,
+    selected: Clinic?,
+    onSelect: (Clinic) -> Unit,
+    values: List<Clinic>,
+    fieldsColors: TextFieldColors,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            if (enabled) {
+                expanded = !expanded
+            }
+        },
+        modifier = modifier.fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            value = selected?.shortName ?: "",
+            onValueChange = {},
+            readOnly = true,
+            enabled = enabled,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            label = {
+                Text(
+                    text = title,
+                    color = DarkBlue,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp
+                )
+            },
+            colors = fieldsColors,
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(Grey)
+        ) {
+            values.forEach { value ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = value.shortName,
+                            color = Color.White,
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
+                        )
+                    },
+                    onClick = {
+                        if (enabled) {
+                            onSelect(value)
                             expanded = false
                         }
                     },

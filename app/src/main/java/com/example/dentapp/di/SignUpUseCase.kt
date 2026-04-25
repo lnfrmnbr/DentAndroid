@@ -1,6 +1,7 @@
 package com.example.dentapp.di
 
 import com.example.dentapp.data.remote.model.response.auth.AuthResponse
+import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.repository.auth.AuthRepository
 import com.example.dentapp.domain.usecase.auth.constants.AuthErrors
 import java.util.Date
@@ -17,7 +18,8 @@ class SignUpUseCase @Inject constructor(
         patronymic: String?,
         sex: String,
         role: String,
-        birthDate: Date
+        birthDate: Date,
+        clinic: Clinic
     ): Result<AuthResponse> {
         if (!isValidEmail(email)) {
             return Result.failure(IllegalArgumentException(AuthErrors.INVALID_EMAIL))
@@ -27,7 +29,7 @@ class SignUpUseCase @Inject constructor(
             return Result.failure(IllegalArgumentException(AuthErrors.PASSWORD_TOO_SHORT))
         }
 
-        return authRepository.register(email, password, lastName, firstName, patronymic, sex, role, birthDate)
+        return authRepository.register(email, password, lastName, firstName, patronymic, sex, role, birthDate, clinic)
     }
 
     private fun isValidEmail(email: String): Boolean {

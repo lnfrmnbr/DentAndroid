@@ -8,6 +8,7 @@ import com.example.dentapp.data.remote.model.request.auth.RegisterRequest
 import com.example.dentapp.data.remote.model.request.patients.PatientRequest
 import com.example.dentapp.data.remote.model.response.auth.AuthResponse
 import com.example.dentapp.data.remote.model.response.calendar.AppointmentResponse
+import com.example.dentapp.data.remote.model.response.clinic.ClinicResponse
 import com.example.dentapp.data.remote.model.response.doctor.DoctorResponse
 import com.example.dentapp.data.remote.model.response.patients.PatientResponse
 import retrofit2.Response
@@ -54,4 +55,7 @@ interface ApiService {
 
     @GET("/patients")
     suspend fun getAllPatients(): List<PatientResponse>
+
+    @GET("/clinics")
+    suspend fun getAllClinics(): List<ClinicResponse>
 }

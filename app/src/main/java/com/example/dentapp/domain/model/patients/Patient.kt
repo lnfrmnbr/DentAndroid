@@ -9,5 +9,6 @@ data class Patient(
     val birthDate: Date,
     val sex: String,
     val email: String? = null,
-    val phoneNumber: String? = null
+    val phoneNumber: String? = null,
+    val clinicId: UUID? = null
 ) : java.io.Serializable

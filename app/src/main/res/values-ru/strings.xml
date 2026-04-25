@@ -30,6 +30,7 @@
     <string name="birth_date">Дата рождения</string>
     <string name="position">Должность</string>
     <string name="password_req">Минимальная длина пароля: 6</string>
+    <string name="clinic">Клиника</string>
 
     <string name="mon">пн</string>
     <string name="tue">вт</string>

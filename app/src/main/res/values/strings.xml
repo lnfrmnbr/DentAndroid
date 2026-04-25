@@ -32,6 +32,7 @@
     <string name="birth_date">Birth date</string>
     <string name="position">Position</string>
     <string name="password_req">The password must contain a capital letter and numbers</string>
+    <string name="clinic">Clinic</string>
 
     <string name="mon">mon</string>
     <string name="tue">tue</string>

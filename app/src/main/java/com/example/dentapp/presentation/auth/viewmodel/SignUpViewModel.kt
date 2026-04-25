@@ -3,13 +3,16 @@ package com.example.dentapp.presentation.auth.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.di.SignUpUseCase
+import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.usecase.auth.ValidateDateUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
 import com.example.dentapp.domain.usecase.auth.constants.AuthErrors
+import com.example.dentapp.domain.usecase.clinic.GetAllClinicsUseCase
 import com.example.dentapp.utils.GenderUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -19,7 +22,8 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val validateDateUseCase: ValidateDateUseCase
+    private val validateDateUseCase: ValidateDateUseCase,
+    private val getAllClinicsUseCase: GetAllClinicsUseCase
 ) : ViewModel() {
 
     private val _email = MutableStateFlow("")
@@ -55,6 +59,12 @@ class SignUpViewModel @Inject constructor(
     private val _position = MutableStateFlow("")
     val position: StateFlow<String> = _position
 
+    private val _clinic = MutableStateFlow<Clinic?>(null)
+    val clinic: StateFlow<Clinic?> = _clinic.asStateFlow()
+
+    private val _clinics = MutableStateFlow<List<Clinic>>(emptyList())
+    val clinics: StateFlow<List<Clinic>> = _clinics.asStateFlow()
+
     fun updateEmail(value: String) {
         _email.value = value
         clearError()
@@ -62,6 +72,11 @@ class SignUpViewModel @Inject constructor(
 
     fun updatePosition(value: String) {
         _position.value = value
+        clearError()
+    }
+
+    fun updateClinic(value: Clinic) {
+        _clinic.value = value
         clearError()
     }
 
@@ -100,6 +115,18 @@ class SignUpViewModel @Inject constructor(
         clearError()
     }
 
+    fun loadClinics() {
+        viewModelScope.launch {
+            try {
+                _clinics.value = getAllClinicsUseCase()
+            } catch (e: Exception) {
+                _errorMessage.value = "Ошибка загрузки клиник: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun signUp(onSuccess: () -> Unit) {
         if (lastName.value.length > 50) {
             _errorMessage.value = AuthErrors.LASTNAME_TOO_LONG
@@ -128,7 +155,8 @@ class SignUpViewModel @Inject constructor(
             return
         }
 
-        if (email.value.isEmpty() || lastName.value.isEmpty() || firstName.value.isEmpty() || sex.value.isEmpty() || birthDate.value.isEmpty() || position.value.isEmpty()) {
+        if (email.value.isEmpty() || lastName.value.isEmpty() || firstName.value.isEmpty() ||
+            sex.value.isEmpty() || birthDate.value.isEmpty() || position.value.isEmpty() || clinic.value == null) {
             _errorMessage.value = AuthErrors.FIELDS_REQUIRED
             return
         }
@@ -147,7 +175,8 @@ class SignUpViewModel @Inject constructor(
                 patronymic = patronymic.value,
                 sex = genderCode,
                 role = position.value,
-                birthDate = formatter.parse(birthDate.value)!!
+                birthDate = formatter.parse(birthDate.value)!!,
+                clinic = clinic.value!!
             )
             _isLoading.value = false
 

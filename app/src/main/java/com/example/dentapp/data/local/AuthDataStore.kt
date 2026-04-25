@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.dentapp.domain.model.clinic.Clinic
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -25,6 +26,11 @@ class AuthDataStore @Inject constructor(
         private val FIRST_NAME = stringPreferencesKey("first_name")
         private val PATRONYMIC = stringPreferencesKey("patronymic")
         private val SEX = stringPreferencesKey("sex")
+        private val CLINIC_ID = stringPreferencesKey("clinic_id")
+        private val CLINIC_NAME = stringPreferencesKey("clinic_name")
+        private val CLINIC_ADDRESS = stringPreferencesKey("clinic_address")
+        private val CLINIC_ORG_NAME = stringPreferencesKey("clinic_org_name")
+        private val CLINIC_LOGO = stringPreferencesKey("clinic_logo")
     }
 
     suspend fun saveAuthData(
@@ -37,7 +43,8 @@ class AuthDataStore @Inject constructor(
         lastName: String? = null,
         firstName: String? = null,
         patronymic: String? = null,
-        sex: String? = null
+        sex: String? = null,
+        clinic: Clinic? = null
     ) {
         dataStore.edit { prefs ->
             prefs[IS_LOGGED_IN] = isLoggedIn
@@ -48,6 +55,13 @@ class AuthDataStore @Inject constructor(
             firstName?.let { prefs[FIRST_NAME] = it }
             patronymic?.let { prefs[PATRONYMIC] = it }
             sex?.let { prefs[SEX] = it }
+            clinic?.let {
+                prefs[CLINIC_ID] = it.id.toString()
+                prefs[CLINIC_NAME] = it.shortName
+                prefs[CLINIC_ADDRESS] = it.address
+                prefs[CLINIC_ORG_NAME] = it.orgName
+                prefs[CLINIC_LOGO] = it.logo
+            }
         }
 
         val editor = encryptedPrefs.edit()
@@ -87,6 +101,10 @@ class AuthDataStore @Inject constructor(
 
     suspend fun getSex(): String? {
         return dataStore.data.map { it[SEX] }.first()
+    }
+
+    suspend fun getClinicId(): String? {
+        return dataStore.data.map { it[CLINIC_ID] }.first()
     }
 
     fun getAccessTokenBlocking(): String? {
