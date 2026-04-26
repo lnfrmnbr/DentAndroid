@@ -34,6 +34,9 @@
     <string name="password_req">The password must contain a capital letter and numbers</string>
     <string name="clinic">Clinic</string>
 
+    <string name="error_msg">Something went wrong</string>
+    <string name="try_rerun">Try to rerun the app</string>
+
     <string name="mon">mon</string>
     <string name="tue">tue</string>
     <string name="wed">wed</string>

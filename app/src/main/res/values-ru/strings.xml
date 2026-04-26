@@ -32,6 +32,9 @@
     <string name="password_req">Минимальная длина пароля: 6</string>
     <string name="clinic">Клиника</string>
 
+    <string name="error_msg">Что-то пошло не так</string>
+    <string name="try_rerun">Попробуйте перезагрузить приложение</string>
+
     <string name="mon">пн</string>
     <string name="tue">вт</string>
     <string name="wed">ср</string>
