@@ -1,11 +1,14 @@
 package com.example.dentapp.data.remote.model.response.calendar
 
+import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.domain.model.calendar.Appointment
+import com.example.dentapp.presentation.periochart.utils.Tooth
 import com.example.dentapp.utils.serializers.LocalDateTimeSerializer
 import com.example.dentapp.utils.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.String
 
 @Serializable
 data class AppointmentResponse(
@@ -19,11 +22,13 @@ data class AppointmentResponse(
     @Serializable(with = LocalDateTimeSerializer::class)
     val date: LocalDateTime,
     val tags: List<String>?,
-    val bop: Double?,
-    val russel: Double?,
-    val api: Double?,
-    val chart: String?,
-    val fileUrl: String?
+    val diagnosis: List<String>?,
+    val complaints: String,
+    val comments: String,
+    val plan: String,
+    val isFirst: Boolean,
+    val indexes: Indexes,
+    val chart: List<Tooth>?
 )
 
 fun AppointmentResponse.toDomain(): Appointment = Appointment(
@@ -33,9 +38,11 @@ fun AppointmentResponse.toDomain(): Appointment = Appointment(
     patientFullName = patientFullName,
     date = date,
     tags = tags,
-    bop = bop,
-    russel = russel,
-    api = api,
-    chart = chart,
-    fileUrl = fileUrl,
+    diagnosis = diagnosis,
+    complaints = complaints,
+    comments = comments,
+    plan = plan,
+    isFirst = isFirst,
+    indexes = indexes,
+    chart = chart
 )

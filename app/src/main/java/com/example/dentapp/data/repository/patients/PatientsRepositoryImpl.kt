@@ -5,6 +5,7 @@ import com.example.dentapp.data.remote.model.request.patients.PatientRequest
 import com.example.dentapp.data.remote.model.response.patients.PatientResponse
 import com.example.dentapp.domain.repository.patients.PatientsRepository
 import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
 
 class PatientsRepositoryImpl @Inject constructor(
@@ -15,7 +16,8 @@ class PatientsRepositoryImpl @Inject constructor(
         birthDate: Date,
         sex: String,
         email: String?,
-        phoneNumber: String?
+        phoneNumber: String?,
+        clinicId: UUID
     ): PatientResponse {
         return apiService.addPatient(
             PatientRequest(
@@ -23,7 +25,8 @@ class PatientsRepositoryImpl @Inject constructor(
                 birthDate = birthDate,
                 sex = sex,
                 email = email,
-                phoneNumber = phoneNumber
+                phoneNumber = phoneNumber,
+                clinicId = clinicId
             )
         )
     }

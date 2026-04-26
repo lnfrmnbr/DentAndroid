@@ -420,6 +420,7 @@ fun FinishAppointmentScreen(
 
             Button(
                 onClick = {
+                    viewModel.saveAppointment()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

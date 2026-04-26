@@ -9,7 +9,6 @@ import com.example.dentapp.presentation.auth.screen.SignUpScreen
 
 fun NavGraphBuilder.authNavGraph(
     navController: NavHostController,
-    onGoogleSignIn: () -> Unit,
     onNavigateToMain: () -> Unit
 ) {
     navigation(
@@ -23,8 +22,7 @@ fun NavGraphBuilder.authNavGraph(
                 },
                 onNavigateToSignUp = {
                     navController.navigate(Screen.SignUp.route)
-                },
-                onGoogleSignIn = onGoogleSignIn
+                }
             )
         }
 

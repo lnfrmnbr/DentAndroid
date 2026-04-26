@@ -14,6 +14,7 @@ import com.example.dentapp.presentation.files.screen.FilesScreen
 import com.example.dentapp.presentation.home.screen.HomeScreen
 import com.example.dentapp.presentation.patients.screen.PatientsScreen
 import com.example.dentapp.presentation.profile.screen.ProfileScreen
+import com.example.dentapp.presentation.appointment.screen.ReportScreen
 
 fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
     navigation(
@@ -52,6 +53,15 @@ fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
             val viewModel: AppointmentViewModel = hiltViewModel(parentEntry)
 
             FinishAppointmentScreen(navHostController, viewModel)
+        }
+
+        composable(Screen.Report.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navHostController.getBackStackEntry(Screen.MainGraph.route)
+            }
+            val viewModel: AppointmentViewModel = hiltViewModel(parentEntry)
+
+            ReportScreen(navHostController, viewModel)
         }
 
         composable(Screen.Files.route) {

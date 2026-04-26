@@ -22,5 +22,8 @@ sealed class Screen(val route: String) {
             return "detail_tooth_screen?teethIds=${teethIds.joinToString(",")}"
         }
     }
+
+    data object Report : Screen("report")
+
     data object Patients : Screen("patients")
 }

@@ -3,7 +3,9 @@ package com.example.dentapp.data.repository.calendar
 import com.example.dentapp.data.remote.api.ApiService
 import com.example.dentapp.data.remote.model.request.appointment.AppointmentRequest
 import com.example.dentapp.data.remote.model.response.calendar.AppointmentResponse
+import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.domain.repository.calendar.AppointmentsRepository
+import com.example.dentapp.presentation.periochart.utils.Tooth
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
@@ -28,22 +30,26 @@ class AppointmentsRepositoryImpl  @Inject constructor(
         patientId: UUID,
         date: LocalDateTime,
         tags: List<String>?,
-        bop: Double?,
-        russel: Double?,
-        api: Double?,
-        chart: String?,
-        fileUrl: String?
+        diagnosis: List<String>?,
+        complaints: String,
+        comments: String,
+        plan: String,
+        isFirst: Boolean,
+        indexes: Indexes,
+        chart: List<Tooth>?
     ): AppointmentResponse {
         return apiService.addAppointment(AppointmentRequest(
             doctorId = doctorId,
             patientId = patientId,
             date = date,
             tags = tags,
-            bop = bop,
-            russel = russel,
-            api = api,
-            chart = chart,
-            fileUrl = fileUrl
+            diagnosis = diagnosis,
+            complaints = complaints,
+            comments = comments,
+            plan = plan,
+            isFirst = isFirst,
+            indexes = indexes,
+            chart = chart
         ))
     }
 }

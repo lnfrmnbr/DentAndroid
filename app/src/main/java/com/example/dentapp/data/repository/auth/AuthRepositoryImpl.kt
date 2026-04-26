@@ -8,6 +8,7 @@ import com.example.dentapp.data.remote.model.request.auth.LoginRequest
 import com.example.dentapp.data.remote.model.request.auth.LogoutRequest
 import com.example.dentapp.data.remote.model.request.auth.RegisterRequest
 import com.example.dentapp.data.remote.model.response.auth.AuthResponse
+import com.example.dentapp.data.remote.model.response.clinic.toDomain
 import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.repository.auth.AuthRepository
 import com.example.dentapp.utils.decoders.JwtDecoder
@@ -51,7 +52,8 @@ class AuthRepositoryImpl @Inject constructor(
                     lastName = lastName,
                     firstName = firstName,
                     patronymic = patronymic,
-                    sex = sex
+                    sex = sex,
+                    clinic = clinic
                 )
                 Result.success(authResponse)
             } else {
@@ -85,7 +87,8 @@ class AuthRepositoryImpl @Inject constructor(
                     lastName = doctor.lastName,
                     firstName = doctor.firstName,
                     patronymic = doctor.patronymic,
-                    sex = doctor.sex
+                    sex = doctor.sex,
+                    clinic = doctor.clinic?.toDomain()
                 )
                 Result.success(authResponse)
             } else {

@@ -3,9 +3,12 @@ package com.example.dentapp.presentation.appointment.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.R
+import com.example.dentapp.data.local.AuthDataStore
 import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.domain.model.patients.Patient
+import com.example.dentapp.domain.usecase.appointment.AddAppointmentUseCase
+import com.example.dentapp.domain.usecase.patients.AddPatientUseCase
 import com.example.dentapp.domain.usecase.patients.GetAllPatientsUseCase
 import com.example.dentapp.domain.usecase.patients.constants.PatientsErrors
 import com.example.dentapp.presentation.periochart.utils.Tooth
@@ -26,7 +29,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AppointmentViewModel @Inject constructor(
-    private val getAllPatientsUseCase: GetAllPatientsUseCase
+    private val getAllPatientsUseCase: GetAllPatientsUseCase,
+    private val authDataStore: AuthDataStore,
+    private val addPatientUseCase: AddPatientUseCase,
+    private val addAppointmentUseCase: AddAppointmentUseCase
 ) : ViewModel() {
     val teethUnit = listOf(
         Tooth(18, R.raw.t18),
@@ -116,6 +122,95 @@ class AppointmentViewModel @Inject constructor(
 
     init {
         loadPatients()
+    }
+
+    fun setAppointment(appointment: Appointment?) {
+        _appointment.value = appointment
+        appointment?.comments?.let {
+            _comments.value = it
+        }
+        appointment?.complaints?.let {
+            _complaints.value = it
+        }
+        appointment?.patient?.let { patient ->
+            _fio.value = patient.fullName
+            _birthDate.value = toDDMMYYYY(patient.birthDate)
+            _sex.value = patient.sex
+        }
+        appointment?.patient?.phoneNumber?.let {
+            _phoneNumber.value = it
+        }
+        appointment?.patient?.email?.let {
+            _email.value = it
+        }
+        appointment?.isFirst?.let {
+            _isFirstAppointment.value = it
+        }
+        appointment?.diagnosis?.let {
+            _diagnosis.value = it
+        }
+        appointment?.indexes?.let {
+            _indexes.value = it
+        }
+        appointment?.plan?.let {
+            _treatmentPlan.value = it
+        }
+        appointment?.chart?.let {
+            _chart.value = it
+        }
+    }
+
+    fun generateReport() {
+        _isLoading.value = true
+    }
+
+    fun saveAppointment() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val doctorId = UUID.fromString(authDataStore.getDoctorId())
+                val clinicId = UUID.fromString(authDataStore.getClinicId())
+
+                val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                val genderCode = GenderUtils.toBdCode(sex.value)
+
+                val patientId = if (patientId.value == null) {
+                    addPatientUseCase(
+                        fullName = fio.value,
+                        birthDate = formatter.parse(birthDate.value)!!,
+                        sex = genderCode,
+                        email = email.value,
+                        phoneNumber = phoneNumber.value,
+                        clinicId = clinicId
+                    ).id
+                } else patientId.value
+
+                if (patientId != null) {
+                    addAppointmentUseCase(
+                        doctorId = doctorId,
+                        patientId = patientId,
+                        date = LocalDateTime.now(),
+                        tags = emptyList(),
+                        diagnosis = diagnosis.value,
+                        complaints = complaints.value,
+                        comments = comments.value,
+                        plan = treatmentPlan.value,
+                        isFirst = isFirstAppointment.value,
+                        indexes = indexes.value,
+                        chart = chart.value
+                    )
+                    _errorMessage.value = null
+                } else {
+                    _errorMessage.value = PatientsErrors.NOT_SAVED
+                }
+
+                _isLoading.value = false
+            } catch (e: Exception) {
+                _errorMessage.value = "Ошибка начала приема: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
     fun updateIsFirstAppointment(value: Boolean) {
@@ -239,76 +334,6 @@ class AppointmentViewModel @Inject constructor(
         onSuccess(appointment)
 
         _isLoading.value = false
-
-        /*viewModelScope.launch {
-            try {
-                val doctorId = UUID.fromString(authDataStore.getDoctorId())
-
-                val patientId = if (patientId.value == null) {
-                    addPatientUseCase(
-                        fullName = fio.value,
-                        birthDate = formatter.parse(birthDate.value)!!,
-                        sex = genderCode,
-                        email = email.value,
-                        phoneNumber = phoneNumber.value
-                    ).id
-                } else patientId.value
-
-                if (patientId != null) {
-                    addAppointmentUseCase(
-                        doctorId = doctorId,
-                        patientId = patientId,
-                        date = LocalDateTime.now()
-                    )
-                    _errorMessage.value = null
-                    onSuccess()
-                } else {
-                    _errorMessage.value = PatientsErrors.NOT_SAVED
-                }
-
-                _isLoading.value = false
-            } catch (e: Exception) {
-                _errorMessage.value = "Ошибка начала приема: ${e.message}"
-            } finally {
-                _isLoading.value = false
-            }
-        }*/
-    }
-
-    fun setAppointment(appointment: Appointment?) {
-        _appointment.value = appointment
-        appointment?.comments?.let {
-            _comments.value = it
-        }
-        appointment?.complaints?.let {
-            _complaints.value = it
-        }
-        appointment?.patient?.let { patient ->
-            _fio.value = patient.fullName
-            _birthDate.value = toDDMMYYYY(patient.birthDate)
-            _sex.value = patient.sex
-        }
-        appointment?.patient?.phoneNumber?.let {
-            _phoneNumber.value = it
-        }
-        appointment?.patient?.email?.let {
-            _email.value = it
-        }
-        appointment?.isFirst?.let {
-            _isFirstAppointment.value = it
-        }
-        appointment?.diagnosis?.let {
-            _diagnosis.value = it
-        }
-        appointment?.indexes?.let {
-            _indexes.value = it
-        }
-        appointment?.plan?.let {
-            _treatmentPlan.value = it
-        }
-        appointment?.chart?.let {
-            _chart.value = it
-        }
     }
 
     private fun loadPatients() {
@@ -328,7 +353,7 @@ class AppointmentViewModel @Inject constructor(
         updateFio(patient.fullName)
         patient.phoneNumber?.let { updatePhoneNumber(it) }
         patient.email?.let { updateEmail(it) }
-        updateBirthDate(DateUtils.toDDMMYYYY(patient.birthDate))
+        updateBirthDate(toDDMMYYYY(patient.birthDate))
         updateSex(patient.sex)
     }
 

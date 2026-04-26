@@ -5,7 +5,7 @@ import com.example.dentapp.utils.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.Date
 import java.util.UUID
-
+import com.example.dentapp.data.remote.model.response.clinic.ClinicResponse
 
 @Serializable
 data class DoctorResponse(
@@ -17,5 +17,6 @@ data class DoctorResponse(
     val sex: String? = null,
     val role: String? = null,
     @Serializable(with = DateSerializer::class)
-    val birthDate: Date? = null
+    val birthDate: Date? = null,
+    val clinic: ClinicResponse? = null
 )

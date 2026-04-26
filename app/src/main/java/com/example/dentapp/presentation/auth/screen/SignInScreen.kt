@@ -59,8 +59,7 @@ import com.example.dentapp.ui.theme.White
 fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel(),
     onSignInSuccess: () -> Unit,
-    onNavigateToSignUp: () -> Unit,
-    onGoogleSignIn: () -> Unit
+    onNavigateToSignUp: () -> Unit
 ) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -84,12 +83,6 @@ fun SignInScreen(
         focusedTextColor = DarkBlue,
         unfocusedTextColor = DarkBlue
     )
-
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let { message ->
-            // scaffoldState.snackbarHostState.showSnackbar(message)
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -127,7 +120,6 @@ fun SignInScreen(
 
             Button(
                 onClick = {
-                    onGoogleSignIn()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

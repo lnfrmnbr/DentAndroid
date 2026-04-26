@@ -1,8 +1,10 @@
 package com.example.dentapp.domain.usecase.appointment
 
 import com.example.dentapp.data.remote.model.response.calendar.toDomain
+import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.domain.model.calendar.Appointment
 import com.example.dentapp.domain.repository.calendar.AppointmentsRepository
+import com.example.dentapp.presentation.periochart.utils.Tooth
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
@@ -15,22 +17,26 @@ class AddAppointmentUseCase @Inject constructor(
         patientId: UUID,
         date: LocalDateTime,
         tags: List<String>? = null,
-        bop: Double? = null,
-        russel: Double? = null,
-        api: Double? = null,
-        chart: String? = null,
-        fileUrl: String? = null
+        diagnosis: List<String>? = null,
+        complaints: String,
+        comments: String,
+        plan: String,
+        isFirst: Boolean,
+        indexes: Indexes,
+        chart: List<Tooth>?
     ): Appointment {
         return appointmentsRepository.addAppointment(
             doctorId = doctorId,
             patientId = patientId,
             date = date,
             tags = tags,
-            bop = bop,
-            russel = russel,
-            api = api,
-            chart = chart,
-            fileUrl = fileUrl
+            diagnosis = diagnosis,
+            complaints = complaints,
+            comments = comments,
+            plan = plan,
+            isFirst = isFirst,
+            indexes = indexes,
+            chart = chart
         ).toDomain()
     }
 }
