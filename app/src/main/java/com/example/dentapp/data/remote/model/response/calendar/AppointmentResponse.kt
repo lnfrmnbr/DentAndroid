@@ -23,11 +23,11 @@ data class AppointmentResponse(
     val date: LocalDateTime,
     val tags: List<String>?,
     val diagnosis: List<String>?,
-    val complaints: String,
-    val comments: String,
-    val plan: String,
-    val isFirst: Boolean,
-    val indexes: Indexes,
+    val complaints: String?,
+    val comments: String?,
+    val plan: String?,
+    val isFirst: Boolean?,
+    val indexes: Indexes?,
     val chart: List<Tooth>?
 )
 

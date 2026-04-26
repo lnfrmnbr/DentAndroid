@@ -50,6 +50,7 @@ import com.example.dentapp.presentation.appointment.utils.PerioChartField
 import com.example.dentapp.presentation.appointment.viewmodel.AppointmentViewModel
 import com.example.dentapp.presentation.auth.screen.DropdownField
 import com.example.dentapp.presentation.auth.screen.InputTextField
+import com.example.dentapp.presentation.navigation.Screen
 import com.example.dentapp.presentation.periochart.utils.DiagnosisField
 import com.example.dentapp.presentation.periochart.utils.IndexesTable
 import com.example.dentapp.ui.theme.Blue
@@ -420,7 +421,9 @@ fun FinishAppointmentScreen(
 
             Button(
                 onClick = {
-                    viewModel.saveAppointment()
+                    viewModel.saveAppointment {
+                        navController.navigate(Screen.Home.route)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -456,6 +459,9 @@ fun FinishAppointmentScreen(
 
             Button(
                 onClick = {
+                    viewModel.saveAppointment {
+                        navController.navigate(Screen.Report.route)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

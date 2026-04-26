@@ -91,5 +91,14 @@
     <string name="api">API</string>
     <string name="russel">Russel</string>
     <string name="ohis">OHI-S</string>
+    <string name="contacts">Контакты</string>
+    <string name="address">Адрес</string>
+    <string name="appointment_date">Дата приёма</string>
+    <string name="doctor">Лечащий врач</string>
+    <string name="time">Время</string>
+    <string name="age">Возраст</string>
+    <string name="ids">ИДС</string>
+    <string name="got">Получено</string>
+    <string name="patients_complains">Жалобы пациента</string>
 
 </resources>

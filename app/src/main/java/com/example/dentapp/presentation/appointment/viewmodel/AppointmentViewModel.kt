@@ -1,5 +1,8 @@
 package com.example.dentapp.presentation.appointment.viewmodel
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.R
@@ -26,6 +29,7 @@ import java.time.LocalDateTime
 import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
+import androidx.core.graphics.createBitmap
 
 @HiltViewModel
 class AppointmentViewModel @Inject constructor(
@@ -105,6 +109,9 @@ class AppointmentViewModel @Inject constructor(
     private val _diagnosis = MutableStateFlow<List<String>>(emptyList())
     val diagnosis: StateFlow<List<String>> = _diagnosis.asStateFlow()
 
+    private val _tags = MutableStateFlow(listOf("осмотр"))
+    val tags: StateFlow<List<String>> = _tags.asStateFlow()
+
     private val _indexes = MutableStateFlow(Indexes())
     val indexes: StateFlow<Indexes> = _indexes
 
@@ -160,11 +167,7 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun generateReport() {
-        _isLoading.value = true
-    }
-
-    fun saveAppointment() {
+    fun saveAppointment(onSuccess: () -> Unit) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
@@ -190,7 +193,7 @@ class AppointmentViewModel @Inject constructor(
                         doctorId = doctorId,
                         patientId = patientId,
                         date = LocalDateTime.now(),
-                        tags = emptyList(),
+                        tags = tags.value,
                         diagnosis = diagnosis.value,
                         complaints = complaints.value,
                         comments = comments.value,
@@ -199,14 +202,14 @@ class AppointmentViewModel @Inject constructor(
                         indexes = indexes.value,
                         chart = chart.value
                     )
+                    onSuccess()
                     _errorMessage.value = null
                 } else {
                     _errorMessage.value = PatientsErrors.NOT_SAVED
                 }
-
                 _isLoading.value = false
             } catch (e: Exception) {
-                _errorMessage.value = "Ошибка начала приема: ${e.message}"
+                _errorMessage.value = "Ошибка сохранения приема: ${e.message}"
             } finally {
                 _isLoading.value = false
             }
