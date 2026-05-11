@@ -31,6 +31,7 @@ class AuthDataStore @Inject constructor(
         private val CLINIC_ADDRESS = stringPreferencesKey("clinic_address")
         private val CLINIC_ORG_NAME = stringPreferencesKey("clinic_org_name")
         private val CLINIC_LOGO = stringPreferencesKey("clinic_logo")
+        private val CLINIC_CONTACTS = stringPreferencesKey("clinic_contacts")
     }
 
     suspend fun saveAuthData(
@@ -60,6 +61,7 @@ class AuthDataStore @Inject constructor(
                 prefs[CLINIC_NAME] = it.shortName
                 prefs[CLINIC_ADDRESS] = it.address
                 prefs[CLINIC_ORG_NAME] = it.orgName
+                prefs[CLINIC_CONTACTS] = it.contacts
                 prefs[CLINIC_LOGO] = it.logo
             }
         }
@@ -105,6 +107,25 @@ class AuthDataStore @Inject constructor(
 
     suspend fun getClinicId(): String? {
         return dataStore.data.map { it[CLINIC_ID] }.first()
+    }
+
+    suspend fun getClinicLogo(): String? {
+        return dataStore.data.map { it[CLINIC_LOGO] }.first()
+    }
+
+    suspend fun getClinicOrgName(): String? {
+        return dataStore.data.map { it[CLINIC_ORG_NAME] }.first()
+    }
+
+    suspend fun getClinicName(): String? {
+        return dataStore.data.map { it[CLINIC_NAME] }.first()
+    }
+
+    suspend fun getClinicAddress(): String? {
+        return dataStore.data.map { it[CLINIC_ADDRESS] }.first()
+    }
+    suspend fun getClinicContacts(): String? {
+        return dataStore.data.map { it[CLINIC_CONTACTS] }.first()
     }
 
     fun getAccessTokenBlocking(): String? {

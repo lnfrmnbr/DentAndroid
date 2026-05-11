@@ -30,6 +30,7 @@ import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 import androidx.core.graphics.createBitmap
+import com.example.dentapp.domain.model.clinic.Clinic
 
 @HiltViewModel
 class AppointmentViewModel @Inject constructor(
@@ -118,6 +119,12 @@ class AppointmentViewModel @Inject constructor(
     private val _treatmentPlan = MutableStateFlow("")
     val treatmentPlan: StateFlow<String> = _treatmentPlan.asStateFlow()
 
+    private val _clinic = MutableStateFlow<Clinic?>(null)
+    val clinic: StateFlow<Clinic?> = _clinic
+
+    private val _doctorFIO = MutableStateFlow("")
+    val doctorFIO: StateFlow<String> = _doctorFIO
+
     private val _chart = MutableStateFlow(teethUnit.map { it.copy() })
     val chart: StateFlow<List<Tooth>> = _chart.asStateFlow()
 
@@ -129,6 +136,8 @@ class AppointmentViewModel @Inject constructor(
 
     init {
         loadPatients()
+        getClinic()
+        getDoctorFio()
     }
 
     fun setAppointment(appointment: Appointment?) {
@@ -188,6 +197,26 @@ class AppointmentViewModel @Inject constructor(
                     ).id
                 } else patientId.value
 
+                _appointment.value = Appointment(
+                    patient = Patient(
+                        fullName = fio.value,
+                        birthDate = formatter.parse(birthDate.value)!!,
+                        sex = genderCode,
+                        email = email.value,
+                        phoneNumber = phoneNumber.value,
+                        clinicId = clinicId
+                    ),
+                    date = appointment.value?.date ?: LocalDateTime.now(),
+                    tags = tags.value,
+                    indexes = indexes.value,
+                    complaints = complaints.value,
+                    comments = comments.value,
+                    plan = treatmentPlan.value,
+                    isFirst = isFirstAppointment.value,
+                    diagnosis = diagnosis.value,
+                    chart = chart.value
+                )
+
                 if (patientId != null) {
                     addAppointmentUseCase(
                         doctorId = doctorId,
@@ -210,6 +239,40 @@ class AppointmentViewModel @Inject constructor(
                 _isLoading.value = false
             } catch (e: Exception) {
                 _errorMessage.value = "Ошибка сохранения приема: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun getClinic() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                _clinic.value = Clinic(
+                    logo = authDataStore.getClinicLogo() ?: "",
+                    orgName = authDataStore.getClinicOrgName() ?: "",
+                    shortName = authDataStore.getClinicName() ?: "",
+                    contacts = authDataStore.getClinicContacts() ?: "",
+                    address = authDataStore.getClinicAddress() ?: ""
+                )
+                _isLoading.value = false
+            } catch (e: Exception) {
+                _errorMessage.value = "Ошибка загрузки данных клиники: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun getDoctorFio() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                _doctorFIO.value = authDataStore.getFullName().toString()
+                _isLoading.value = false
+            } catch (e: Exception) {
+                _errorMessage.value = "Ошибка загрузки ФИО доктора: ${e.message}"
             } finally {
                 _isLoading.value = false
             }

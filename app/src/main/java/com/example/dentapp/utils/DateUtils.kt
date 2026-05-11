@@ -29,6 +29,11 @@ object DateUtils {
         return SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date)
     }
 
+    fun toDD_MM_YYYY_HH_MM(date: LocalDateTime): String {
+        val formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm")
+        return date.format(formatter)
+    }
+
     fun countAge(date: Date): Int {
         val birthDate = date.toInstant()
             .atZone(ZoneId.systemDefault())

@@ -9,5 +9,5 @@ data class Clinic (
     val shortName: String,
     val contacts: String,
     val address: String,
-    val email: String
+    val email: String? = null
 )
