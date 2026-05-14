@@ -1,7 +1,6 @@
 package com.example.dentapp.di
 
 import com.example.dentapp.domain.repository.auth.AuthRepository
-import com.example.dentapp.domain.usecase.auth.GoogleSignInUseCase
 import com.example.dentapp.domain.usecase.auth.SignInUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
 import dagger.Module
@@ -21,10 +20,5 @@ object UseCaseModule {
     @Provides
     fun provideValidatePasswordUseCase(): ValidatePasswordUseCase {
         return ValidatePasswordUseCase()
-    }
-
-    @Provides
-    fun provideGoogleSignInUseCase(authRepository: AuthRepository): GoogleSignInUseCase {
-        return GoogleSignInUseCase(authRepository)
     }
 }

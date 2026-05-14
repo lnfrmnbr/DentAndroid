@@ -3,7 +3,6 @@ package com.example.dentapp.presentation.auth.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.domain.usecase.auth.constants.AuthErrors
-import com.example.dentapp.domain.usecase.auth.GoogleSignInUseCase
 import com.example.dentapp.domain.usecase.auth.SignInUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
-    private val googleSignInUseCase: GoogleSignInUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase
 ) : ViewModel() {
 
@@ -77,29 +75,6 @@ class SignInViewModel @Inject constructor(
                 onSuccess()
             } else {
                 _errorMessage.value = result.exceptionOrNull()?.message ?: AuthErrors.LOGIN_FAILED
-            }
-        }
-    }
-
-    fun signInWithGoogle(idToken: String, onSuccess: () -> Unit) {
-        _isGoogleLoading.value = true
-        _errorMessage.value = null
-
-        viewModelScope.launch {
-            try {
-                val result = googleSignInUseCase(idToken)
-                _isGoogleLoading.value = false
-
-                if (result.isSuccess) {
-                    _errorMessage.value = null
-                    onSuccess()
-                } else {
-                    _errorMessage.value =
-                        result.exceptionOrNull()?.message ?: AuthErrors.GOOGLE_LOGIN_FAILED
-                }
-            } catch (e: Exception) {
-                _isGoogleLoading.value = false
-                _errorMessage.value = "${AuthErrors.NETWORK_ERROR}: ${e.message}"
             }
         }
     }

@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.di.SignUpUseCase
 import com.example.dentapp.domain.model.clinic.Clinic
+import com.example.dentapp.domain.usecase.auth.SendVerificationCodeUseCase
 import com.example.dentapp.domain.usecase.auth.ValidateDateUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
+import com.example.dentapp.domain.usecase.auth.VerifyCodeUseCase
 import com.example.dentapp.domain.usecase.auth.constants.AuthErrors
 import com.example.dentapp.domain.usecase.clinic.GetAllClinicsUseCase
 import com.example.dentapp.utils.GenderUtils
@@ -23,8 +25,10 @@ class SignUpViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
-    private val getAllClinicsUseCase: GetAllClinicsUseCase
-) : ViewModel() {
+    private val getAllClinicsUseCase: GetAllClinicsUseCase,
+    private val verifyCodeUseCase: VerifyCodeUseCase,
+    private val sendVerificationCodeUseCase: SendVerificationCodeUseCase
+    ) : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -65,6 +69,18 @@ class SignUpViewModel @Inject constructor(
     private val _clinics = MutableStateFlow<List<Clinic>>(emptyList())
     val clinics: StateFlow<List<Clinic>> = _clinics.asStateFlow()
 
+    private val _verificationCode = MutableStateFlow("")
+    val verificationCode = _verificationCode.asStateFlow()
+
+    private val _isCodeSent = MutableStateFlow(false)
+    val isCodeSent = _isCodeSent.asStateFlow()
+
+    private val _isClinicVerified = MutableStateFlow(false)
+    val isClinicVerified = _isClinicVerified.asStateFlow()
+
+    private val _checkCodeMessage = MutableStateFlow<String?>(null)
+    val checkCodeMessage: StateFlow<String?> = _checkCodeMessage
+
     fun updateEmail(value: String) {
         _email.value = value
         clearError()
@@ -77,7 +93,11 @@ class SignUpViewModel @Inject constructor(
 
     fun updateClinic(value: Clinic) {
         _clinic.value = value
+        _isClinicVerified.value = false
+        _checkCodeMessage.value = null
+        _isCodeSent.value = false
         clearError()
+        sendVerificationCode()
     }
 
     fun updateBirthDate(value: String) {
@@ -115,12 +135,69 @@ class SignUpViewModel @Inject constructor(
         clearError()
     }
 
+    fun updateCode(value: String) {
+        _verificationCode.value = value
+        clearError()
+    }
+
     fun loadClinics() {
         viewModelScope.launch {
             try {
                 _clinics.value = getAllClinicsUseCase()
             } catch (e: Exception) {
                 _errorMessage.value = "Ошибка загрузки клиник: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun sendVerificationCode() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val clinicId = clinic.value?.id
+                val clinicEmail = clinic.value?.email
+                val fio = "${lastName.value} ${firstName.value} ${patronymic.value}"
+                if (clinicId != null && clinicEmail != null) {
+                    sendVerificationCodeUseCase(
+                        clinicId = clinicId,
+                        fio = fio,
+                        newUserEmail = email.value,
+                        clinicEmail = clinicEmail
+                    )
+                }
+                _isCodeSent.value = true
+                _checkCodeMessage.value = "Код подтверждения отправлен"
+            } catch (e: Exception) {
+                _isCodeSent.value = false
+                _errorMessage.value = "Ошибка отправки кода подтверждения: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun verifyCode() {
+        _isLoading.value = true
+        _checkCodeMessage.value = "Проверка кода..."
+        viewModelScope.launch {
+            try {
+                val clinicId = clinic.value?.id
+                val clinicEmail = clinic.value?.email
+                val isCodeCorrect = if (clinicId != null && clinicEmail != null) {
+                    verifyCodeUseCase(
+                        clinicId = clinicId,
+                        newUserEmail = email.value,
+                        code = verificationCode.value
+                    )
+                } else false
+                _isClinicVerified.value = isCodeCorrect
+                _checkCodeMessage.value = if (isCodeCorrect) "Клиника подтверждена ✓" else "Неверный код подтверждения ⨯"
+            } catch (e: Exception) {
+                _isClinicVerified.value = false
+                _errorMessage.value = "Ошибка проверки кода подтверждения: ${e.message}"
+                _checkCodeMessage.value = "Ошибка проверки кода подтверждения: ${e.message}"
             } finally {
                 _isLoading.value = false
             }

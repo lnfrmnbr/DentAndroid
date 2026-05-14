@@ -3,7 +3,6 @@ package com.example.dentapp.data.repository.auth
 
 import com.example.dentapp.data.local.AuthDataStore
 import com.example.dentapp.data.remote.api.ApiService
-import com.example.dentapp.data.remote.model.request.auth.GoogleRequest
 import com.example.dentapp.data.remote.model.request.auth.LoginRequest
 import com.example.dentapp.data.remote.model.request.auth.LogoutRequest
 import com.example.dentapp.data.remote.model.request.auth.RegisterRequest
@@ -94,33 +93,6 @@ class AuthRepositoryImpl @Inject constructor(
             } else {
                 val errorBody = response.errorBody()?.string() ?: "Неизвестная ошибка"
                 Result.failure(Exception("Ошибка входа: ${response.code()} - $errorBody"))
-            }
-        } catch (e: Exception) {
-            Result.failure(Exception("Ошибка сети: ${e.message}"))
-        }
-    }
-
-    override suspend fun loginWithGoogle(idToken: String): Result<AuthResponse> {
-        return try {
-            val response = apiService.googleLogin(GoogleRequest(idToken))
-            if (response.isSuccessful) {
-                val authResponse =
-                    response.body() ?: return Result.failure(Exception("Пустой ответ от сервера"))
-
-                val userId = JwtDecoder.decodeUserId(authResponse.access)
-                    ?: return Result.failure(Exception("Не удалось расшифровать ID пользователя из токена"))
-
-                authDataStore.saveAuthData(
-                    isLoggedIn = true,
-                    accessToken = authResponse.access,
-                    refreshToken = authResponse.refresh,
-                    userId = userId,
-                    email = authResponse.email
-                )
-                Result.success(authResponse)
-            } else {
-                val errorBody = response.errorBody()?.string() ?: "Неизвестная ошибка"
-                Result.failure(Exception("Ошибка входа через Google: ${response.code()} - $errorBody"))
             }
         } catch (e: Exception) {
             Result.failure(Exception("Ошибка сети: ${e.message}"))

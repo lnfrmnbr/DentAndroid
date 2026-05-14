@@ -1,10 +1,11 @@
 package com.example.dentapp.data.remote.api
 
 import com.example.dentapp.data.remote.model.request.appointment.AppointmentRequest
-import com.example.dentapp.data.remote.model.request.auth.GoogleRequest
+import com.example.dentapp.data.remote.model.request.auth.GetVerificationCodeRequest
 import com.example.dentapp.data.remote.model.request.auth.LoginRequest
 import com.example.dentapp.data.remote.model.request.auth.LogoutRequest
 import com.example.dentapp.data.remote.model.request.auth.RegisterRequest
+import com.example.dentapp.data.remote.model.request.auth.VerifyCodeRequest
 import com.example.dentapp.data.remote.model.request.patients.PatientRequest
 import com.example.dentapp.data.remote.model.response.auth.AuthResponse
 import com.example.dentapp.data.remote.model.response.calendar.AppointmentResponse
@@ -22,9 +23,6 @@ import java.util.UUID
 interface ApiService {
     @POST("auth/register")
     suspend fun register(@Body request: RegisterRequest): Response<AuthResponse>
-
-    @POST("auth/google")
-    suspend fun googleLogin(@Body request: GoogleRequest): Response<AuthResponse>
 
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
@@ -58,4 +56,10 @@ interface ApiService {
 
     @GET("/clinics")
     suspend fun getAllClinics(): List<ClinicResponse>
+
+    @POST("/verify/get")
+    suspend fun sendVerificationCode(@Body request: GetVerificationCodeRequest)
+
+    @POST("/verify/check")
+    suspend fun verifyCode(@Body request: VerifyCodeRequest): Boolean
 }

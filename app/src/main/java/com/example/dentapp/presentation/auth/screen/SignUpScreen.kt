@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +19,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -92,6 +96,10 @@ fun SignUpScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val position by viewModel.position.collectAsState()
     val clinic by viewModel.clinic.collectAsState()
+    val isClinicVerified by viewModel.isClinicVerified.collectAsState()
+    val isCodeSent by viewModel.isCodeSent.collectAsState()
+    val verificationCode by viewModel.verificationCode.collectAsState()
+    val checkCodeMessage by viewModel.checkCodeMessage.collectAsState()
     var birthDate by remember {
         mutableStateOf(TextFieldValue(""))
     }
@@ -115,7 +123,10 @@ fun SignUpScreen(
         errorIndicatorColor = Pink,
         errorLabelColor = Pink,
         focusedTextColor = DarkBlue,
-        unfocusedTextColor = DarkBlue
+        unfocusedTextColor = DarkBlue,
+        disabledTextColor = White,
+        disabledLabelColor = White,
+        disabledContainerColor = DarkBlue
     )
 
     Box(
@@ -162,13 +173,34 @@ fun SignUpScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
 
-            InputTextField(lastName, R.string.lastName, fieldsColors) { viewModel.updateLastName(it) }
+            InputTextField(
+                lastName,
+                R.string.lastName,
+                fieldsColors
+            ) { viewModel.updateLastName(it) }
 
             InputTextField(firstName, R.string.name, fieldsColors) { viewModel.updateFirstName(it) }
 
-            InputTextField(patronymic, R.string.patronymic, fieldsColors) { viewModel.updatePatronymic(it) }
+            InputTextField(
+                patronymic,
+                R.string.patronymic,
+                fieldsColors
+            ) { viewModel.updatePatronymic(it) }
 
             Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = stringResource(R.string.email),
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = LightDarkBlue,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            InputTextField(email, R.string.email, fieldsColors) { viewModel.updateEmail(it) }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(R.string.about_you),
@@ -258,21 +290,82 @@ fun SignUpScreen(
                 values = clinics,
                 onSelect = { viewModel.updateClinic(it) },
                 modifier = Modifier.fillMaxWidth(),
-                fieldsColors = fieldsColors
+                fieldsColors = fieldsColors,
+                enabled = !isLoading && email.isNotEmpty() && firstName.isNotEmpty() && lastName.isNotEmpty()
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            if (isCodeSent && !isClinicVerified) {
+                OutlinedTextField(
+                    value = verificationCode,
+                    onValueChange = {
+                        viewModel.updateCode(it)
+                    },
+                    label = {
+                        Text(
+                            text = "Код подтверждения",
+                            color = DarkBlue,
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
+                        )
+                    },
+                    textStyle = LocalTextStyle.current.copy(
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                        color = DarkBlue
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    singleLine = true,
+                    colors = fieldsColors,
+                    enabled = !isClinicVerified,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        Button(
+                            onClick = {
+                                viewModel.verifyCode()
+                            },
+                            enabled = !isLoading,
+                            modifier = Modifier
+                                .padding(end = 4.dp)
+                                .size(42.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Blue,
+                                contentColor = White
+                            ),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            if (isLoading) {
+                                CircularProgressIndicator(
+                                    color = Color.White,
+                                    modifier = Modifier.size(20.dp),
+                                    strokeWidth = 2.dp
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowForward,
+                                    contentDescription = "Подтвердить код",
+                                    tint = White,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+                )
+            }
 
             Text(
-                text = stringResource(R.string.email),
+                text = checkCodeMessage ?: "После выбора на email клиники отправится код подтверждения, заполните ФИО и почту",
                 fontFamily = Montserrat,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = LightDarkBlue,
+                fontWeight = FontWeight.Normal,
+                color = LightGreyBlue,
+                fontSize = 12.sp,
                 modifier = Modifier.align(Alignment.Start)
             )
-
-            InputTextField(email, R.string.email, fieldsColors) { viewModel.updateEmail(it) }
 
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -470,6 +563,11 @@ fun DropdownField(
                     fontSize = 16.sp
                 )
             },
+            textStyle = LocalTextStyle.current.copy(
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp
+            ),
             colors = fieldsColors,
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
@@ -539,12 +637,17 @@ fun ClinicsField(
             label = {
                 Text(
                     text = title,
-                    color = DarkBlue,
+                    color = if (enabled) DarkBlue else White,
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp
                 )
             },
+            textStyle = LocalTextStyle.current.copy(
+                fontFamily = Montserrat,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp
+            ),
             colors = fieldsColors,
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
