@@ -100,5 +100,7 @@
     <string name="ids">ИДС</string>
     <string name="got">Получено</string>
     <string name="patients_complains">Жалобы пациента</string>
+    <string name="code_sent">Код подтверждения отправлен</string>
+    <string name="error_send_code">Ошибка отправки кода подтверждения:</string>
 
 </resources>

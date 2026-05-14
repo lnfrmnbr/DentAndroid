@@ -1,7 +1,9 @@
 package com.example.dentapp.presentation.auth.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dentapp.R
 import com.example.dentapp.di.SignUpUseCase
 import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.usecase.auth.SendVerificationCodeUseCase
@@ -19,6 +21,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
@@ -27,7 +30,8 @@ class SignUpViewModel @Inject constructor(
     private val validateDateUseCase: ValidateDateUseCase,
     private val getAllClinicsUseCase: GetAllClinicsUseCase,
     private val verifyCodeUseCase: VerifyCodeUseCase,
-    private val sendVerificationCodeUseCase: SendVerificationCodeUseCase
+    private val sendVerificationCodeUseCase: SendVerificationCodeUseCase,
+    @ApplicationContext private val context: Context,
     ) : ViewModel() {
 
     private val _email = MutableStateFlow("")
@@ -168,10 +172,11 @@ class SignUpViewModel @Inject constructor(
                     )
                 }
                 _isCodeSent.value = true
-                _checkCodeMessage.value = "Код подтверждения отправлен"
+                _checkCodeMessage.value = context.getString(R.string.code_sent)
             } catch (e: Exception) {
                 _isCodeSent.value = false
-                _errorMessage.value = "Ошибка отправки кода подтверждения: ${e.message}"
+                _errorMessage.value = context.getString(R.string.error_send_code) +
+                        " ${e.message}"
             } finally {
                 _isLoading.value = false
             }

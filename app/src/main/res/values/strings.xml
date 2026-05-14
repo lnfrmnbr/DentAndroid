@@ -94,14 +94,16 @@
     <string name="api">API</string>
     <string name="russel">Russel</string>
     <string name="ohis">OHI-S</string>
-    <string name="contacts">Контакты</string>
-    <string name="address">Адрес</string>
-    <string name="appointment_date">Дата приёма</string>
-    <string name="doctor">Лечащий врач</string>
-    <string name="time">Время</string>
-    <string name="age">Возраст</string>
-    <string name="ids">ИДС</string>
-    <string name="got">Получено</string>
-    <string name="patients_complains">Жалобы пациента</string>
+    <string name="contacts">Contacts</string>
+    <string name="address">Address</string>
+    <string name="appointment_date">Appointment_date</string>
+    <string name="doctor">Doctor</string>
+    <string name="time">Time</string>
+    <string name="age">Age</string>
+    <string name="ids">IDS</string>
+    <string name="got">Got</string>
+    <string name="patients_complains">Patients complains</string>
+    <string name="code_sent">Verification code sent</string>
+    <string name="error_send_code">Error sending verification code:</string>
 
 </resources>
