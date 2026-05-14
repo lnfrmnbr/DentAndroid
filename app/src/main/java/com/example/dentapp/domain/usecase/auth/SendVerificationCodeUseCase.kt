@@ -16,3 +16,4 @@ class SendVerificationCodeUseCase @Inject constructor(
         return verificationRepository.sendVerificationCode(clinicId, fio, newUserEmail, clinicEmail)
     }
 }
+
