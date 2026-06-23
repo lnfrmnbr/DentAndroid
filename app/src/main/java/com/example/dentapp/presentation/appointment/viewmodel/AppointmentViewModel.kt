@@ -1,21 +1,18 @@
 package com.example.dentapp.presentation.appointment.viewmodel
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.R
 import com.example.dentapp.data.local.AuthDataStore
 import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.domain.model.appointment.Indexes
+import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.model.patients.Patient
 import com.example.dentapp.domain.usecase.appointment.AddAppointmentUseCase
 import com.example.dentapp.domain.usecase.patients.AddPatientUseCase
 import com.example.dentapp.domain.usecase.patients.GetAllPatientsUseCase
 import com.example.dentapp.domain.usecase.patients.constants.PatientsErrors
 import com.example.dentapp.presentation.periochart.utils.Tooth
-import com.example.dentapp.utils.DateUtils
 import com.example.dentapp.utils.DateUtils.toDDMMYYYY
 import com.example.dentapp.utils.GenderUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,8 +26,6 @@ import java.time.LocalDateTime
 import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
-import androidx.core.graphics.createBitmap
-import com.example.dentapp.domain.model.clinic.Clinic
 
 @HiltViewModel
 class AppointmentViewModel @Inject constructor(

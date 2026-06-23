@@ -18,7 +18,9 @@ interface AuthRepository {
     ): Result<AuthResponse>
 
     suspend fun login(email: String, password: String): Result<AuthResponse>
+    suspend fun offlineLogin()
     suspend fun isUserLoggedIn(): Boolean
+    suspend fun isOfflineMode(): Boolean
     suspend fun logout()
     suspend fun deleteAccount(userId: String)
     suspend fun getAccessToken(): String?

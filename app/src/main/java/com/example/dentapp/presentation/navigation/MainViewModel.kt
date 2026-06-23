@@ -18,11 +18,15 @@ class MainViewModel @Inject constructor(
     private val _isLoggedIn = MutableStateFlow<Boolean?>(null)
     val isLoggedIn: StateFlow<Boolean?> = _isLoggedIn.asStateFlow()
 
+    private val _isOfflineMode = MutableStateFlow<Boolean?>(null)
+    val isOfflineMode: StateFlow<Boolean?> = _isOfflineMode.asStateFlow()
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     init {
         checkAuthStatus()
+        checkOfflineStatus()
     }
 
     private fun checkAuthStatus() {
@@ -30,6 +34,15 @@ class MainViewModel @Inject constructor(
             _isLoading.value = true
             val loggedIn = authRepository.isUserLoggedIn()
             _isLoggedIn.value = loggedIn
+            _isLoading.value = false
+        }
+    }
+
+    private fun checkOfflineStatus() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val idOfflineMode = authRepository.isOfflineMode()
+            _isOfflineMode.value = idOfflineMode
             _isLoading.value = false
         }
     }

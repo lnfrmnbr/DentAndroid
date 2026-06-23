@@ -61,12 +61,13 @@ import com.example.dentapp.ui.theme.White
 fun SignInScreen(
     viewModel: SignInViewModel = hiltViewModel(),
     onSignInSuccess: () -> Unit,
+    onOfflineSignIn: () -> Unit,
     onNavigateToSignUp: () -> Unit
 ) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val isEmailLoading by viewModel.isEmailLoading.collectAsState()
-    val isGoogleLoading by viewModel.isGoogleLoading.collectAsState()
+    val isOfflineLoading by viewModel.isOfflineLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val passwordError by viewModel.passwordError.collectAsState()
 
@@ -119,12 +120,11 @@ fun SignInScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {
-                },
+                onClick = { viewModel.signInOffline(onOfflineSignIn) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                enabled = !isEmailLoading && !isGoogleLoading,
+                enabled = !isEmailLoading && !isOfflineLoading,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
                     contentColor = VeryDarkBlue,
@@ -133,7 +133,7 @@ fun SignInScreen(
                 ),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                if (isGoogleLoading) {
+                if (isOfflineLoading) {
                     CircularProgressIndicator(
                         color = VeryDarkBlue,
                         modifier = Modifier.size(20.dp),
@@ -152,7 +152,7 @@ fun SignInScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Работать автономно",
+                            text = stringResource(R.string.work_offline),
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp,
@@ -228,7 +228,7 @@ fun SignInScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                enabled = !isEmailLoading && !isGoogleLoading &&
+                enabled = !isEmailLoading && !isOfflineLoading &&
                         email.isNotEmpty() && password.isNotEmpty() &&
                         passwordError == null,
                 colors = ButtonDefaults.buttonColors(

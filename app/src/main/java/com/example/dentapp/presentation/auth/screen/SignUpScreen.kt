@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -423,7 +422,8 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                enabled = !isLoading && email.isNotEmpty() && firstName.isNotEmpty() && lastName.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty(),
+                enabled = !isLoading && email.isNotEmpty() && firstName.isNotEmpty() && lastName.isNotEmpty() &&
+                        password.isNotEmpty() && confirmPassword.isNotEmpty() && isClinicVerified,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue,
                     contentColor = Color.White,

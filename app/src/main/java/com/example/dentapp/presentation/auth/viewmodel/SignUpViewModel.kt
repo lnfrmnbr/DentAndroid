@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.R
-import com.example.dentapp.di.SignUpUseCase
+import com.example.dentapp.domain.usecase.auth.SignUpUseCase
 import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.usecase.auth.SendVerificationCodeUseCase
 import com.example.dentapp.domain.usecase.auth.ValidateDateUseCase

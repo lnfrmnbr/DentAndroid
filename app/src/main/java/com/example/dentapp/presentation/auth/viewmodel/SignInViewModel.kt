@@ -2,6 +2,7 @@ package com.example.dentapp.presentation.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dentapp.domain.usecase.auth.SignInOfflineUseCase
 import com.example.dentapp.domain.usecase.auth.constants.AuthErrors
 import com.example.dentapp.domain.usecase.auth.SignInUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
@@ -15,8 +16,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase
-) : ViewModel() {
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val signInOfflineUseCase: SignInOfflineUseCase
+    ) : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -27,8 +29,8 @@ class SignInViewModel @Inject constructor(
     private val _isEmailLoading = MutableStateFlow(false)
     val isEmailLoading: StateFlow<Boolean> = _isEmailLoading.asStateFlow()
 
-    private val _isGoogleLoading = MutableStateFlow(false)
-    val isGoogleLoading: StateFlow<Boolean> = _isGoogleLoading.asStateFlow()
+    private val _isOfflineLoading = MutableStateFlow(false)
+    val isOfflineLoading: StateFlow<Boolean> = _isOfflineLoading.asStateFlow()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
@@ -76,6 +78,15 @@ class SignInViewModel @Inject constructor(
             } else {
                 _errorMessage.value = result.exceptionOrNull()?.message ?: AuthErrors.LOGIN_FAILED
             }
+        }
+    }
+
+    fun signInOffline(onOfflineSignIn: () -> Unit) {
+        _isOfflineLoading.value = true
+        viewModelScope.launch {
+            signInOfflineUseCase()
+            _isEmailLoading.value = false
+            onOfflineSignIn()
         }
     }
 

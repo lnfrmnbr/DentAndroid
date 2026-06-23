@@ -3,6 +3,7 @@ package com.example.dentapp.presentation.navigation
 sealed class Screen(val route: String) {
     data object AuthGraph : Screen("auth_graph")
     data object MainGraph : Screen("main_graph")
+    data object OfflineGraph : Screen("offline_graph")
     data object PerioChartGraph : Screen("perio_chart_graph")
 
     data object SignIn : Screen("sign_in")

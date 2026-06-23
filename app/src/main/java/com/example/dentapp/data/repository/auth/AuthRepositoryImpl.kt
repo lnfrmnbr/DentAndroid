@@ -99,8 +99,16 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun offlineLogin() {
+        authDataStore.setOfflineModeAuth()
+    }
+
     override suspend fun isUserLoggedIn(): Boolean {
         return authDataStore.isLoggedIn.first()
+    }
+
+    override suspend fun isOfflineMode(): Boolean {
+        return authDataStore.isOfflineMode.first()
     }
 
     override suspend fun logout() {

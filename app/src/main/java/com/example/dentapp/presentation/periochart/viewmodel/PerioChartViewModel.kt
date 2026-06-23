@@ -1,6 +1,7 @@
 package com.example.dentapp.presentation.periochart.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.dentapp.R
 import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.domain.model.appointment.Indexes
@@ -13,7 +14,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -111,6 +114,37 @@ class PerioChartViewModel @Inject constructor() : ViewModel() {
     enum class JawType { UPPER, LOWER }
     enum class SurfaceType { VESTIBULAR, ORAL }
     enum class CariesType { C11, C12, C13, C21, C22, C23 }
+
+    init {
+        viewModelScope.launch {
+            combine(_upTeeth, _lowTeeth) { up, low ->
+                up + low
+            }.collect { allTeeth ->
+                val kpu = allTeeth.count { it.hasCaries() || it.hasSeal || it.removed }
+                _kpu.value = kpu
+            }
+        }
+    }
+
+    private fun Tooth.hasCaries(): Boolean {
+        val oralCaries = oral.caries
+        val vestibularCaries = vestibular.caries
+
+        return listOf(
+            oralCaries.c11,
+            oralCaries.c12,
+            oralCaries.c13,
+            oralCaries.c21,
+            oralCaries.c22,
+            oralCaries.c23,
+            vestibularCaries.c11,
+            vestibularCaries.c12,
+            vestibularCaries.c13,
+            vestibularCaries.c21,
+            vestibularCaries.c22,
+            vestibularCaries.c23
+        ).any { it }
+    }
 
     fun selectTooth(toothId: Int) {
         _selectedTeeth.value = _selectedTeeth.value + toothId

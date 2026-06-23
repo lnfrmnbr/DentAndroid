@@ -18,6 +18,7 @@ class AuthDataStore @Inject constructor(
     private val dataStore: DataStore<Preferences>, private val encryptedPrefs: SharedPreferences
 ) {
     companion object {
+        private val IS_OFFLINE_MODE = booleanPreferencesKey("is_offline_mode")
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         private val USER_ID = stringPreferencesKey("user_id")
         private val DOCTOR_ID = stringPreferencesKey("doctor_id")
@@ -56,6 +57,7 @@ class AuthDataStore @Inject constructor(
             firstName?.let { prefs[FIRST_NAME] = it }
             patronymic?.let { prefs[PATRONYMIC] = it }
             sex?.let { prefs[SEX] = it }
+            prefs[IS_OFFLINE_MODE] = false
             clinic?.let {
                 prefs[CLINIC_ID] = it.id.toString()
                 prefs[CLINIC_NAME] = it.shortName
@@ -72,7 +74,16 @@ class AuthDataStore @Inject constructor(
         editor.apply()
     }
 
+    suspend fun setOfflineModeAuth(
+    ) {
+        dataStore.edit { prefs ->
+            prefs[IS_OFFLINE_MODE] = true
+        }
+    }
+
     val isLoggedIn: Flow<Boolean> = dataStore.data.map { prefs -> prefs[IS_LOGGED_IN] ?: false }
+
+    val isOfflineMode: Flow<Boolean> = dataStore.data.map { prefs -> prefs[IS_OFFLINE_MODE] ?: false }
 
     suspend fun getUserId(): String? {
         return dataStore.data.map { it[USER_ID] }.first()

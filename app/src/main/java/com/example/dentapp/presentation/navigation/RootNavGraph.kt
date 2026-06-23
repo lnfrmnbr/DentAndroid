@@ -19,6 +19,7 @@ import com.example.dentapp.ui.theme.LightCyan
 fun RootNavGraph(navHostController: NavHostController) {
     val mainViewModel: MainViewModel = hiltViewModel()
     val isLoggedIn by mainViewModel.isLoggedIn.collectAsState()
+    val isOfflineMode by mainViewModel.isOfflineMode.collectAsState()
     val isLoading by mainViewModel.isLoading.collectAsState()
 
     LaunchedEffect(isLoggedIn) {
@@ -43,6 +44,7 @@ fun RootNavGraph(navHostController: NavHostController) {
 
     val startDestination = when {
         isLoggedIn == true -> Screen.MainGraph.route
+        isOfflineMode == true -> Screen.OfflineGraph.route
         else -> Screen.AuthGraph.route
     }
 
@@ -57,8 +59,14 @@ fun RootNavGraph(navHostController: NavHostController) {
                 navHostController.navigate(Screen.MainGraph.route) {
                     popUpTo(Screen.AuthGraph.route) { inclusive = true }
                 }
+            },
+            onNavigateToOfflineMain = {
+                navHostController.navigate(Screen.OfflineGraph.route) {
+                    popUpTo(Screen.AuthGraph.route) { inclusive = true }
+                }
             }
         )
         mainNavGraph(navHostController)
+        offlineNavGraph(navHostController)
     }
 }

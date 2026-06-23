@@ -1,6 +1,7 @@
 package com.example.dentapp.di
 
 import com.example.dentapp.domain.repository.auth.AuthRepository
+import com.example.dentapp.domain.usecase.auth.SignInOfflineUseCase
 import com.example.dentapp.domain.usecase.auth.SignInUseCase
 import com.example.dentapp.domain.usecase.auth.ValidatePasswordUseCase
 import dagger.Module
@@ -20,5 +21,10 @@ object UseCaseModule {
     @Provides
     fun provideValidatePasswordUseCase(): ValidatePasswordUseCase {
         return ValidatePasswordUseCase()
+    }
+
+    @Provides
+    fun provideSignInOfflineUseCase(authRepository: AuthRepository): SignInOfflineUseCase {
+        return SignInOfflineUseCase(authRepository)
     }
 }

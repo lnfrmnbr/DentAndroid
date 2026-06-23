@@ -9,7 +9,8 @@ import com.example.dentapp.presentation.auth.screen.SignUpScreen
 
 fun NavGraphBuilder.authNavGraph(
     navController: NavHostController,
-    onNavigateToMain: () -> Unit
+    onNavigateToMain: () -> Unit,
+    onNavigateToOfflineMain: () -> Unit
 ) {
     navigation(
         startDestination = Screen.SignIn.route,
@@ -19,6 +20,9 @@ fun NavGraphBuilder.authNavGraph(
             SignInScreen(
                 onSignInSuccess = {
                     onNavigateToMain()
+                },
+                onOfflineSignIn = {
+                    onNavigateToOfflineMain()
                 },
                 onNavigateToSignUp = {
                     navController.navigate(Screen.SignUp.route)

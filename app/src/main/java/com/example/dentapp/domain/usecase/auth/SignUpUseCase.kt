@@ -1,5 +1,6 @@
-package com.example.dentapp.di
+package com.example.dentapp.domain.usecase.auth
 
+import android.util.Patterns
 import com.example.dentapp.data.remote.model.response.auth.AuthResponse
 import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.repository.auth.AuthRepository
@@ -33,6 +34,6 @@ class SignUpUseCase @Inject constructor(
     }
 
     private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

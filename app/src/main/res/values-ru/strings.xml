@@ -102,5 +102,8 @@
     <string name="patients_complains">Жалобы пациента</string>
     <string name="code_sent">Код подтверждения отправлен</string>
     <string name="error_send_code">Ошибка отправки кода подтверждения:</string>
+    <string name="work_offline">Работать автономно</string>
+    <string name="periodontal_chart">Пародонтологическая\nкарта</string>
+    <string name="your_data">Ваши данные:\nФИО, контакты</string>
 
 </resources>
