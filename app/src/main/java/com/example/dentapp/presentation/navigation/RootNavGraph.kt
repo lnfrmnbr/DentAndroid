@@ -17,10 +17,10 @@ import com.example.dentapp.ui.theme.LightCyan
 
 @Composable
 fun RootNavGraph(navHostController: NavHostController) {
-    val mainViewModel: MainViewModel = hiltViewModel()
-    val isLoggedIn by mainViewModel.isLoggedIn.collectAsState()
-    val isOfflineMode by mainViewModel.isOfflineMode.collectAsState()
-    val isLoading by mainViewModel.isLoading.collectAsState()
+    val rootViewModel: RootViewModel = hiltViewModel()
+    val isLoggedIn by rootViewModel.isLoggedIn.collectAsState()
+    val isOfflineMode by rootViewModel.isOfflineMode.collectAsState()
+    val isLoading by rootViewModel.isLoading.collectAsState()
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn == true) {
@@ -55,7 +55,7 @@ fun RootNavGraph(navHostController: NavHostController) {
         authNavGraph(
             navController = navHostController,
             onNavigateToMain = {
-                mainViewModel.setLoggedIn(true)
+                rootViewModel.setLoggedIn(true)
                 navHostController.navigate(Screen.MainGraph.route) {
                     popUpTo(Screen.AuthGraph.route) { inclusive = true }
                 }

@@ -105,8 +105,10 @@
     <string name="patients_complains">Patients complains</string>
     <string name="code_sent">Verification code sent</string>
     <string name="error_send_code">Error sending verification code:</string>
+
     <string name="work_offline">Work offline</string>
     <string name="periodontal_chart">Periodontal\nchart</string>
     <string name="your_data">Your data:\nname, contacts</string>
+    <string name="settings">Settings</string>
 
 </resources>
