@@ -33,6 +33,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,6 +75,11 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun MainScreen(rootNavController: NavHostController,
                isOfflineMode: Boolean = false,
                viewModel: MainViewModel = hiltViewModel()) {
+    val appointments by viewModel.appointments.collectAsState()
+
+    var searchQuery by remember { mutableStateOf("") }
+
+
     val mainNavController = rememberNavController()
     val backgroundColor = Color.White
 
@@ -94,8 +100,6 @@ fun MainScreen(rootNavController: NavHostController,
 
     val systemBars = WindowInsets.systemBars
     val navigationBars = WindowInsets.navigationBars
-
-    var searchQuery by remember { mutableStateOf("") }
 
     val fieldsColors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
@@ -230,6 +234,14 @@ fun MainScreen(rootNavController: NavHostController,
                             )
                         }
                     }
+
+                    Text(
+                        "${appointments.size}",
+                        color = DarkBlue,
+                        fontFamily = Montserrat,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp
+                    )
                 }
             }
         }

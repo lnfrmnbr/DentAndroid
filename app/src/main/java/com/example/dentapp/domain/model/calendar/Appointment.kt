@@ -7,8 +7,8 @@ import java.util.UUID
 
 data class Appointment(
     val id: UUID? = null,
-    val doctorId: UUID,
-    val patientId: UUID,
+    val doctorId: UUID? = null,
+    val patientId: UUID? = null,
     val patientFullName: String? = null,
     val date: LocalDateTime = LocalDateTime.now(),
     val tags: List<String>? = emptyList(),
