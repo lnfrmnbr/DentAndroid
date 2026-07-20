@@ -35,10 +35,10 @@
 
 Работа с пародонтологической картой
 
-<img width="420" height="195" alt="image" src="https://github.com/user-attachments/assets/105b6412-582a-46df-812c-571223b7cafe" />
-<img width="420" height="195" alt="image" src="https://github.com/user-attachments/assets/3be0e070-2940-4f59-8b0f-4562f856f586" />
-<img width="420" height="195" alt="image" src="https://github.com/user-attachments/assets/b965c8da-b344-4f01-9a5e-9c7f5f8026b5" />
-<img width="420" height="195" alt="image" src="https://github.com/user-attachments/assets/9b8aebad-de2d-4eb9-ae08-dccc9ae3cad5" />
+<img width="350" height="162" alt="image" src="https://github.com/user-attachments/assets/105b6412-582a-46df-812c-571223b7cafe" />
+<img width="350" height="162" alt="image" src="https://github.com/user-attachments/assets/3be0e070-2940-4f59-8b0f-4562f856f586" />
+<img width="350" height="162" alt="image" src="https://github.com/user-attachments/assets/b965c8da-b344-4f01-9a5e-9c7f5f8026b5" />
+<img width="350" height="162" alt="image" src="https://github.com/user-attachments/assets/9b8aebad-de2d-4eb9-ae08-dccc9ae3cad5" />
 
 
 
