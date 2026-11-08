@@ -12,9 +12,6 @@ interface PatientDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPatient(patient: PatientEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPatients(patients: List<PatientEntity>)
-
     @Query("SELECT * FROM patients")
     suspend fun getAllPatients(): List<PatientEntity>
 

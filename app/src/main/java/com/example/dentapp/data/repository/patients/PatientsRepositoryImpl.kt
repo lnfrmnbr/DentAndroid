@@ -2,7 +2,8 @@ package com.example.dentapp.data.repository.patients
 
 import com.example.dentapp.data.remote.api.ApiService
 import com.example.dentapp.data.remote.model.request.patients.PatientRequest
-import com.example.dentapp.data.remote.model.response.patients.PatientResponse
+import com.example.dentapp.data.remote.model.response.patients.toDomain
+import com.example.dentapp.domain.model.patients.Patient
 import com.example.dentapp.domain.repository.patients.PatientsRepository
 import java.util.Date
 import java.util.UUID
@@ -17,8 +18,8 @@ class PatientsRepositoryImpl @Inject constructor(
         sex: String,
         email: String?,
         phoneNumber: String?,
-        clinicId: UUID
-    ): PatientResponse {
+        clinicId: UUID?
+    ): Patient {
         return apiService.addPatient(
             PatientRequest(
                 fullName = fullName,
@@ -26,12 +27,12 @@ class PatientsRepositoryImpl @Inject constructor(
                 sex = sex,
                 email = email,
                 phoneNumber = phoneNumber,
-                clinicId = clinicId
+                clinicId = clinicId!!
             )
-        )
+        ).toDomain()
     }
 
-    override suspend fun getAllPatients(): List<PatientResponse> {
-        return apiService.getAllPatients()
+    override suspend fun getAllPatients(): List<Patient> {
+        return apiService.getAllPatients().map { it.toDomain() }
     }
 }

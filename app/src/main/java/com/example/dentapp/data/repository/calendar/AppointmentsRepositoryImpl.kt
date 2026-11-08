@@ -2,7 +2,8 @@ package com.example.dentapp.data.repository.calendar
 
 import com.example.dentapp.data.remote.api.ApiService
 import com.example.dentapp.data.remote.model.request.appointment.AppointmentRequest
-import com.example.dentapp.data.remote.model.response.calendar.AppointmentResponse
+import com.example.dentapp.data.remote.model.response.calendar.toDomain
+import com.example.dentapp.domain.model.calendar.Appointment
 import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.domain.repository.calendar.AppointmentsRepository
 import com.example.dentapp.presentation.periochart.utils.Tooth
@@ -13,20 +14,20 @@ import javax.inject.Inject
 class AppointmentsRepositoryImpl  @Inject constructor(
     private val apiService: ApiService
 ) : AppointmentsRepository {
-    override suspend fun getAppointments(doctorId: UUID): List<AppointmentResponse> {
-        return apiService.getAppointments(doctorId)
+    override suspend fun getAppointments(doctorId: UUID?): List<Appointment> {
+        return apiService.getAppointments(doctorId!!).map { it.toDomain() }
     }
 
-    override suspend fun getUpcomingAppointments(doctorId: UUID): List<AppointmentResponse> {
-        return apiService.getUpcomingAppointments(doctorId)
+    override suspend fun getUpcomingAppointments(doctorId: UUID?): List<Appointment> {
+        return apiService.getUpcomingAppointments(doctorId!!).map { it.toDomain() }
     }
 
-    override suspend fun getArchiveAppointments(doctorId: UUID): List<AppointmentResponse> {
-        return apiService.getArchiveAppointments(doctorId)
+    override suspend fun getArchiveAppointments(doctorId: UUID?): List<Appointment> {
+        return apiService.getArchiveAppointments(doctorId!!).map { it.toDomain() }
     }
 
     override suspend fun addAppointment(
-        doctorId: UUID,
+        doctorId: UUID?,
         patientId: UUID,
         date: LocalDateTime,
         tags: List<String>?,
@@ -37,9 +38,9 @@ class AppointmentsRepositoryImpl  @Inject constructor(
         isFirst: Boolean,
         indexes: Indexes,
         chart: List<Tooth>?
-    ): AppointmentResponse {
+    ): Appointment {
         return apiService.addAppointment(AppointmentRequest(
-            doctorId = doctorId,
+            doctorId = doctorId!!,
             patientId = patientId,
             date = date,
             tags = tags,
@@ -50,6 +51,6 @@ class AppointmentsRepositoryImpl  @Inject constructor(
             isFirst = isFirst,
             indexes = indexes,
             chart = chart
-        ))
+        )).toDomain()
     }
 }

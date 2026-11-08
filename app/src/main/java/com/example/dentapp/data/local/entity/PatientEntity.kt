@@ -2,7 +2,8 @@ package com.example.dentapp.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDate
+import com.example.dentapp.domain.model.patients.Patient
+import java.util.Date
 import java.util.UUID
 
 @Entity(tableName = "patients")
@@ -15,3 +16,14 @@ data class PatientEntity(
     val email: String? = null,
     val phoneNumber: String? = null
 )
+
+fun PatientEntity.toDomain(): Patient {
+    return Patient(
+        id = id,
+        fullName = fullName,
+        birthDate = Date(birthDate),
+        sex = sex.toString(),
+        email = email,
+        phoneNumber = phoneNumber
+    )
+}

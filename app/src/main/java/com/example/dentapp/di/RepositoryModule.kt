@@ -6,6 +6,7 @@ import com.example.dentapp.data.repository.calendar.AppointmentsRepositoryImpl
 import com.example.dentapp.data.repository.calendar.LocalAppointmentsRepositoryImpl
 import com.example.dentapp.data.repository.clinic.ClinicRepositoryImpl
 import com.example.dentapp.data.repository.doctor.DoctorRepositoryImpl
+import com.example.dentapp.data.repository.patients.LocalPatientsRepositoryImpl
 import com.example.dentapp.data.repository.patients.PatientsRepositoryImpl
 import com.example.dentapp.domain.repository.auth.AuthRepository
 import com.example.dentapp.domain.repository.auth.VerificationRepository
@@ -18,6 +19,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -38,18 +40,6 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindAppointmentsRepository(
-        impl: AppointmentsRepositoryImpl
-    ): AppointmentsRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindPatientsRepository(
-        impl: PatientsRepositoryImpl
-    ): PatientsRepository
-
-    @Binds
-    @Singleton
     abstract fun bindClinicRepository(
         impl: ClinicRepositoryImpl
     ): ClinicRepository
@@ -61,8 +51,27 @@ abstract class RepositoryModule {
     ): VerificationRepository
 
     @Binds
-    @Singleton
-    abstract fun bindLocalAppointmentsRepository(
-        impl: LocalAppointmentsRepositoryImpl
-    ): LocalAppointmentsRepository
+    @LocalDataSource
+    abstract fun bindLocalAppointmentsRepository(impl: LocalAppointmentsRepositoryImpl): AppointmentsRepository
+
+    @Binds
+    @RemoteDataSource
+    abstract fun bindRemoteAppointmentsRepository(impl: AppointmentsRepositoryImpl): AppointmentsRepository
+
+    @Binds
+    @LocalDataSource
+    abstract fun bindLocalRepository(impl: LocalPatientsRepositoryImpl): PatientsRepository
+
+    @Binds
+    @RemoteDataSource
+    abstract fun bindRemoteRepository(impl: PatientsRepositoryImpl): PatientsRepository
+
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class LocalDataSource
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RemoteDataSource

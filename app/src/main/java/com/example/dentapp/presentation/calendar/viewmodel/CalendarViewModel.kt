@@ -55,7 +55,7 @@ class CalendarViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 val doctorId = authDataStore.getDoctorId()
-                val loadedAppointments = getAppointmentsUseCase(UUID.fromString(doctorId))
+                val loadedAppointments = getAppointmentsUseCase(UUID.fromString(doctorId), isLocal = false)
                 _appointments.value = loadedAppointments
                 _error.value = null
 

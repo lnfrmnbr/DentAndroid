@@ -184,7 +184,7 @@ fun MainScreen(rootNavController: NavHostController,
                             stringResource(R.string.start_appointment),
                             stringResource(R.string.periodontal_chart),
                             Icons.Default.AddCircle
-                        ) {  }
+                        ) { rootNavController.navigate(Screen.StartAppointment.route) }
 
                         TabCard(
                             stringResource(R.string.settings),

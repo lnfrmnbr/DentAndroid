@@ -8,6 +8,7 @@ import com.example.dentapp.domain.model.appointment.Appointment
 import com.example.dentapp.domain.model.appointment.Indexes
 import com.example.dentapp.domain.model.clinic.Clinic
 import com.example.dentapp.domain.model.patients.Patient
+import com.example.dentapp.domain.repository.auth.AuthRepository
 import com.example.dentapp.domain.usecase.appointment.AddAppointmentUseCase
 import com.example.dentapp.domain.usecase.patients.AddPatientUseCase
 import com.example.dentapp.domain.usecase.patients.GetAllPatientsUseCase
@@ -32,8 +33,12 @@ class AppointmentViewModel @Inject constructor(
     private val getAllPatientsUseCase: GetAllPatientsUseCase,
     private val authDataStore: AuthDataStore,
     private val addPatientUseCase: AddPatientUseCase,
-    private val addAppointmentUseCase: AddAppointmentUseCase
+    private val addAppointmentUseCase: AddAppointmentUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
+    private val _isOfflineMode = MutableStateFlow(false)
+    val isOfflineMode: StateFlow<Boolean> = _isOfflineMode.asStateFlow()
+
     val teethUnit = listOf(
         Tooth(18, R.raw.t18),
         Tooth(17, R.raw.t17),
@@ -130,9 +135,16 @@ class AppointmentViewModel @Inject constructor(
     val isLoading: StateFlow<Boolean> = _isLoading
 
     init {
+        loadOfflineMode()
         loadPatients()
         getClinic()
         getDoctorFio()
+    }
+
+    private fun loadOfflineMode() {
+        viewModelScope.launch {
+            _isOfflineMode.value = authRepository.isOfflineMode()
+        }
     }
 
     fun setAppointment(appointment: Appointment?) {
@@ -175,22 +187,21 @@ class AppointmentViewModel @Inject constructor(
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val doctorId = UUID.fromString(authDataStore.getDoctorId())
-                val clinicId = UUID.fromString(authDataStore.getClinicId())
+                val doctorId = if (!isOfflineMode.value) UUID.fromString(authDataStore.getDoctorId()) else null
+                val clinicId = if (!isOfflineMode.value) UUID.fromString(authDataStore.getClinicId()) else null
 
                 val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                 val genderCode = GenderUtils.toBdCode(sex.value)
 
-                val patientId = if (patientId.value == null) {
-                    addPatientUseCase(
-                        fullName = fio.value,
-                        birthDate = formatter.parse(birthDate.value)!!,
-                        sex = genderCode,
-                        email = email.value,
-                        phoneNumber = phoneNumber.value,
-                        clinicId = clinicId
-                    ).id
-                } else patientId.value
+                val patientId = patientId.value ?: addPatientUseCase(
+                    fullName = fio.value,
+                    birthDate = formatter.parse(birthDate.value)!!,
+                    sex = genderCode,
+                    email = email.value,
+                    phoneNumber = phoneNumber.value,
+                    isLocal = isOfflineMode.value,
+                    clinicId = clinicId
+                )?.id
 
                 _appointment.value = Appointment(
                     patient = Patient(
@@ -213,19 +224,20 @@ class AppointmentViewModel @Inject constructor(
                 )
 
                 if (patientId != null) {
-                    addAppointmentUseCase(
-                        doctorId = doctorId,
-                        patientId = patientId,
-                        date = LocalDateTime.now(),
-                        tags = tags.value,
-                        diagnosis = diagnosis.value,
-                        complaints = complaints.value,
-                        comments = comments.value,
-                        plan = treatmentPlan.value,
-                        isFirst = isFirstAppointment.value,
-                        indexes = indexes.value,
-                        chart = chart.value
-                    )
+                        addAppointmentUseCase(
+                            doctorId = doctorId,
+                            patientId = patientId,
+                            date = LocalDateTime.now(),
+                            tags = tags.value,
+                            diagnosis = diagnosis.value,
+                            complaints = complaints.value,
+                            comments = comments.value,
+                            plan = treatmentPlan.value,
+                            isFirst = isFirstAppointment.value,
+                            indexes = indexes.value,
+                            chart = chart.value,
+                            isLocal = isOfflineMode.value
+                        )
                     onSuccess()
                     _errorMessage.value = null
                 } else {
@@ -400,7 +412,7 @@ class AppointmentViewModel @Inject constructor(
     private fun loadPatients() {
         viewModelScope.launch {
             try {
-                _patients.value = getAllPatientsUseCase()
+                _patients.value = getAllPatientsUseCase(isOfflineMode.value)
             } catch (e: Exception) {
                 _errorMessage.value = "Ошибка загрузки списка пациентов: ${e.message}"
             } finally {

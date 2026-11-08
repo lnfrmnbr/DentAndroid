@@ -3,6 +3,7 @@ package com.example.dentapp.presentation.appointment.utils
 import android.content.Context
 import android.graphics.*
 import android.graphics.pdf.PdfDocument
+import android.util.Base64
 import androidx.core.content.res.ResourcesCompat
 import com.caverock.androidsvg.SVG
 import com.example.dentapp.R
@@ -492,9 +493,9 @@ class PdfReportGenerator(
 
     private fun base64ToBitmap(base64: String): Bitmap {
 
-        val decodedBytes = android.util.Base64.decode(
+        val decodedBytes = Base64.decode(
             base64,
-            android.util.Base64.DEFAULT
+            Base64.DEFAULT
         )
 
         return BitmapFactory.decodeByteArray(

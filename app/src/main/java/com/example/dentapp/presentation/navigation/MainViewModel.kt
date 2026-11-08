@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dentapp.domain.model.calendar.Appointment
-import com.example.dentapp.domain.usecase.appointment.GetLocalAppointmentsUseCase
+import com.example.dentapp.domain.usecase.calendar.GetAppointmentsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getAppointmentsUseCase: GetLocalAppointmentsUseCase
+    private val getAppointmentsUseCase: GetAppointmentsUseCase
 ): ViewModel() {
     private val _appointments = MutableStateFlow<List<Appointment>>(emptyList())
     val appointments: StateFlow<List<Appointment>> = _appointments.asStateFlow()
@@ -30,7 +30,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                _appointments.value = getAppointmentsUseCase()
+                _appointments.value = getAppointmentsUseCase(isLocal = true)
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error loading appointments", e)
             } finally {
