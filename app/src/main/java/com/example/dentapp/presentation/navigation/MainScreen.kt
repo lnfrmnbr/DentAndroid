@@ -19,16 +19,19 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -55,6 +58,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dentapp.R
 import com.example.dentapp.presentation.calendar.screen.CalendarScreen
+import com.example.dentapp.presentation.calendar.utils.AppointmentCard
 import com.example.dentapp.presentation.files.screen.FilesScreen
 import com.example.dentapp.presentation.home.screen.HomeScreen
 import com.example.dentapp.presentation.patients.screen.PatientsScreen
@@ -71,19 +75,29 @@ import com.example.dentapp.ui.theme.VeryLightBlue
 import com.example.dentapp.ui.theme.White
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainScreen(rootNavController: NavHostController,
-               isOfflineMode: Boolean = false,
-               viewModel: MainViewModel = hiltViewModel()) {
+fun MainScreen(
+    rootNavController: NavHostController,
+    isOfflineMode: Boolean = false,
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val appointments by viewModel.appointments.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     var searchQuery by remember { mutableStateOf("") }
-
 
     val mainNavController = rememberNavController()
     val backgroundColor = Color.White
 
     val systemUiController = rememberSystemUiController()
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = isLoading,
+        onRefresh = {
+            viewModel.loadAppointments()
+        }
+    )
 
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -117,56 +131,62 @@ fun MainScreen(rootNavController: NavHostController,
         disabledContainerColor = DarkBlue
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor)
-    ) {
-        if (!isOfflineMode) {
-            NavHost(
-                navController = mainNavController,
-                startDestination = Screen.Home.route,
+
+    when (isOfflineMode) {
+        false -> {
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .windowInsetsPadding(systemBars)
+                    .background(backgroundColor)
             ) {
-                composable(Screen.Home.route) {
-                    HomeScreen(navController = mainNavController)
+                NavHost(
+                    navController = mainNavController,
+                    startDestination = Screen.Home.route,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .windowInsetsPadding(systemBars)
+                ) {
+                    composable(Screen.Home.route) {
+                        HomeScreen(navController = mainNavController)
+                    }
+                    composable(Screen.Calendar.route) {
+                        CalendarScreen(navController = mainNavController)
+                    }
+                    composable(Screen.Files.route) {
+                        FilesScreen(navController = mainNavController)
+                    }
+                    composable(Screen.Patients.route) {
+                        PatientsScreen(navController = mainNavController)
+                    }
+                    composable(Screen.Profile.route) {
+                        ProfileScreen(navController = mainNavController)
+                    }
                 }
-                composable(Screen.Calendar.route) {
-                    CalendarScreen(navController = mainNavController)
-                }
-                composable(Screen.Files.route) {
-                    FilesScreen(navController = mainNavController)
-                }
-                composable(Screen.Patients.route) {
-                    PatientsScreen(navController = mainNavController)
-                }
-                composable(Screen.Profile.route) {
-                    ProfileScreen(navController = mainNavController)
-                }
-            }
 
-            Card(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .windowInsetsPadding(navigationBars),
-                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 16.dp
-                ),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                )
-            ) {
-                NavBar(mainNavController, rootNavController)
+                Card(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .windowInsetsPadding(navigationBars),
+                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 16.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    )
+                ) {
+                    NavBar(mainNavController, rootNavController)
+                }
             }
-        } else {
+        }
+
+        else -> {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(LightBlue)
+                    .pullRefresh(refreshState)
             ) {
                 Column(
                     modifier = Modifier
@@ -190,7 +210,7 @@ fun MainScreen(rootNavController: NavHostController,
                             stringResource(R.string.settings),
                             stringResource(R.string.your_data),
                             Icons.Default.Settings
-                        ) {  }
+                        ) { }
                     }
 
                     Box(
@@ -232,17 +252,22 @@ fun MainScreen(rootNavController: NavHostController,
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(16.dp)
                             )
+
+                            appointments.forEach { appointment ->
+                                AppointmentCard(appointment)
+                            }
                         }
                     }
-
-                    Text(
-                        "${appointments.size}",
-                        color = DarkBlue,
-                        fontFamily = Montserrat,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp
-                    )
                 }
+
+                PullRefreshIndicator(
+                    refreshing = isLoading,
+                    state = refreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    backgroundColor = Color.White,
+                    contentColor = DarkBlue,
+                    scale = true
+                )
             }
         }
     }

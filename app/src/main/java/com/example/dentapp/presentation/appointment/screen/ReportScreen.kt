@@ -73,6 +73,7 @@ fun ReportScreen(
     val appointment by viewModel.appointment.collectAsState()
     val clinic by viewModel.clinic.collectAsState()
     val doctorFIO by viewModel.doctorFIO.collectAsState()
+    val isLocal by viewModel.isOfflineMode.collectAsState()
 
     val context = LocalContext.current
 
@@ -245,12 +246,18 @@ fun ReportScreen(
 
             Button(
                 onClick = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    if (!isLocal) {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
+                    } else {
+                        navController.navigate(Screen.OfflineGraph.route) {
+                            popUpTo(Screen.AuthGraph.route) { inclusive = true }
+                        }
                     }
                 },
                 modifier = Modifier

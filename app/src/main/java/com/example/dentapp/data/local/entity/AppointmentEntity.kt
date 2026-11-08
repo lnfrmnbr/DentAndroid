@@ -1,5 +1,6 @@
 package com.example.dentapp.data.local.entity
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -82,5 +83,58 @@ fun AppointmentEntity.toDomain(): Appointment {
                 null
             }
         }
+    )
+}
+
+data class AppointmentWithPatientName(
+    @Embedded val appointment: AppointmentEntity,
+    val patientFullName: String
+)
+
+fun AppointmentWithPatientName.toDomain(): Appointment {
+    val gson = Gson()
+
+    return Appointment(
+        id = appointment.id,
+        patientId =  appointment.patientId,
+        date = Instant.ofEpochMilli( appointment.date)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime(),
+        tags =  appointment.tags?.let { json ->
+            try {
+                val listType = object : TypeToken<List<String>>() {}.type
+                gson.fromJson(json, listType)
+            } catch (_: Exception) {
+                emptyList()
+            }
+        },
+        diagnosis = appointment.diagnosis?.let { json ->
+            try {
+                val listType = object : TypeToken<List<String>>() {}.type
+                gson.fromJson(json, listType)
+            } catch (_: Exception) {
+                emptyList()
+            }
+        },
+        complaints = appointment.complaints,
+        comments = appointment.comments,
+        plan = appointment.plan,
+        isFirst = appointment.isFirst,
+        indexes = appointment.indexes?.let { json ->
+            try {
+                gson.fromJson(json, Indexes::class.java)
+            } catch (_: Exception) {
+                null
+            }
+        },
+        chart = appointment.chart?.let { json ->
+            try {
+                val listType = object : TypeToken<List<Tooth>>() {}.type
+                gson.fromJson(json, listType)
+            } catch (_: Exception) {
+                null
+            }
+        },
+        patientFullName = patientFullName
     )
 }
